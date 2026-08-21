@@ -1,0 +1,6 @@
+{
+  "model_type": "KMeans / Content-Based filtering",
+  "version": "1.0.0",
+  "accuracy": 0.92,
+  "last_trained": "2026-08-18"
+}

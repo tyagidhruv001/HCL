@@ -1,0 +1,34 @@
+#!/bin/sh
+# Minimal Maven Wrapper script for Unix/Linux environments
+
+MAVEN_PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+WRAPPER_JAR="$MAVEN_PROJECT_DIR/.mvn/wrapper/maven-wrapper.jar"
+WRAPPER_PROPERTIES="$MAVEN_PROJECT_DIR/.mvn/wrapper/maven-wrapper.properties"
+
+if [ ! -d "$MAVEN_PROJECT_DIR/.mvn/wrapper" ]; then
+    mkdir -p "$MAVEN_PROJECT_DIR/.mvn/wrapper"
+fi
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+    echo "Downloading maven wrapper jar..."
+    WRAPPER_URL=$(grep "wrapperUrl" "$WRAPPER_PROPERTIES" | cut -d'=' -f2 | tr -d '\r')
+    if [ -z "$WRAPPER_URL" ]; then
+        WRAPPER_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.2/maven-wrapper-3.3.2.jar"
+    fi
+    if command -v curl >/dev/null 2>&1; then
+        curl -sL "$WRAPPER_URL" -o "$WRAPPER_JAR"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -qO "$WRAPPER_JAR" "$WRAPPER_URL"
+    else
+        echo "Error: curl or wget is required to download the Maven Wrapper Jar."
+        exit 1
+    fi
+fi
+
+if [ -n "$JAVA_HOME" ] ; then
+    JAVACMD="$JAVA_HOME/bin/java"
+else
+    JAVACMD="java"
+fi
+
+exec "$JAVACMD" -jar "$WRAPPER_JAR" "$@"

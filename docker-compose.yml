@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://db:5432/learnai
+      - DB_USER=learnai
+      - DB_PASS=learnai_pass
+      - ML_URL=http://ml:8000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: learnai-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=learnai
+      - POSTGRES_USER=learnai
+      - POSTGRES_PASSWORD=learnai_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  ml:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml:/app
+
+volumes:
+  postgres_data:
