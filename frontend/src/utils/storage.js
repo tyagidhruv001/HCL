@@ -14,6 +14,8 @@ const STORAGE_KEYS = Object.freeze({
   CHAT:      'alpr_chat_v2',
   API_KEY:   'alpr_gk',
   SETTINGS:  'alpr_settings_v2',
+  TOKEN:     'alpr_token_v2',
+  USER:      'alpr_user_v2',
 });
 
 /* ── Input sanitisation helpers ── */
@@ -207,5 +209,30 @@ export const Storage = {
   },
   saveSettings(settings) {
     return this._set(STORAGE_KEYS.SETTINGS, { ...this.getSettings(), ...settings });
+  },
+
+  /* ── Token ── */
+  getToken() {
+    return localStorage.getItem(STORAGE_KEYS.TOKEN) || '';
+  },
+  saveToken(token) {
+    if (typeof token !== 'string') return false;
+    localStorage.setItem(STORAGE_KEYS.TOKEN, token.trim());
+    return true;
+  },
+  clearToken() {
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+  },
+
+  /* ── User ── */
+  getUser() {
+    return this._get(STORAGE_KEYS.USER, null);
+  },
+  saveUser(user) {
+    if (!user || typeof user !== 'object') return false;
+    return this._set(STORAGE_KEYS.USER, user);
+  },
+  clearUser() {
+    this._remove(STORAGE_KEYS.USER);
   },
 };

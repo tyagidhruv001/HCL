@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Storage, Sanitize } from '../../utils/storage.js';
 import { useProfile } from '../../context/ProfileContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 const TOTAL_STEPS = 3;
 
@@ -28,9 +29,10 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { updateProfile } = useProfile();
   const { showToast } = useToast();
+  const { user } = useAuth();
 
   const [step, setStep] = useState(1);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(() => user?.name || '');
   const [goal, setGoal] = useState('');
   const [timeline, setTimeline] = useState('3 months');
   const [level, setLevel] = useState('');
