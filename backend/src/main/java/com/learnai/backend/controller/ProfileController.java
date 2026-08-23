@@ -1,8 +1,8 @@
 package com.learnai.backend.controller;
 
 import com.learnai.backend.dto.ApiResponse;
+import com.learnai.backend.dto.ProfileResponseDTO;
 import com.learnai.backend.dto.ProfileUpdateRequest;
-import com.learnai.backend.model.LearnerProfile;
 import com.learnai.backend.service.ProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +20,17 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<LearnerProfile>> getProfile(Principal principal) {
-        LearnerProfile profile = profileService.getProfileByUserEmail(principal.getName());
+    public ResponseEntity<ApiResponse<ProfileResponseDTO>> getProfile(Principal principal) {
+        ProfileResponseDTO profile = profileService.getProfileByUserEmail(principal.getName());
         return ResponseEntity.ok(ApiResponse.success("Profile retrieved successfully", profile));
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<LearnerProfile>> updateProfile(
+    public ResponseEntity<ApiResponse<ProfileResponseDTO>> updateProfile(
             Principal principal,
             @RequestBody ProfileUpdateRequest request) {
-        
-        LearnerProfile profile = profileService.updateProfileByUserEmail(principal.getName(), request);
+
+        ProfileResponseDTO profile = profileService.updateProfileByUserEmail(principal.getName(), request);
         return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", profile));
     }
 }
