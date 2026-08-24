@@ -29,6 +29,9 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @org.hibernate.annotations.UpdateTimestamp
+    private LocalDateTime updatedAt;
+
     public User() {
     }
 
@@ -86,5 +89,13 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

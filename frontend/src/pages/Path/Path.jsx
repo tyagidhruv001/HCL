@@ -4,6 +4,8 @@ import { Storage, Sanitize } from '../../utils/storage.js';
 import { CourseCatalog } from '../../features/courses/courses.js';
 import { AI } from '../../features/recommendation/recommendation.js';
 import { useToast } from '../../context/ToastContext.jsx';
+import { RoadmapAPI } from '../../services/roadmap.api.js';
+import { ProgressAPI } from '../../services/progress.api.js';
 
 const ALLOWED_DOMAINS = [
   'coursera.org','udemy.com','freecodecamp.org','theodinproject.com',
@@ -153,15 +155,46 @@ export default function Path() {
 
   const refreshProgress = () => setProgress(Storage.getProgress());
 
-  const handleToggleComplete = useCallback((courseId) => {
+  // Load server-side roadmap if authenticated
+  React.useEffect(() => {
+    let isMounted = true;
+    async function loadServerRoadmap() {
+      try {
+        const response = await RoadmapAPI.getActiveRoadmap();
+        if (isMounted && response?.data) {
+          const serverRoadmap = response.data;
+          setPath(serverRoadmap);
+          Storage.savePath(serverRoadmap);
+        }
+      } catch (err) {
+        console.warn('Could not fetch server roadmap, using local state:', err.message);
+      }
+    }
+    loadServerRoadmap();
+    return () => { isMounted = false; };
+  }, []);
+
+  const handleToggleComplete = useCallback(async (courseId) => {
     if (!Sanitize.courseId(courseId)) return;
     const p = Storage.getProgress();
-    if (p.completedCourseIds.includes(courseId)) {
+    const isCompleted = p.completedCourseIds.includes(courseId);
+    
+    if (isCompleted) {
       Storage.markCourseIncomplete(courseId);
       showToast('Course marked incomplete', 'info');
+      try {
+        await ProgressAPI.updateProgress(courseId, 0);
+      } catch (e) {
+        console.warn('Progress sync failed:', e);
+      }
     } else {
       Storage.markCourseComplete(courseId);
       showToast('🎉 Course marked complete!', 'success');
+      try {
+        await ProgressAPI.updateProgress(courseId, 100);
+      } catch (e) {
+        console.warn('Progress sync failed:', e);
+      }
       const updated = Storage.getProgress();
       if (updated.streak > 0 && updated.streak % 7 === 0) {
         showToast(`🔥 ${updated.streak}-day streak! Keep it up!`, 'info');
@@ -193,7 +226,21 @@ export default function Path() {
     if (generating) return;
     setGenerating(true);
     try {
-      const generated = await AI.generatePath(profile);
+      // First try Spring Boot server-side generation
+      let generated = null;
+      try {
+        const res = await RoadmapAPI.generateRoadmap();
+        if (res?.data) {
+          generated = res.data;
+        }
+      } catch (backendErr) {
+        console.warn('Backend roadmap generation failed, falling back to AI client:', backendErr);
+      }
+
+      if (!generated) {
+        generated = await AI.generatePath(profile);
+      }
+
       Storage.savePath(generated);
       setPath(generated);
       showToast('🎉 Your learning path is ready!', 'success');

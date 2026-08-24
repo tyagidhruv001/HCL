@@ -5,6 +5,7 @@ import { AI } from '../../features/recommendation/recommendation.js';
 import { Profile } from '../../features/profile/profile.js';
 import { useProfile } from '../../context/ProfileContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
+import { ChatAPI } from '../../services/chat.api.js';
 
 const SUGGESTED_PROMPTS = [
   "What learning path should I follow to become a data scientist?",
@@ -110,6 +111,7 @@ export default function Chat() {
       : `Hi there! 👋 I'm **LearnAI**, your AI-powered learning advisor.\n\nI help you discover the perfect learning path based on your goals, interests, and experience level. Before we dive in, could you tell me a bit about yourself?\n\nWhat's your primary learning goal?`;
   }, []);
 
+  const [sessionId, setSessionId] = useState(null);
   const [history, setHistory] = useState(() => {
     const stored = Storage.getChatHistory();
     return stored.length > 0
@@ -121,6 +123,27 @@ export default function Chat() {
   const [suggestions, setSuggestions] = useState(SUGGESTED_PROMPTS.slice(0, 4));
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Load session from PostgreSQL backend if authenticated
+  useEffect(() => {
+    let isMounted = true;
+    async function loadServerSession() {
+      try {
+        const response = await ChatAPI.getActiveSession();
+        if (isMounted && response?.data) {
+          setSessionId(response.data.id);
+          if (response.data.messages && response.data.messages.length > 0) {
+            setHistory(response.data.messages.map(m => ({ role: m.role, content: m.content })));
+          }
+        }
+      } catch (err) {
+        // Fallback to local storage state if offline/unreachable
+        console.warn('Backend chat session unavailable, using local cache:', err.message);
+      }
+    }
+    loadServerSession();
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -153,7 +176,25 @@ export default function Chat() {
     Storage.appendMessage({ role: 'user', content: msg });
 
     try {
-      const aiResponse = await AI.sendMessage(msg, newHistory, currentProfile);
+      let aiResponse = '';
+      const apiKey = Storage.getApiKey();
+
+      // Try sending via Spring Boot Chat API if sessionId is available
+      if (sessionId) {
+        try {
+          const res = await ChatAPI.sendMessage(sessionId, msg, apiKey);
+          if (res?.data?.content) {
+            aiResponse = res.data.content;
+          }
+        } catch (apiErr) {
+          console.warn('Spring Boot Chat API error, falling back to direct AI proxy:', apiErr);
+        }
+      }
+
+      // If backend was not reached or failed, fallback to client-side AI
+      if (!aiResponse) {
+        aiResponse = await AI.sendMessage(msg, newHistory, currentProfile);
+      }
 
       if (currentProfile.onboarded) {
         const updates = Profile.extractFromMessage(msg, currentProfile);
@@ -189,10 +230,21 @@ export default function Chat() {
       setIsTyping(false);
       inputRef.current?.focus();
     }
-  }, [history, isTyping, refreshProfile]);
+  }, [history, isTyping, sessionId, refreshProfile]);
 
-  const handleClearChat = () => {
+  const handleClearChat = async () => {
     if (!confirm('Clear your chat history? This cannot be undone.')) return;
+    if (sessionId) {
+      try {
+        await ChatAPI.deleteSession(sessionId);
+        const res = await ChatAPI.getActiveSession();
+        if (res?.data?.id) {
+          setSessionId(res.data.id);
+        }
+      } catch (e) {
+        console.warn('Could not delete server session:', e);
+      }
+    }
     Storage.clearChat();
     setHistory([{ role: 'ai', content: getWelcome() }]);
     setSuggestions(SUGGESTED_PROMPTS.slice(0, 4));

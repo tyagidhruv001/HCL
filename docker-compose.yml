@@ -24,6 +24,7 @@ services:
       - DB_USER=learnai
       - DB_PASS=learnai_pass
       - ML_URL=http://ml:8000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
       - db
 
@@ -47,6 +48,9 @@ services:
       - "8000:8000"
     volumes:
       - ./ml:/app
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - BACKEND_URL=http://backend:5000
 
 volumes:
   postgres_data:

@@ -13,6 +13,8 @@ import {
 import { Storage, Sanitize } from '../../utils/storage.js';
 import { CourseCatalog } from '../../features/courses/courses.js';
 import { useToast } from '../../context/ToastContext.jsx';
+import { ProgressAPI } from '../../services/progress.api.js';
+import { StudyAPI } from '../../services/study.api.js';
 
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -145,10 +147,36 @@ export default function Dashboard() {
   const navigate  = useNavigate();
   const { showToast } = useToast();
 
+  const [progressState, setProgressState] = React.useState(() => Storage.getProgress());
   const profile  = Storage.getProfile();
-  const progress = Storage.getProgress();
+  const progress = progressState;
   const path     = Storage.getPath();
   const h        = Sanitize.html;
+
+  useEffect(() => {
+    let isMounted = true;
+    async function syncBackendState() {
+      try {
+        const [progressRes, statsRes] = await Promise.allSettled([
+          ProgressAPI.getProgress(),
+          StudyAPI.getStats()
+        ]);
+        if (isMounted && progressRes.status === 'fulfilled' && progressRes.value?.data) {
+          const completedIds = progressRes.value.data
+            .filter(p => p.progressPercentage >= 100)
+            .map(p => p.courseId);
+          if (completedIds.length > 0) {
+            Storage.saveProgress({ completedCourseIds: completedIds });
+            setProgressState(Storage.getProgress());
+          }
+        }
+      } catch (e) {
+        console.warn('Dashboard backend sync error:', e);
+      }
+    }
+    syncBackendState();
+    return () => { isMounted = false; };
+  }, []);
 
   if (!profile.onboarded) {
     return (
