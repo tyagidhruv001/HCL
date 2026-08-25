@@ -8,22 +8,26 @@ import { useToast } from '../../context/ToastContext.jsx';
 import { ChatAPI } from '../../services/chat.api.js';
 
 const SUGGESTED_PROMPTS = [
-  "What learning path should I follow to become a data scientist?",
-  "I want to learn web development. Where do I start?",
-  "What are the most in-demand skills in AI right now?",
-  "How long will it take to be job-ready in cybersecurity?",
-  "Generate my personalized learning path",
-  "What should I learn after JavaScript?",
+  "Find me a good video explaining Java multithreading",
+  "I only have 2 hours today. What should I study?",
+  "Explain recursion and how to identify base cases",
+  "What are the prerequisite skills for Deep Learning?",
+  "Search courses on Full-Stack Next.js & TypeScript",
+  "How should I structure my daily study schedule?",
 ];
 
 function markdownToHtml(text) {
   if (!text) return '';
   let safe = Sanitize.html(text);
   safe = safe
+    .replace(/^### (.*$)/gim, '<h4 style="font-size:15px;font-weight:700;margin:10px 0 6px 0;color:var(--indigo-light)">$1</h4>')
+    .replace(/^## (.*$)/gim, '<h3 style="font-size:16px;font-weight:700;margin:12px 0 8px 0;color:var(--text-primary)">$1</h3>')
+    .replace(/\[(.+?)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#818cf8;font-weight:600;text-decoration:underline">$1 ↗</a>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code style="background:rgba(99,102,241,0.15);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:12px">$1</code>')
-    .replace(/\n\n/g, '</p><p style="margin-top:8px">')
+    .replace(/`(.+?)`/g, '<code style="background:rgba(99,102,241,0.15);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px;color:#a5b4fc">$1</code>')
+    .replace(/^\s*-\s+(.*$)/gim, '<li style="margin-left:18px;margin-bottom:4px;list-style-type:disc">$1</li>')
+    .replace(/\n\n/g, '</p><p style="margin-top:10px">')
     .replace(/\n/g, '<br>');
   return `<p>${safe}</p>`;
 }
@@ -123,6 +127,7 @@ export default function Chat() {
   const [suggestions, setSuggestions] = useState(SUGGESTED_PROMPTS.slice(0, 4));
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const isSendingRef = useRef(false); // guard against React StrictMode double-invoke
 
   // Load session from PostgreSQL backend if authenticated
   useEffect(() => {
@@ -164,7 +169,8 @@ export default function Chat() {
 
   const sendMessage = useCallback(async (text) => {
     const msg = (text || '').trim();
-    if (!msg || isTyping) return;
+    if (!msg || isTyping || isSendingRef.current) return;
+    isSendingRef.current = true;
 
     setInput('');
     setSuggestions([]);
@@ -191,7 +197,7 @@ export default function Chat() {
         }
       }
 
-      // If backend was not reached or failed, fallback to client-side AI
+      // Only fall back to client-side AI if backend returned nothing
       if (!aiResponse) {
         aiResponse = await AI.sendMessage(msg, newHistory, currentProfile);
       }
@@ -228,6 +234,7 @@ export default function Chat() {
       setSuggestions(SUGGESTED_PROMPTS.slice(0, 4));
     } finally {
       setIsTyping(false);
+      isSendingRef.current = false;
       inputRef.current?.focus();
     }
   }, [history, isTyping, sessionId, refreshProfile]);

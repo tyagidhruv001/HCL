@@ -49,7 +49,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            <span className="logo-emoji">🎓</span> LearnAI
+            <span className="logo-emoji">🎓</span> I<span style={{color:'#818cf8'}}>&</span>AI
           </div>
           <h2>Welcome Back</h2>
           <p>Sign in to continue your personalized learning path</p>

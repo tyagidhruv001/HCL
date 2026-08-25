@@ -26,7 +26,7 @@ class RecommendationOutput(BaseModel):
 class AgentChatInput(BaseModel):
     user_id: Optional[str] = None
     message: str
-    history: Optional[List[Dict[str, str]]] = Field(default_factory=list)
+    history: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
     api_key: Optional[str] = None
 
 class AgentChatOutput(BaseModel):

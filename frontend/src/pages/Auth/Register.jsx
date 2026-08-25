@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useProfile } from '../../context/ProfileContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, login } = useAuth();
+  const { refreshProfile } = useProfile();
   const { showToast } = useToast();
 
   const [name, setName] = useState('');
@@ -34,10 +36,15 @@ export default function Register() {
     setSubmitting(true);
     try {
       await register(name.trim(), email.trim(), password);
-      showToast('Registration successful! Please sign in. 🎉', 'success');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
+      // Auto-login immediately after registration
+      await login(email.trim(), password);
+      showToast('Account created! Welcome to I&AI 🎉', 'success');
+      try {
+        await refreshProfile();
+        navigate('/onboarding');
+      } catch {
+        navigate('/onboarding');
+      }
     } catch (err) {
       showToast(err.message || 'Registration failed. Email might already be taken.', 'error');
     } finally {
@@ -51,10 +58,10 @@ export default function Register() {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            <span className="logo-emoji">🎓</span> LearnAI
+            <span className="logo-emoji">🎓</span> I<span style={{color:'#818cf8'}}>&</span>AI
           </div>
           <h2>Create Account</h2>
-          <p>Join LearnAI to generate your custom roadmap</p>
+          <p>Join I&amp;AI to generate your custom roadmap</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">

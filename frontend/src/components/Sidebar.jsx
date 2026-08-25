@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useProfile } from '../context/ProfileContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const NAV_ITEMS = [
   { to: '/dashboard',  view: 'dashboard',  icon: '📊', label: 'Dashboard' },
@@ -11,7 +12,13 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ onOpenApiKey }) {
   const { profile } = useProfile();
+  const { logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const avatarLetter = profile.name ? profile.name.charAt(0).toUpperCase() : '?';
   const levelLabel = profile.level
@@ -24,8 +31,8 @@ export default function Sidebar({ onOpenApiKey }) {
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">🎓</div>
         <div className="sidebar-logo-text">
-          LearnAI
-          <span>Personalized Learning</span>
+          I<span style={{ color: 'var(--indigo)' }}>&</span>AI
+          <span>Intelligent & Adaptive</span>
         </div>
       </div>
 
@@ -72,6 +79,26 @@ export default function Sidebar({ onOpenApiKey }) {
           <div className="user-name">{profile.name || 'Learner'}</div>
           <div className="user-level">{levelLabel}</div>
         </div>
+        <button
+          onClick={handleLogout}
+          title="Logout"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '16px',
+            padding: '4px 6px',
+            borderRadius: '6px',
+            color: 'var(--text-muted)',
+            transition: 'color 0.2s, background 0.2s',
+            marginLeft: 'auto',
+            flexShrink: 0,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.1)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'none'; }}
+        >
+          &#x2192;
+        </button>
       </div>
     </nav>
   );

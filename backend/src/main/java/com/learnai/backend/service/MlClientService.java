@@ -33,13 +33,38 @@ public class MlClientService {
         } catch (Exception e) {
             log.warn("ML Service offline or error occurred: {}. Falling back to default mock path.", e.getMessage());
             
-            // Fallback response matching Node.js service logic
             Map<String, Object> fallback = new HashMap<>();
             fallback.put("title", "Personalised path for " + request.name());
             fallback.put("description", "A customised track focused on: " + request.goal());
             fallback.put("totalDuration", request.timeline() != null ? request.timeline() : "3 months");
             fallback.put("phases", Collections.emptyList());
             return fallback;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> fetchAgentChatResponse(
+            String userMessage,
+            java.util.List<?> history,
+            String userId,
+            String apiKey) {
+        try {
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("message", userMessage);
+            payload.put("history", history);
+            payload.put("user_id", userId);
+            if (apiKey != null && !apiKey.isBlank()) {
+                payload.put("api_key", apiKey.trim());
+            }
+
+            return mlRestClient.post()
+                    .uri("/api/agent/chat")
+                    .body(payload)
+                    .retrieve()
+                    .body(Map.class);
+        } catch (Exception e) {
+            log.warn("ML Agent service offline or returned error: {}", e.getMessage());
+            return null;
         }
     }
 }

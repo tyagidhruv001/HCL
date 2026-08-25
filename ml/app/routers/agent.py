@@ -1,39 +1,35 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Header
+from typing import Optional
 from app.models.schemas import AgentChatInput, AgentChatOutput
-from app.config import settings
+from app.agent.orchestrator import agent_orchestrator
 import logging
 
 router = APIRouter(prefix="/api/agent", tags=["AI Agent"])
 logger = logging.getLogger(__name__)
 
 @router.post("/chat", response_model=AgentChatOutput)
-async def agent_chat(chat_input: AgentChatInput):
+async def agent_chat(
+    chat_input: AgentChatInput,
+    authorization: Optional[str] = Header(None)
+):
     """
-    Agentic chat endpoint with tool-calling and intent extraction.
-    Spring Boot calls this when delegating advanced reasoning to the FastAPI intelligence service.
+    Autonomous Agent chat endpoint with multi-turn tool-calling, ReAct loop, and structured responses.
+    Spring Boot calls this when delegating agentic reasoning to the Python intelligence service.
     """
     try:
-        msg = chat_input.message.lower()
-        intent = "GENERAL_QUERY"
-        tools_called = []
-
-        if "progress" in msg or "how much" in msg:
-            intent = "CHECK_PROGRESS"
-            tools_called.append("getUserProgress")
-        elif "roadmap" in msg or "path" in msg:
-            intent = "VIEW_ROADMAP"
-            tools_called.append("getCurrentRoadmap")
-        elif "course" in msg or "recommend" in msg:
-            intent = "SEARCH_COURSES"
-            tools_called.append("searchCourses")
-
-        response_text = f"I understood your request (Intent: {intent}). I'm your AI Learning Agent ready to guide your journey."
-
-        return AgentChatOutput(
-            response=response_text,
-            intent=intent,
-            tools_called=tools_called
+        logger.info(f"Agent processing query: '{chat_input.message}' for user: {chat_input.user_id}")
+        context = {
+            "user_id": chat_input.user_id,
+            "auth_header": authorization
+        }
+        
+        return agent_orchestrator.run_agent_loop(
+            user_message=chat_input.message,
+            history=chat_input.history,
+            context=context,
+            api_key=chat_input.api_key
         )
     except Exception as e:
         logger.error(f"Agent chat processing failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+

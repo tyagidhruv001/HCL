@@ -20,6 +20,7 @@ public class AiProxyService {
 
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
+    private final MlClientService mlClientService;
 
     @Value("${gemini.api.key:}")
     private String defaultApiKey;
@@ -45,8 +46,9 @@ public class AiProxyService {
             - NEVER fabricate course names, always refer to standard domains (Web Dev, Data Science, AI/ML, Cloud & DevOps, Cybersecurity, UI/UX Design).
             """;
 
-    public AiProxyService(ObjectMapper objectMapper) {
+    public AiProxyService(ObjectMapper objectMapper, MlClientService mlClientService) {
         this.objectMapper = objectMapper;
+        this.mlClientService = mlClientService;
         this.restClient = RestClient.builder().build();
     }
 
@@ -58,17 +60,36 @@ public class AiProxyService {
 
         String keyToUse = (clientApiKey != null && !clientApiKey.isBlank()) ? clientApiKey.trim() : defaultApiKey;
 
-        if (keyToUse == null || keyToUse.isBlank()) {
-            log.info("No Gemini API key provided. Falling back to intelligent demo mode response.");
-            return generateDemoResponse(userMessage, profile);
+        // 1. Delegate to LearnAI ML Intelligence Service (Agent Tool Calling + Ollama / Local Models)
+        try {
+            Map<String, Object> mlAgentResp = mlClientService.fetchAgentChatResponse(
+                    userMessage,
+                    conversationHistory,
+                    profile != null ? profile.getEmail() : null,
+                    keyToUse
+            );
+            if (mlAgentResp != null && mlAgentResp.containsKey("response")) {
+                String resp = (String) mlAgentResp.get("response");
+                if (resp != null && !resp.isBlank()) {
+                    return resp;
+                }
+            }
+        } catch (Exception e) {
+            log.info("ML Agent service unavailable: {}. Falling back to direct Gemini / Demo.", e.getMessage());
         }
 
-        try {
-            return callGeminiApi(userMessage, conversationHistory, profile, keyToUse);
-        } catch (Exception e) {
-            log.error("Failed to get response from Gemini API: {}. Returning friendly fallback.", e.getMessage());
-            return "I apologize, but I encountered a temporary issue connecting to the AI service: " + e.getMessage() + ". Please check your API key or try again shortly.";
+        // 2. Direct Gemini API call if key is provided
+        if (keyToUse != null && !keyToUse.isBlank()) {
+            try {
+                return callGeminiApi(userMessage, conversationHistory, profile, keyToUse);
+            } catch (Exception e) {
+                log.error("Failed to get response from Gemini API: {}. Returning friendly fallback.", e.getMessage());
+            }
         }
+
+        // 3. Fallback demo response
+        log.info("No Gemini API key or ML agent active. Generating smart fallback.");
+        return generateDemoResponse(userMessage, profile);
     }
 
     private String callGeminiApi(
