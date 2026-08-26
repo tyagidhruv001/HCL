@@ -2,13 +2,13 @@
 # Loads .env from project root and starts Spring Boot with correct DB config
 # Usage: .\run.ps1
 
-# Auto-clear port 5000
-$existing = Get-NetTCPConnection -LocalPort 5000 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+# Auto-clear port 5050
+$existing = Get-NetTCPConnection -LocalPort 5050 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($existing) {
-    Write-Host "Port 5000 in use (PID $($existing.OwningProcess)) - killing..." -ForegroundColor Yellow
+    Write-Host "Port 5050 in use (PID $($existing.OwningProcess)) - killing..." -ForegroundColor Yellow
     Stop-Process -Id $existing.OwningProcess -Force
     Start-Sleep -Seconds 1
-    Write-Host "Port 5000 cleared." -ForegroundColor Green
+    Write-Host "Port 5050 cleared." -ForegroundColor Green
 }
 
 # Load .env
@@ -26,7 +26,7 @@ if (Test-Path $envFile) {
     Write-Host "No .env found, using application.properties defaults." -ForegroundColor Yellow
 }
 
-Write-Host "Starting Spring Boot on port 5000..." -ForegroundColor Cyan
+Write-Host "Starting Spring Boot on port 5050..." -ForegroundColor Cyan
 
 # Pass DB config as Spring env vars (avoids shell quoting issues with ? in JDBC URL)
 $env:SPRING_DATASOURCE_URL      = $env:DATABASE_URL

@@ -20,6 +20,7 @@ services:
     ports:
       - "5000:5000"
     environment:
+      - SPRING_PROFILES_ACTIVE=postgres
       - DATABASE_URL=jdbc:postgresql://db:5432/learnai
       - DB_USER=learnai
       - DB_PASS=learnai_pass
