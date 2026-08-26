@@ -9,6 +9,15 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => Storage.getUser());
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setToken('');
+      setUser(null);
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, []);
+
   const login = useCallback(async (email, password) => {
     setLoading(true);
     try {

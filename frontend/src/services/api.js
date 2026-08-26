@@ -15,6 +15,12 @@ export async function request(endpoint, options = {}) {
     ...options,
     headers: { ...headers, ...options.headers }
   });
+  if (response.status === 401) {
+    Storage.clearToken();
+    Storage.clearUser();
+    window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+    throw new Error('Session expired or unauthorized');
+  }
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   return response.json();
 }

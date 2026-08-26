@@ -25,6 +25,8 @@ target/
 !target/classes/
 !target/test-classes/
 *.class
+*.mv.db
+backend/data/
 
 # IDE / Editor
 .vscode/
