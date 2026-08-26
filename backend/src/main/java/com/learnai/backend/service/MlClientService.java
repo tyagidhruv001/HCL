@@ -83,7 +83,12 @@ public class MlClientService {
                     .body(Map.class);
         } catch (Exception e) {
             log.warn("ML Quiz service error: {}", e.getMessage());
-            return null;
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("topic", topic);
+            fallback.put("difficulty", difficulty);
+            fallback.put("questions", Collections.emptyList());
+            fallback.put("error", "ML service temporarily unavailable. Please try again shortly.");
+            return fallback;
         }
     }
 
@@ -96,7 +101,12 @@ public class MlClientService {
                     .body(Map.class);
         } catch (Exception e) {
             log.warn("ML Skill Graph service error: {}", e.getMessage());
-            return null;
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("nodes", Collections.emptyList());
+            fallback.put("edges", Collections.emptyList());
+            fallback.put("domain", domain);
+            fallback.put("error", "ML Knowledge Graph service temporarily unavailable.");
+            return fallback;
         }
     }
 }

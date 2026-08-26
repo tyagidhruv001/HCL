@@ -84,7 +84,7 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {Object.entries(DOMAIN_DATA).map(([key, info]) => (
               <button
-                key={key}
+                key={`domain-filter-${key}`}
                 onClick={() => setSelectedDomain(key)}
                 style={{
                   padding: '5px 12px',
@@ -209,8 +209,8 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
                   </div>
                   {(selectedNode.prerequisites || []).length > 0 ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                      {selectedNode.prerequisites.map(p => (
-                        <span key={p} className="badge badge-amber" style={{ fontSize: '11px' }}>
+                      {selectedNode.prerequisites.map((p, pi) => (
+                        <span key={`prereq-${selectedNode.id}-${pi}-${p}`} className="badge badge-amber" style={{ fontSize: '11px' }}>
                           {p.replace(/_/g, ' ')}
                         </span>
                       ))}
@@ -227,8 +227,8 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
                   </div>
                   {(selectedNode.enables || []).length > 0 ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                      {selectedNode.enables.map(e => (
-                        <span key={e} className="badge badge-cyan" style={{ fontSize: '11px' }}>
+                      {selectedNode.enables.map((e, ei) => (
+                        <span key={`enables-${selectedNode.id}-${ei}-${e}`} className="badge badge-cyan" style={{ fontSize: '11px' }}>
                           {e.replace(/_/g, ' ')}
                         </span>
                       ))}
