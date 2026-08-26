@@ -168,54 +168,100 @@ class LLMClient:
         tools: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
         """
-        Deterministic intent-matching engine that emits tool calls based on user request keywords.
-        Ensures the agent functions smoothly during offline testing or local development without Ollama.
+        Deterministic intent-matching engine that evaluates math expressions and emits tool calls based on user request keywords.
+        Ensures the agent functions smoothly during offline testing or local development without Ollama or API keys.
         """
+        import re
+        import math
+
         last_msg = ""
         for m in reversed(messages):
             if m.get("role") == "user":
-                last_msg = str(m.get("content", "")).lower()
+                last_msg = str(m.get("content", "")).strip()
                 break
+
+        lower_msg = last_msg.lower()
+
+        # 1. Math / Arithmetic evaluation (e.g., 4+5, 10 * 25, sqrt(16), 100/4)
+        math_candidate = re.sub(r'^(calculate|what is|compute|solve|eval)\s+', '', lower_msg).rstrip('?=').strip()
+        math_cleaned = math_candidate.replace('x', '*').replace('^', '**').replace('×', '*').replace('÷', '/')
+        if re.match(r'^[\d\s\+\-\*\/\%\(\)\.\*\*]+$', math_cleaned) and any(c.isdigit() for c in math_cleaned):
+            try:
+                allowed_math = {k: v for k, v in math.__dict__.items() if not k.startswith("__")}
+                result = eval(math_cleaned, {"__builtins__": {}}, allowed_math)
+                return {
+                    "content": f"🧮 **Calculation:**\n\n`{last_msg}` = **{result}**",
+                    "tool_calls": [],
+                    "provider": "builtin_rule_engine"
+                }
+            except Exception:
+                pass
+
+        # 2. Greetings
+        if lower_msg in ["hi", "hello", "hey", "hola", "sup", "greetings", "good morning", "good evening"]:
+            return {
+                "content": "Hello! 👋 I'm **LearnAI**, your personal AI learning advisor.\n\nI can help you build custom roadmaps, explain concepts, recommend top-rated courses, find tutorial videos, or plan your daily study time.\n\nWhat would you like to learn today?",
+                "tool_calls": [],
+                "provider": "builtin_rule_engine"
+            }
+
+        # 3. Capabilities / Help
+        if any(w in lower_msg for w in ["who are you", "what can you do", "help me", "what are your features"]):
+            return {
+                "content": (
+                    "### 🤖 How I Can Assist Your Learning:\n\n"
+                    "- 📚 **Course Search:** *\"Recommend beginner courses for Python & Data Science\"*\n"
+                    "- 📹 **Video Tutorials:** *\"Find a YouTube tutorial explaining React Hooks\"*\n"
+                    "- ⏱️ **Daily Study Plan:** *\"I have 2 hours today, what should I study?\"*\n"
+                    "- 💡 **Concept Explanations:** *\"Explain binary search trees and time complexity\"*\n"
+                    "- 🗺️ **Roadmap Navigation:** *\"Show my current roadmap\"*\n"
+                    "- 🧮 **Math & Calculations:** Ask arithmetic questions directly\n\n"
+                    "💡 *Tip: Add your Gemini API key in **API Settings** (⚙️ in the sidebar) to unlock full open-ended conversational reasoning!*"
+                ),
+                "tool_calls": [],
+                "provider": "builtin_rule_engine"
+            }
 
         tool_calls = []
 
         # Intent: YouTube video query
-        if any(w in last_msg for w in ["youtube", "video", "watch", "tutorial video"]):
-            import re
-            cleaned = re.sub(r'\b(find|me|a|good|video|explaining|watch|tutorial|youtube|about|on)\b', '', last_msg, flags=re.IGNORECASE)
+        if any(w in lower_msg for w in ["youtube", "video", "watch", "tutorial video"]):
+            cleaned = re.sub(r'\b(find|me|a|good|video|explaining|watch|tutorial|youtube|about|on)\b', '', lower_msg, flags=re.IGNORECASE)
             query = " ".join(cleaned.split()).strip()
             tool_calls.append({"name": "search_youtube", "arguments": {"query": query or "Java Multithreading"}})
 
         # Intent: Web search query
-        elif any(w in last_msg for w in ["search web", "google", "documentation", "article", "read about"]):
-            import re
-            cleaned = re.sub(r'\b(search|web|google|find|documentation|for|article|articles|read|about)\b', '', last_msg, flags=re.IGNORECASE)
+        elif any(w in lower_msg for w in ["search web", "google", "documentation", "article", "read about"]):
+            cleaned = re.sub(r'\b(search|web|google|find|documentation|for|article|articles|read|about)\b', '', lower_msg, flags=re.IGNORECASE)
             query = " ".join(cleaned.split()).strip()
             tool_calls.append({"name": "search_web", "arguments": {"query": query or "React architecture"}})
 
         # Intent: Daily study plan / time constraint
-        elif any(w in last_msg for w in ["hour", "hours", "today", "schedule", "daily plan", "how much time"]):
-            import re
-            hours_match = re.search(r"(\d+(?:\.\d+)?)", last_msg)
+        elif any(w in lower_msg for w in ["hour", "hours", "today", "schedule", "daily plan", "how much time"]):
+            hours_match = re.search(r"(\d+(?:\.\d+)?)", lower_msg)
             hours = float(hours_match.group(1)) if hours_match else 2.0
             tool_calls.append({"name": "create_daily_plan", "arguments": {"available_hours": hours}})
 
         # Intent: Explain a concept
-        elif any(w in last_msg for w in ["explain", "what is", "how does", "understand", "difference between"]):
-            topic = last_msg.replace("explain", "").replace("what is", "").replace("to me", "").strip()
+        elif any(w in lower_msg for w in ["explain", "what is", "how does", "understand", "difference between"]):
+            topic = lower_msg.replace("explain", "").replace("what is", "").replace("to me", "").strip()
             tool_calls.append({"name": "explain_topic", "arguments": {"topic": topic or "algorithms"}})
 
         # Intent: Search Courses
-        elif any(w in last_msg for w in ["course", "recommend course", "find course", "learn", "study"]):
-            tool_calls.append({"name": "search_courses", "arguments": {"query": last_msg}})
+        elif any(w in lower_msg for w in ["course", "recommend course", "find course", "learn", "study"]):
+            tool_calls.append({"name": "search_courses", "arguments": {"query": lower_msg}})
 
         # Intent: Progress / Streak check
-        elif any(w in last_msg for w in ["progress", "streak", "completed", "how am i doing"]):
+        elif any(w in lower_msg for w in ["progress", "streak", "completed", "how am i doing"]):
             tool_calls.append({"name": "get_user_progress", "arguments": {}})
 
         # Intent: Roadmap check
-        elif any(w in last_msg for w in ["roadmap", "path", "curriculum", "milestone"]):
+        elif any(w in lower_msg for w in ["roadmap", "path", "curriculum", "milestone"]):
             tool_calls.append({"name": "get_current_roadmap", "arguments": {}})
+
+        # Intent: Fallback topic lookup if programming keywords mentioned
+        elif any(kw in lower_msg for kw in ["python", "javascript", "react", "java", "sql", "html", "css", "docker", "algorithm", "git", "api"]):
+            tool_calls.append({"name": "explain_topic", "arguments": {"topic": lower_msg}})
 
         return {
             "content": "",
