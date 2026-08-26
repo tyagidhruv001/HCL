@@ -24,3 +24,11 @@ export async function request(endpoint, options = {}) {
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   return response.json();
 }
+
+export const api = {
+  get: (endpoint, options = {}) => request(endpoint, { ...options, method: 'GET' }),
+  post: (endpoint, body, options = {}) => request(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
+  put: (endpoint, body, options = {}) => request(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) }),
+  delete: (endpoint, options = {}) => request(endpoint, { ...options, method: 'DELETE' }),
+};
+

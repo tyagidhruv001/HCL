@@ -5,6 +5,9 @@ import { AI } from '../../features/recommendation/recommendation.js';
 import { useToast } from '../../context/ToastContext.jsx';
 import { RoadmapAPI } from '../../services/roadmap.api.js';
 import { ProgressAPI } from '../../services/progress.api.js';
+import QuizModal from '../../components/QuizModal.jsx';
+import SkillGraphView from '../../components/SkillGraphView.jsx';
+import FocusTimerModal from '../../components/FocusTimerModal.jsx';
 
 const ALLOWED_DOMAINS = [
   'coursera.org', 'udemy.com', 'freecodecamp.org', 'theodinproject.com',
@@ -68,6 +71,11 @@ export default function Path() {
   const [progress, setProgress] = useState(() => Storage.getProgress());
   const [generating, setGenerating] = useState(false);
   const [explainData, setExplainData] = useState(null);
+
+  // Modals
+  const [quizState, setQuizState] = useState(null); // { topic, courseId, difficulty }
+  const [skillGraphOpen, setSkillGraphOpen] = useState(false);
+  const [focusTimerState, setFocusTimerState] = useState(null); // { topic }
   
   // Interactive UI view controls
   const [viewMode, setViewMode] = useState('timeline'); // 'timeline' | 'grid'
@@ -144,6 +152,14 @@ export default function Path() {
       showToast('Could not fetch AI explanation. Check connection.', 'error');
     }
   }, [showToast]);
+
+  const handleStartQuiz = (topicName, level = 'beginner', courseId = null) => {
+    setQuizState({ topic: topicName, difficulty: level, courseId });
+  };
+
+  const handleStartFocus = (topicName) => {
+    setFocusTimerState({ topic: topicName || 'Active Roadmap Study' });
+  };
 
   const handleGenerate = async () => {
     if (generating) return;
@@ -330,12 +346,26 @@ export default function Path() {
               <p className="section-subtitle" style={{ maxWidth: '680px', marginTop: '4px' }}>{path.description || ''}</p>
             </div>
             
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <button 
+                className="btn btn-secondary btn-sm" 
+                onClick={() => setSkillGraphOpen(true)}
+                title="View interactive Directed Acyclic Graph of skills"
+              >
+                🕸️ Skill Tree Graph
+              </button>
+              <button 
+                className="btn btn-secondary btn-sm" 
+                onClick={() => handleStartFocus('Curriculum Deep Work')}
+                title="Launch Pomodoro Focus Room"
+              >
+                ⏱️ Focus Studio
+              </button>
               <button className="btn btn-ghost btn-sm" onClick={handleRegenerate} title="Rebuild path with AI">
                 🔄 Regenerate
               </button>
-              <button className="btn btn-secondary btn-sm" onClick={handleExport} title="Download markdown roadmap">
-                📤 Export Markdown
+              <button className="btn btn-ghost btn-sm" onClick={handleExport} title="Download markdown roadmap">
+                📤 Export
               </button>
             </div>
           </div>
@@ -582,11 +612,20 @@ export default function Path() {
                                 </a>
 
                                 <button
+                                  className="btn btn-secondary btn-sm"
+                                  style={{ background: 'rgba(99,102,241,0.15)', color: '#c7d2fe' }}
+                                  title="Test your understanding with an interactive active-recall quiz"
+                                  onClick={() => handleStartQuiz(course.title, course.level, course.id)}
+                                >
+                                  🧪 Test Knowledge
+                                </button>
+
+                                <button
                                   className={`btn btn-sm ${isCmp ? 'btn-secondary' : 'btn-ghost'}`}
                                   onClick={() => handleToggleComplete(course.id)}
                                   style={{ color: isCmp ? '#34d399' : 'inherit' }}
                                 >
-                                  {isCmp ? '✅ Completed (Click to undo)' : '✓ Mark Complete'}
+                                  {isCmp ? '✅ Done' : '✓ Mark Complete'}
                                 </button>
 
                                 <button
@@ -620,7 +659,13 @@ export default function Path() {
                             <strong>{isPhaseComplete ? 'Phase Milestone Achieved! 🎉' : `Phase ${phaseIdx + 1} Milestone Gate`}</strong>
                             <div className="roadmap-milestone-desc">{phase.milestone}</div>
                           </div>
-                          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => handleStartQuiz(phase.title || 'Milestone', 'intermediate')}
+                            >
+                              🧪 Milestone Quiz
+                            </button>
                             <span className={`badge ${isPhaseComplete ? 'badge-emerald' : 'badge-amber'}`} style={{ fontSize: '12px' }}>
                               {isPhaseComplete ? 'Unlocked ✨' : `${phaseTotal - phaseDone} tasks remaining`}
                             </span>
@@ -677,9 +722,14 @@ export default function Path() {
                     <div style={{ padding: '20px' }}>
                       <div style={{ marginBottom: '14px', fontSize: '13px', color: 'var(--text-secondary)' }}>💡 <em>{phase.theme}</em></div>
                       {phase.milestone && (
-                        <div className="milestone-banner" style={{ marginBottom: '18px' }}>
-                          <span className="milestone-icon">🏁</span>
-                          <div><strong>Milestone:</strong> {phase.milestone}</div>
+                        <div className="milestone-banner" style={{ marginBottom: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <span className="milestone-icon">🏁</span>
+                            <div><strong>Milestone:</strong> {phase.milestone}</div>
+                          </div>
+                          <button className="btn btn-secondary btn-sm" onClick={() => handleStartQuiz(phase.title, 'intermediate')}>
+                            🧪 Milestone Quiz
+                          </button>
                         </div>
                       )}
                       <div className="roadmap-grid-layout">
@@ -713,11 +763,14 @@ export default function Path() {
                                 <span>⭐ {course.rating}</span>
                               </div>
                               {course.why && <div className="step-why-callout" style={{ fontSize: '11px', marginBottom: '12px' }}>{course.why}</div>}
-                              <div style={{ display: 'flex', gap: '8px' }}>
+                              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                 <a href={url} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm" style={{ flex: 1, justifyContent: 'center' }}>
                                   {url === '#' ? '📁 Project' : '🚀 Start'}
                                 </a>
-                                <button className="btn btn-secondary btn-sm" onClick={() => handleExplain(course)}>🤖</button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => handleStartQuiz(course.title, course.level, course.id)}>
+                                  🧪 Quiz
+                                </button>
+                                <button className="btn btn-ghost btn-sm" onClick={() => handleExplain(course)}>🤖</button>
                               </div>
                             </div>
                           );
@@ -751,6 +804,38 @@ export default function Path() {
           course={explainData.course}
           explanation={explainData.explanation}
           onClose={() => setExplainData(null)}
+        />
+      )}
+
+      {/* Interactive Active-Recall Quiz Modal */}
+      {quizState && (
+        <QuizModal
+          topic={quizState.topic}
+          courseId={quizState.courseId}
+          difficulty={quizState.difficulty}
+          onClose={() => setQuizState(null)}
+          onComplete={(cid) => {
+            refreshProgress();
+          }}
+        />
+      )}
+
+      {/* Knowledge Graph DAG Visualizer Modal */}
+      {skillGraphOpen && (
+        <SkillGraphView
+          onClose={() => setSkillGraphOpen(false)}
+          onStartQuiz={(topicName, level) => {
+            setSkillGraphOpen(false);
+            handleStartQuiz(topicName, level);
+          }}
+        />
+      )}
+
+      {/* Focus Studio Pomodoro Timer Modal */}
+      {focusTimerState && (
+        <FocusTimerModal
+          defaultTopic={focusTimerState.topic}
+          onClose={() => setFocusTimerState(null)}
         />
       )}
     </section>

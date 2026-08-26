@@ -296,6 +296,30 @@ class PrerequisiteKnowledgeGraph:
         for s in skills:
             self.add_skill(s)
 
+    def export_graph(self) -> Dict[str, Any]:
+        """Exports full graph topology for frontend interactive visualizers."""
+        nodes = []
+        edges = []
+        for node in self.nodes.values():
+            nodes.append({
+                "id": node.id,
+                "name": node.name,
+                "domain": node.domain,
+                "level": node.level,
+                "prerequisites": node.prerequisites,
+                "enables": node.enables,
+                "description": node.description or f"Core competency for {node.name}"
+            })
+            for p in node.prerequisites:
+                edges.append({"source": p, "target": node.id})
+
+        return {
+            "total_nodes": len(nodes),
+            "total_edges": len(edges),
+            "nodes": nodes,
+            "edges": edges
+        }
+
 
 # Global singleton instance
 knowledge_graph = PrerequisiteKnowledgeGraph()

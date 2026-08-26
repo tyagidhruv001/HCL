@@ -247,6 +247,15 @@ class LLMClient:
             topic = lower_msg.replace("explain", "").replace("what is", "").replace("to me", "").strip()
             tool_calls.append({"name": "explain_topic", "arguments": {"topic": topic or "algorithms"}})
 
+        # Intent: Quiz / Knowledge Assessment
+        elif any(w in lower_msg for w in ["quiz", "test me", "test my knowledge", "assessment", "exam"]):
+            topic_clean = re.sub(r'\b(quiz|test|me|on|my|knowledge|assessment|give|a|an|about)\b', '', lower_msg, flags=re.IGNORECASE).strip()
+            tool_calls.append({"name": "generate_quiz", "arguments": {"topic": topic_clean or "python", "difficulty": "beginner"}})
+
+        # Intent: Skill Tree / Graph
+        elif any(w in lower_msg for w in ["skill tree", "knowledge graph", "prerequisites", "dependency graph"]):
+            tool_calls.append({"name": "get_skill_tree", "arguments": {}})
+
         # Intent: Search Courses
         elif any(w in lower_msg for w in ["course", "recommend course", "find course", "learn", "study"]):
             tool_calls.append({"name": "search_courses", "arguments": {"query": lower_msg}})

@@ -17,6 +17,8 @@ from app.tools.domain_tools import (
     create_daily_plan,
     explain_topic,
     propose_roadmap_action,
+    generate_quiz,
+    get_skill_tree,
 )
 
 logger = logging.getLogger(__name__)
@@ -216,6 +218,34 @@ class ToolRegistry:
                 "required": ["action", "course_id", "reason"]
             },
             func=propose_roadmap_action
+        ))
+
+        # 11. Generate Quiz Tool
+        self.register(Tool(
+            name="generate_quiz",
+            description="Generates an interactive skill assessment quiz with multiple-choice questions and explanations on a topic.",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "topic": {"type": "string", "description": "The subject or skill to test, e.g. 'react', 'python', 'machine_learning', 'sql'"},
+                    "difficulty": {"type": "string", "description": "Difficulty: beginner, intermediate, or advanced", "default": "beginner"}
+                },
+                "required": ["topic"]
+            },
+            func=generate_quiz
+        ))
+
+        # 12. Get Skill Tree Tool
+        self.register(Tool(
+            name="get_skill_tree",
+            description="Retrieves the Directed Acyclic Graph (DAG) of technical skills, prerequisites, and dependencies.",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "domain": {"type": "string", "description": "Optional domain filter (web, data, ai, cloud, cyber, design, all)", "default": "all"}
+                }
+            },
+            func=get_skill_tree
         ))
 
 

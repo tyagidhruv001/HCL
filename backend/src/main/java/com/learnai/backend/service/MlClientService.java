@@ -67,4 +67,37 @@ public class MlClientService {
             return null;
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> fetchSkillQuiz(String topic, String difficulty, Integer numQuestions) {
+        try {
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("topic", topic != null ? topic : "python");
+            payload.put("difficulty", difficulty != null ? difficulty : "beginner");
+            payload.put("num_questions", numQuestions != null ? numQuestions : 3);
+
+            return mlRestClient.post()
+                    .uri("/api/quiz/generate")
+                    .body(payload)
+                    .retrieve()
+                    .body(Map.class);
+        } catch (Exception e) {
+            log.warn("ML Quiz service error: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> fetchSkillGraph(String domain) {
+        try {
+            return mlRestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/api/skills/graph").queryParam("domain", domain != null ? domain : "all").build())
+                    .retrieve()
+                    .body(Map.class);
+        } catch (Exception e) {
+            log.warn("ML Skill Graph service error: {}", e.getMessage());
+            return null;
+        }
+    }
 }
+

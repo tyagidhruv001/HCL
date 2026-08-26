@@ -52,6 +52,27 @@ export default function Sidebar({ onOpenApiKey }) {
           </NavLink>
         ))}
 
+        <div className="nav-section-label" style={{ marginTop: '8px' }}>Learning Tools</div>
+
+        <a
+          className="nav-item"
+          href="#"
+          onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('app:show-skill-graph')); }}
+        >
+          <span className="nav-icon">🕸️</span>
+          Skill Graph DAG
+          <span className="nav-badge" style={{ background: 'rgba(6,182,212,0.2)', color: '#38bdf8' }}>DAG</span>
+        </a>
+
+        <a
+          className="nav-item"
+          href="#"
+          onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('app:show-focus-timer')); }}
+        >
+          <span className="nav-icon">⏱️</span>
+          Focus Studio
+        </a>
+
         <div className="nav-section-label" style={{ marginTop: '8px' }}>Account</div>
 
         <NavLink

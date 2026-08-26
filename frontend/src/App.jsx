@@ -34,17 +34,33 @@ export default function App() {
   );
 }
 
+import SkillGraphView from './components/SkillGraphView.jsx';
+import FocusTimerModal from './components/FocusTimerModal.jsx';
+
 function AppContent() {
   const [apiKeyModalOpen, setApiKeyModalOpen] = useState(false);
+  const [globalSkillGraphOpen, setGlobalSkillGraphOpen] = useState(false);
+  const [globalFocusTimerOpen, setGlobalFocusTimerOpen] = useState(false);
+
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const { refreshProfile } = useProfile();
 
-  // Expose for legacy event-based trigger from any module
+  // Expose for event-based triggers
   useEffect(() => {
-    const handler = () => setApiKeyModalOpen(true);
-    window.addEventListener('app:show-apikey', handler);
-    return () => window.removeEventListener('app:show-apikey', handler);
+    const handleApiKey = () => setApiKeyModalOpen(true);
+    const handleSkillGraph = () => setGlobalSkillGraphOpen(true);
+    const handleFocusTimer = () => setGlobalFocusTimerOpen(true);
+
+    window.addEventListener('app:show-apikey', handleApiKey);
+    window.addEventListener('app:show-skill-graph', handleSkillGraph);
+    window.addEventListener('app:show-focus-timer', handleFocusTimer);
+
+    return () => {
+      window.removeEventListener('app:show-apikey', handleApiKey);
+      window.removeEventListener('app:show-skill-graph', handleSkillGraph);
+      window.removeEventListener('app:show-focus-timer', handleFocusTimer);
+    };
   }, []);
 
   // Fetch latest profile state from database if authenticated
@@ -104,6 +120,13 @@ function AppContent() {
       {apiKeyModalOpen && (
         <ApiKeyModal onClose={() => setApiKeyModalOpen(false)} />
       )}
+      {globalSkillGraphOpen && (
+        <SkillGraphView onClose={() => setGlobalSkillGraphOpen(false)} />
+      )}
+      {globalFocusTimerOpen && (
+        <FocusTimerModal onClose={() => setGlobalFocusTimerOpen(false)} />
+      )}
     </div>
   );
 }
+

@@ -31,4 +31,23 @@ public class RecommendationController {
         Map<String, Object> path = recommendationService.generateAndSaveRecommendation(principal.getName(), request);
         return ResponseEntity.ok(ApiResponse.success("Learning path generated successfully", path));
     }
+
+    @PostMapping("/quiz")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getSkillQuiz(
+            @RequestBody Map<String, Object> request) {
+        String topic = (String) request.getOrDefault("topic", "python");
+        String difficulty = (String) request.getOrDefault("difficulty", "beginner");
+        Integer numQuestions = (Integer) request.getOrDefault("num_questions", 3);
+
+        Map<String, Object> quiz = recommendationService.getSkillQuiz(topic, difficulty, numQuestions);
+        return ResponseEntity.ok(ApiResponse.success("Assessment quiz generated successfully", quiz));
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/skills-graph")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getSkillsGraph(
+            @org.springframework.web.bind.annotation.RequestParam(required = false, defaultValue = "all") String domain) {
+        Map<String, Object> graph = recommendationService.getSkillGraph(domain);
+        return ResponseEntity.ok(ApiResponse.success("Knowledge graph retrieved successfully", graph));
+    }
 }
+

@@ -229,3 +229,19 @@ def propose_roadmap_action(
         "requires_user_approval": True,
         "message": f"Action proposed: {act} course '{course_id}' in Phase {phase_id}. Reason: {reason}"
     }
+
+
+def generate_quiz(topic: str = "python", difficulty: str = "beginner") -> Dict[str, Any]:
+    """
+    Generates an active-recall quiz with multiple-choice questions, answer keys, and pedagogical explanations.
+    """
+    from app.engine.quiz_generator import quiz_generator
+    return quiz_generator.generate_quiz_for_topic(topic=topic, difficulty=difficulty)
+
+
+def get_skill_tree(domain: str = "all") -> Dict[str, Any]:
+    """
+    Retrieves the complete Directed Acyclic Graph (DAG) topology of technical skills and prerequisites.
+    """
+    return knowledge_graph.export_graph()
+

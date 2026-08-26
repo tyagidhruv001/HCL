@@ -211,6 +211,25 @@ class AgentOrchestrator:
                     f"{res.get('description', '')}"
                 )
 
+            elif tool == "generate_quiz":
+                questions = res.get("questions", [])
+                blocks.append(f"### 🧪 Interactive Skill Assessment: **{res.get('topic', '').title()}**")
+                blocks.append(f"*Difficulty: {res.get('difficulty', 'beginner').title()} • Total Questions: {len(questions)}*\n")
+                for i, q in enumerate(questions, 1):
+                    blocks.append(f"**Q{i}: {q.get('question')}**")
+                    for opt_idx, opt in enumerate(q.get("options", [])):
+                        letter = chr(65 + opt_idx)
+                        blocks.append(f"  {letter}) {opt}")
+                    blocks.append(f"  *(Correct: {chr(65 + q.get('correct_index', 0))}) — {q.get('explanation')}*\n")
+
+            elif tool == "get_skill_tree":
+                nodes = res.get("nodes", [])
+                blocks.append(f"### 🕸️ Prerequisite Knowledge Graph Topology ({len(nodes)} Competency Nodes)")
+                for n in nodes[:8]:
+                    prereqs = ", ".join(n.get("prerequisites", [])) or "None (Foundation)"
+                    blocks.append(f"- **{n.get('name')}** (`{n.get('level')}`): Prerequisites: *{prereqs}*")
+                blocks.append("\n*Navigate to the **Skill Graph** in the app to view the interactive visual DAG!*")
+
         return "\n\n".join(blocks)
 
 

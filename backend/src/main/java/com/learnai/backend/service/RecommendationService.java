@@ -89,4 +89,13 @@ public class RecommendationService {
 
         return pathData;
     }
+
+    public Map<String, Object> getSkillQuiz(String topic, String difficulty, Integer numQuestions) {
+        return mlClientService.fetchSkillQuiz(topic, difficulty, numQuestions);
+    }
+
+    public Map<String, Object> getSkillGraph(String domain) {
+        return mlClientService.fetchSkillGraph(domain);
+    }
 }
+

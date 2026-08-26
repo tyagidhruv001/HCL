@@ -15,6 +15,9 @@ import { CourseCatalog } from '../../features/courses/courses.js';
 import { useToast } from '../../context/ToastContext.jsx';
 import { ProgressAPI } from '../../services/progress.api.js';
 import { StudyAPI } from '../../services/study.api.js';
+import QuizModal from '../../components/QuizModal.jsx';
+import SkillGraphView from '../../components/SkillGraphView.jsx';
+import FocusTimerModal from '../../components/FocusTimerModal.jsx';
 
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -227,12 +230,42 @@ export default function Dashboard() {
   if ((profile.interests || []).length < 3) actions.push({ icon: '🎯', title: 'Add More Interests', sub: 'Improve recommendation accuracy', route: '/onboarding' });
   actions.push({ icon: '💬', title: 'Chat with Your AI Advisor', sub: 'Ask questions, get guidance', route: '/chat' });
 
+  const [quizState, setQuizState] = React.useState(null);
+  const [skillGraphOpen, setSkillGraphOpen] = React.useState(false);
+  const [focusTimerOpen, setFocusTimerOpen] = React.useState(false);
+
   return (
     <section id="view-dashboard" className="view active">
       <div className="page-content">
-        <div style={{ marginBottom: '24px' }}>
-          <h1 className="section-title">Dashboard</h1>
-          <p className="section-subtitle">Welcome back, {profile.name}! Here's your learning progress. 🚀</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+          <div>
+            <h1 className="section-title">Dashboard</h1>
+            <p className="section-subtitle">Welcome back, {profile.name}! Here's your learning progress & skills. 🚀</p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => setSkillGraphOpen(true)}
+              title="Explore the interactive competency graph"
+            >
+              🕸️ Skill Graph DAG
+            </button>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => setFocusTimerOpen(true)}
+              title="Launch Pomodoro Focus Studio"
+            >
+              ⏱️ Focus Studio
+            </button>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => setQuizState({ topic: (profile.interests && profile.interests[0]) || 'python', difficulty: profile.level || 'beginner' })}
+              title="Test your skills with an AI quiz"
+            >
+              🧪 Daily Skill Quiz
+            </button>
+          </div>
         </div>
 
         {/* Stat Cards */}
@@ -377,6 +410,41 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Daily Skill Quiz Modal */}
+      {quizState && (
+        <QuizModal
+          topic={quizState.topic}
+          difficulty={quizState.difficulty}
+          onClose={() => setQuizState(null)}
+          onComplete={() => {
+            setProgressState(Storage.getProgress());
+          }}
+        />
+      )}
+
+      {/* Skill Graph DAG Modal */}
+      {skillGraphOpen && (
+        <SkillGraphView
+          onClose={() => setSkillGraphOpen(false)}
+          onStartQuiz={(topicName, level) => {
+            setSkillGraphOpen(false);
+            setQuizState({ topic: topicName, difficulty: level });
+          }}
+        />
+      )}
+
+      {/* Focus Studio Pomodoro Modal */}
+      {focusTimerOpen && (
+        <FocusTimerModal
+          defaultTopic="Dashboard Study Goal"
+          onClose={() => {
+            setFocusTimerOpen(false);
+            setProgressState(Storage.getProgress());
+          }}
+        />
+      )}
     </section>
   );
 }
+
