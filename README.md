@@ -201,9 +201,8 @@ Wanderer/
 │   ├── package.json
 │   └── vite.config.js
 │
-├── README.md                       # Platform Documentation
-├── api.md                          # Comprehensive API Specification
-└── viva.md                         # Technical Viva & Architectural Notes
+├── README.md                       # Platform Documentation & Setup Guide
+└── .gitignore                      # Git Ignore Configurations
 ```
 
 ---
