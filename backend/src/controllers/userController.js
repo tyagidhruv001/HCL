@@ -34,17 +34,27 @@ export const updateProfile = async (req, res) => {
     ];
     const updates = {};
     allowed.forEach(field => {
-      if (req.body[field] !== undefined) updates[field] = req.body[field];
+      if (req.body[field] !== undefined) {
+        if (field === 'dob') {
+          updates[field] = req.body.dob ? new Date(req.body.dob) : null;
+        } else if (field === 'profilePic') {
+          updates[field] = req.body.profilePic || null;
+        } else {
+          updates[field] = req.body[field];
+        }
+      }
     });
 
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { $set: updates },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     ).select('-password');
 
+    if (!user) return res.status(404).json({ message: 'User not found.' });
     res.json(user);
   } catch (error) {
+    console.error('Update profile error:', error);
     res.status(500).json({ message: error.message });
   }
 };

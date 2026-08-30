@@ -31,7 +31,9 @@ export const registerUser = async (req, res) => {
       res.status(201).json({
         _id: user._id,
         fname: user.fname,
+        lname: user.lname,
         email: user.email,
+        profilePic: user.profilePic || null,
         token: generateToken(user._id),
       });
     } else {
@@ -55,7 +57,9 @@ export const loginUser = async (req, res) => {
       res.json({
         _id: user._id,
         fname: user.fname,
+        lname: user.lname,
         email: user.email,
+        profilePic: user.profilePic || null,
         token: generateToken(user._id),
       });
     } else {
