@@ -1,0 +1,192 @@
+.login-page { 
+    min-height: 100vh; 
+    background: var(--bg); 
+    display: flex; position: relative; 
+    overflow: hidden; 
+}
+.login-left { flex: 1.1; 
+    background: linear-gradient(135deg, rgba(0,212,170,0.06) 0%, rgba(99,102,241,0.04) 100%), var(--surface);
+    border-right: 1px solid var(--border); 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    padding: 60px; 
+}
+.login-right { 
+    flex: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 40px; 
+}
+.login-card { 
+    width: 100%; 
+    max-width: 420px; 
+}
+.login-tab-bar { 
+    display: flex; 
+    background: var(--surface2); 
+    border-radius: 12px; 
+    padding: 4px; 
+    margin-bottom: 28px; 
+}
+.login-tab { 
+    flex: 1; 
+    padding: 10px; 
+    border: none; 
+    border-radius: 9px; 
+    font-size: 14px; 
+    font-weight: 600;
+    cursor: pointer; 
+    transition: all 0.2s; 
+    background: transparent; 
+    color: var(--muted); 
+    font-family: var(--font); 
+}
+.login-tab.on { 
+    background: var(--accent); 
+    color: #000; 
+}
+.lf-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 6px; 
+    margin-bottom: 16px; 
+}
+.lf-label { 
+    font-size: 12px; 
+    font-weight: 700; 
+    color: var(--muted); 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+}
+.pass-eye { 
+    position: absolute; 
+    right: 12px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    background: none; 
+    border: none; 
+    color: var(--muted); 
+    font-size: 16px; 
+    cursor: pointer; 
+}
+.social-row { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; 
+    margin-top: 16px; 
+}
+.soc-btn { 
+    padding: 10px 8px; 
+    background: var(--surface2); 
+    border: 1px solid var(--border); 
+    border-radius: 10px;
+    color: var(--text); 
+    font-size: 13px; 
+    font-weight: 600; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 6px;
+    transition: all 0.2s; 
+}
+.soc-btn:hover { 
+    border-color: var(--accent); 
+    color: var(--accent); 
+}
+.soc-google:hover  { border-color: #EA4335; color: #EA4335; }
+.soc-linkedin:hover { border-color: #0A66C2; color: #0A66C2; }
+.soc-github:hover  { border-color: #e0e0e0; color: #e0e0e0; }
+.ll-feat { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 18px; 
+}
+.ll-dot { 
+    width: 7px; 
+    height: 7px; 
+    border-radius: 50%; 
+    background: var(--accent); 
+    flex-shrink: 0; 
+}
+.back-btn { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    background: var(--surface); 
+    border: 1px solid var(--border);
+    color: var(--text); 
+    padding: 7px 16px; 
+    border-radius: 8px; 
+    font-size: 13px; 
+    z-index: 10; 
+    transition: all 0.2s;
+}
+.back-btn:hover { 
+    border-color: var(--accent); 
+    color: var(--accent); 
+}
+@media(max-width:768px) { 
+    .login-left { 
+        display: none; 
+    } 
+    .login-right { 
+        width: 100%; 
+    } 
+}
+/* container */
+.bg-bubbles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* bubbles */
+.bg-bubbles span {
+  position: absolute;
+  bottom: -100px;
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 212, 170, 0.15);
+  border-radius: 50%;
+  animation: bubbleUp 10s linear infinite;
+}
+
+/* animation */
+@keyframes bubbleUp {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.2);
+    opacity: 0;
+  }
+}
+.bg-bubbles span:nth-child(1) { left: 10%; animation-duration: 12s; }
+.bg-bubbles span:nth-child(2) { left: 20%; animation-duration: 8s; }
+.bg-bubbles span:nth-child(3) { left: 35%; animation-duration: 14s; }
+.bg-bubbles span:nth-child(4) { left: 50%; animation-duration: 10s; }
+.bg-bubbles span:nth-child(5) { left: 65%; animation-duration: 9s; }
+.bg-bubbles span:nth-child(6) { left: 75%; animation-duration: 11s; }
+.bg-bubbles span:nth-child(7) { left: 85%; animation-duration: 13s; }
+.bg-bubbles span:nth-child(8) { left: 95%; animation-duration: 7s; }
+.bg-bubbles span:nth-child(9) { left: 40%; animation-duration: 15s; }
+.bg-bubbles span:nth-child(10) { left: 60%; animation-duration: 10s; }
+.login-page {
+  position: relative;
+  z-index: 1;
+}
+.bg-bubbles span {
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+}

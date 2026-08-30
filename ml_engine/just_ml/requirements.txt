@@ -1,0 +1,25 @@
+fastapi>=0.115.6
+uvicorn[standard]>=0.34.0
+pydantic>=2.11.0
+pydantic-settings>=2.8.0
+python-dotenv==1.0.1
+httpx==0.28.1
+
+# LLM providers (pluggable - use whichever you have a key for)
+groq>=0.13.1
+ollama>=0.4.7
+
+# Web search (no API key required)
+duckduckgo-search>=7.2.1
+# YouTube search is implemented directly with httpx in
+# app/tools/youtube_search.py (scrapes the public search page) — no
+# youtube-search-python dependency, since that library breaks on httpx>=0.28
+
+# Real ML: TF-IDF + cosine similarity, pure NumPy (see app/ml/embeddings.py
+# for why sentence-transformers/scikit-learn were dropped — torch/scipy's
+# native DLLs get blocked by Windows Application Control Policy on locked
+# down machines). No scipy, no torch, no sklearn needed.
+numpy>=2.2.0
+
+pytest>=8.3.4
+pytest-asyncio>=0.25.2

@@ -1,0 +1,485 @@
+/* ── JARVIS Knowledge Browser — Wikipedia / Editorial Theme ─────────────────────── */
+
+.ai-browser-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #e6edf3;
+  position: relative;
+}
+
+/* ── Minimal Floating Top Utilities ── */
+.ai-floating-top-actions {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+}
+
+.ai-mini-btn {
+  background: rgba(22, 27, 34, 0.85);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 5px 12px;
+  color: #8b949e;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ai-mini-btn:hover {
+  background: rgba(33, 38, 45, 0.95);
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+/* ── Main Chat / Knowledge Feed ── */
+.ai-results-feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-behavior: smooth;
+}
+
+.ai-results-feed::-webkit-scrollbar {
+  width: 7px;
+}
+.ai-results-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ai-results-feed::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+.ai-results-feed::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Chat Rows */
+.ai-feed-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 980px;
+}
+.ai-feed-row.user {
+  margin-left: auto;
+  max-width: 80%;
+  flex-direction: row-reverse;
+}
+.ai-feed-row.ai {
+  margin-right: auto;
+  max-width: 100%;
+}
+
+/* Avatars */
+.ai-feed-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.ai-feed-avatar.user {
+  background: #1f6feb;
+  color: #ffffff;
+}
+.ai-feed-avatar.ai {
+  background: #238636;
+  border: 1px solid rgba(46, 160, 67, 0.6);
+  color: #ffffff;
+}
+
+.ai-feed-content-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Bubbles & Wikipedia-Style Knowledge Article Styling ── */
+.ai-feed-bubble {
+  padding: 20px 26px;
+  border-radius: 12px;
+  font-size: 15.5px;
+  line-height: 1.8;
+  word-break: break-word;
+  letter-spacing: 0.1px;
+}
+
+.ai-feed-row.user .ai-feed-bubble {
+  background: #1f6feb;
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 12px 12px 2px 12px;
+  box-shadow: 0 4px 16px rgba(31, 111, 235, 0.3);
+  padding: 12px 18px;
+  font-size: 15px;
+}
+
+.ai-feed-row.ai .ai-feed-bubble {
+  background: #161b22;
+  border: 1px solid #30363d;
+  color: #e6edf3;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.ai-feed-time {
+  font-size: 11.5px;
+  color: #6e7681;
+  margin-top: 2px;
+  padding: 0 4px;
+}
+.ai-feed-row.user .ai-feed-time {
+  text-align: right;
+}
+
+/* ── Wikipedia-Style Editorial Headings & Typography ── */
+.ai-chat-h2 {
+  font-size: 21px;
+  font-weight: 600;
+  color: #f0f6fc;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 6px;
+  margin: 22px 0 12px;
+  letter-spacing: -0.2px;
+}
+
+.ai-chat-h3 {
+  font-size: 17.5px;
+  font-weight: 600;
+  color: #79c0ff;
+  margin: 18px 0 8px;
+}
+
+.ai-chat-h4 {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: #d2a8ff;
+  margin: 14px 0 6px;
+}
+
+.ai-feed-bubble p {
+  margin: 0 0 14px;
+}
+.ai-feed-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-chat-link {
+  color: #58a6ff;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(88, 166, 255, 0.4);
+  transition: border-color 0.2s, color 0.2s;
+}
+.ai-chat-link:hover {
+  color: #79c0ff;
+  border-bottom-color: #79c0ff;
+}
+
+.ai-chat-inline-code {
+  background: rgba(110, 118, 129, 0.2);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13.5px;
+  color: #79c0ff;
+}
+
+.ai-chat-code-block {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  padding: 16px 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13.5px;
+  color: #f0f6fc;
+  margin: 14px 0;
+}
+
+.ai-chat-li {
+  margin: 6px 0 6px 22px;
+  color: #e6edf3;
+  line-height: 1.7;
+}
+
+/* ── Wikipedia Infobox / Takeaways Callout Card ── */
+.ai-takeaways-card {
+  background: rgba(56, 139, 253, 0.06);
+  border: 1px solid rgba(56, 139, 253, 0.25);
+  border-left: 4px solid #58a6ff;
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+.ai-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  color: #79c0ff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-takeaways-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ai-takeaway-item {
+  font-size: 14px;
+  color: #e6edf3;
+  line-height: 1.6;
+}
+
+/* ── YouTube Video Cards ── */
+.ai-videos-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.ai-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.ai-video-item {
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.ai-video-item:hover {
+  transform: translateY(-2px);
+  border-color: #58a6ff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.ai-video-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #010409;
+  overflow: hidden;
+}
+.ai-video-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ai-video-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #8b949e;
+}
+.ai-video-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(1, 4, 9, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ai-video-info {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ai-video-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f0f6fc;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ai-video-channel {
+  font-size: 11.5px;
+  color: #8b949e;
+}
+
+/* ── Grounded Web References ── */
+.ai-sources-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.ai-sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ai-source-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  background: #0d1117;
+  border-radius: 6px;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+.ai-source-item:hover {
+  border-left-color: #58a6ff;
+  background: rgba(56, 139, 253, 0.05);
+}
+.ai-source-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #58a6ff;
+}
+.ai-source-snippet {
+  font-size: 12px;
+  color: #8b949e;
+  line-height: 1.45;
+}
+
+/* ── Live Searching Indicator ── */
+.ai-researching-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(56, 139, 253, 0.08);
+  border: 1px solid rgba(56, 139, 253, 0.25);
+  border-radius: 10px;
+  color: #79c0ff;
+  font-size: 14px;
+  font-weight: 500;
+}
+.ai-radar-spin {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(88, 166, 255, 0.3);
+  border-top-color: #58a6ff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Minimalist Clean Omnibar ── */
+.ai-omnibar-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 28px 18px;
+  background: linear-gradient(180deg, rgba(13, 17, 23, 0.2) 0%, rgba(13, 17, 23, 0.95) 45%, #0d1117 100%);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #30363d;
+  z-index: 10;
+}
+
+.ai-omnibar {
+  display: flex;
+  align-items: center;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 14px;
+  padding: 8px 12px 8px 16px;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+  margin-right: 60px;
+}
+.ai-omnibar:focus-within {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+.ai-omnibar-icon {
+  font-size: 18px;
+  color: #58a6ff;
+}
+
+.ai-omnibar-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f0f6fc;
+  font-size: 15px;
+  font-family: inherit;
+  resize: none;
+  min-height: 24px;
+  max-height: 120px;
+  line-height: 1.5;
+}
+.ai-omnibar-input::placeholder {
+  color: #6e7681;
+  font-size: 14px;
+}
+
+.ai-search-submit-btn {
+  background: #238636;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.ai-search-submit-btn:hover:not(:disabled) {
+  background: #2ea043;
+}
+.ai-search-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

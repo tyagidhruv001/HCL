@@ -1,0 +1,112 @@
+[
+  {
+    "id": "py-101",
+    "title": "Python Programming Fundamentals",
+    "provider": "freeCodeCamp",
+    "url": "https://www.freecodecamp.org/learn/scientific-computing-with-python/",
+    "difficulty": "beginner",
+    "duration_hours": 20,
+    "skills": ["python"],
+    "prerequisites": [],
+    "description": "Core Python syntax, data structures, functions and basic problem solving."
+  },
+  {
+    "id": "sql-101",
+    "title": "SQL for Data Analysis",
+    "provider": "Khan Academy",
+    "url": "https://www.khanacademy.org/computing/computer-programming/sql",
+    "difficulty": "beginner",
+    "duration_hours": 12,
+    "skills": ["sql"],
+    "prerequisites": [],
+    "description": "Writing queries, joins, aggregations and schema design basics."
+  },
+  {
+    "id": "web-101",
+    "title": "HTML & CSS Foundations",
+    "provider": "freeCodeCamp",
+    "url": "https://www.freecodecamp.org/learn/2022/responsive-web-design/",
+    "difficulty": "beginner",
+    "duration_hours": 15,
+    "skills": ["html", "css"],
+    "prerequisites": [],
+    "description": "Structuring and styling web pages, responsive layouts, flexbox and grid."
+  },
+  {
+    "id": "js-201",
+    "title": "JavaScript: The Modern Fundamentals",
+    "provider": "javascript.info",
+    "url": "https://javascript.info/",
+    "difficulty": "intermediate",
+    "duration_hours": 25,
+    "skills": ["javascript"],
+    "prerequisites": ["web-101"],
+    "description": "Core JS language features, async programming, DOM manipulation."
+  },
+  {
+    "id": "react-201",
+    "title": "React - Building Modern UIs",
+    "provider": "React Docs",
+    "url": "https://react.dev/learn",
+    "difficulty": "intermediate",
+    "duration_hours": 20,
+    "skills": ["react", "javascript"],
+    "prerequisites": ["js-201"],
+    "description": "Components, hooks, state management and building real UIs with React."
+  },
+  {
+    "id": "node-201",
+    "title": "Node.js & Express APIs",
+    "provider": "Node.js Docs",
+    "url": "https://nodejs.org/en/learn",
+    "difficulty": "intermediate",
+    "duration_hours": 18,
+    "skills": ["node", "apis", "javascript"],
+    "prerequisites": ["js-201"],
+    "description": "Building REST APIs, middleware, routing and server-side JS with Express."
+  },
+  {
+    "id": "api-201",
+    "title": "Designing REST APIs",
+    "provider": "freeCodeCamp",
+    "url": "https://www.freecodecamp.org/news/rest-api-design-best-practices/",
+    "difficulty": "intermediate",
+    "duration_hours": 10,
+    "skills": ["apis", "system design"],
+    "prerequisites": ["node-201"],
+    "description": "REST conventions, versioning, auth patterns and API design tradeoffs."
+  },
+  {
+    "id": "stats-201",
+    "title": "Statistics for Data Science",
+    "provider": "Khan Academy",
+    "url": "https://www.khanacademy.org/math/statistics-probability",
+    "difficulty": "intermediate",
+    "duration_hours": 20,
+    "skills": ["statistics"],
+    "prerequisites": [],
+    "description": "Probability, distributions, hypothesis testing and inference."
+  },
+  {
+    "id": "ml-301",
+    "title": "Machine Learning Specialization",
+    "provider": "Coursera (Andrew Ng)",
+    "url": "https://www.coursera.org/specializations/machine-learning-introduction",
+    "difficulty": "advanced",
+    "duration_hours": 40,
+    "skills": ["machine learning", "python", "statistics"],
+    "prerequisites": ["py-101", "stats-201"],
+    "description": "Supervised/unsupervised learning, model evaluation, and practical ML."
+  },
+  {
+    "id": "sysdesign-301",
+    "title": "System Design Fundamentals",
+    "provider": "GitHub - system-design-primer",
+    "url": "https://github.com/donnemartin/system-design-primer",
+    "difficulty": "advanced",
+    "duration_hours": 15,
+    "skills": ["system design"],
+    "prerequisites": ["api-201"],
+    "description": "Scalability, caching, load balancing, and distributed systems basics."
+  }
+]
