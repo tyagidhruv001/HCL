@@ -2244,8 +2244,8 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
                 <div className="wg">
                   <div className="wg-title">🎯 Focus Areas & Revision Topics</div>
-                  {weakTopics.length > 0 ? weakTopics.map(t => (
-                    <div key={t.t} style={{ marginBottom: 12 }}>
+                  {weakTopics.length > 0 ? weakTopics.map((t, idx) => (
+                    <div key={`${t.t || 'topic'}-${idx}`} style={{ marginBottom: 12 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
                         <span>{t.t}</span><span style={{ fontWeight: 700, color: t.lvl === "critical" ? "var(--red)" : t.lvl === "danger" ? "var(--yellow)" : "var(--green)" }}>{t.s}%</span>
                       </div>

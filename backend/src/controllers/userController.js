@@ -188,22 +188,34 @@ export const getAnalytics = async (req, res) => {
     // Weak topics from low quiz scores or low roadmap completion
     let weakTopics = [];
     if (sessions && sessions.length > 0) {
-      weakTopics = sessions
+      const topicMap = new Map();
+      sessions
         .filter(s => s.score < 65)
-        .map(s => ({
-          t: s.subject,
-          s: s.score,
-          lvl: s.score < 40 ? 'critical' : 'danger',
-        }));
+        .forEach(s => {
+          if (!topicMap.has(s.subject) || s.score < topicMap.get(s.subject).s) {
+            topicMap.set(s.subject, {
+              t: s.subject,
+              s: s.score,
+              lvl: s.score < 40 ? 'critical' : 'danger',
+            });
+          }
+        });
+      weakTopics = Array.from(topicMap.values());
     }
     if (weakTopics.length === 0 && dynamicProgress.length > 0) {
-      weakTopics = dynamicProgress
+      const progMap = new Map();
+      dynamicProgress
         .filter(p => p.pct < 60)
-        .map(p => ({
-          t: p.subject,
-          s: p.pct,
-          lvl: p.pct < 40 ? 'critical' : p.pct < 55 ? 'danger' : 'warn',
-        }));
+        .forEach(p => {
+          if (!progMap.has(p.subject)) {
+            progMap.set(p.subject, {
+              t: p.subject,
+              s: p.pct,
+              lvl: p.pct < 40 ? 'critical' : p.pct < 55 ? 'danger' : 'warn',
+            });
+          }
+        });
+      weakTopics = Array.from(progMap.values());
     }
 
     // Dynamic Risk calculation
