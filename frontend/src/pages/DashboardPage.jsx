@@ -121,6 +121,228 @@ function Countdown({ days }) {
   );
 }
 
+function EditProfileDialog({ liveUser, setLiveUser, onClose }) {
+  const [preview, setPreview] = useState(liveUser.profilePic || null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const [form, setForm] = useState({
+    name: liveUser.name || '',
+    phone: liveUser.phone || '',
+    dob: liveUser.dob || '',
+    roll: liveUser.roll || '',
+    branch: liveUser.branch || '',
+    education: liveUser.education || '',
+    year: liveUser.year || '',
+    skills: liveUser.skills || '',
+    about: liveUser.about || '',
+  });
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (PNG, JPG, WEBP).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => alert('Failed to read file.');
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onerror = () => alert('Failed to process image.');
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_DIM = 400;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          if (width > height) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          } else {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        setPreview(dataUrl);
+        setIsDeleting(false);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const nameParts = (form.name || '').trim().split(' ');
+      const fname = nameParts[0] || '';
+      const lname = nameParts.slice(1).join(' ') || '';
+
+      const payload = {
+        fname,
+        lname,
+        phone: form.phone,
+        dob: form.dob,
+        roll: form.roll,
+        branch: form.branch,
+        education: form.education,
+        year: form.year,
+        skills: (form.skills || '').split(',').map(s => s.trim()).filter(Boolean),
+        about: form.about,
+      };
+
+      if (isDeleting) {
+        payload.profilePic = '';
+      } else if (preview) {
+        payload.profilePic = preview;
+      }
+
+      const saved = await authService.updateProfile(payload);
+      const newPic = isDeleting ? null : (saved.profilePic !== undefined ? saved.profilePic : preview);
+
+      setLiveUser(prev => ({
+        ...prev,
+        name: `${fname} ${lname}`.trim() || prev.name,
+        phone: payload.phone,
+        dob: payload.dob,
+        roll: payload.roll,
+        branch: payload.branch,
+        education: payload.education,
+        year: payload.year,
+        skills: payload.skills.join(', '),
+        about: payload.about,
+        profilePic: newPic,
+        av: `${fname[0] || ''}${lname[0] || ''}`.toUpperCase() || prev.av,
+      }));
+
+      // Update in localStorage
+      try {
+        const stored = JSON.parse(localStorage.getItem('user') || '{}');
+        localStorage.setItem('user', JSON.stringify({ ...stored, ...saved, profilePic: newPic }));
+      } catch (e) {}
+
+      onClose();
+    } catch (e) {
+      console.error('Update profile error:', e);
+      alert('Failed to update profile: ' + (e.response?.data?.message || e.message));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(form.name || 'User')}&background=6366f1&color=fff`;
+
+  return (
+    <Modal title="✏️ Edit Profile" onClose={onClose}>
+      <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: 10 }}>
+        {/* Image Upload System */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
+          <div style={{ position: 'relative', width: 90, height: 90, marginBottom: 12 }}>
+            <img
+              src={isDeleting ? fallbackAvatar : (preview || fallbackAvatar)}
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2.5px solid var(--accent)',
+                boxShadow: '0 4px 20px rgba(0, 212, 170, 0.25)',
+              }}
+              alt="Avatar Preview"
+            />
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            style={{ display: 'none' }}
+            onChange={handleImageSelect}
+          />
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              type="button"
+              className="btn-outline"
+              style={{ fontSize: 12.5, padding: '7px 18px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 6 }}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              📸 Upload Photo
+            </button>
+            {(preview || liveUser.profilePic) && !isDeleting && (
+              <button
+                type="button"
+                className="btn-outline"
+                style={{ fontSize: 12.5, padding: '7px 18px', borderRadius: 20, color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)' }}
+                onClick={() => {
+                  setIsDeleting(true);
+                  setPreview(null);
+                }}
+              >
+                🗑️ Remove
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Profile Fields */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
+          {[
+            ['Full Name', 'text', 'name', 'e.g. Dhruv Tyagi'],
+            ['Phone Number', 'text', 'phone', '+91 98765 43210'],
+            ['Date of Birth', 'date', 'dob', ''],
+            ['Roll No.', 'text', 'roll', 'e.g. 21001004'],
+            ['Branch', 'text', 'branch', 'e.g. Computer Science'],
+            ['Education / Degree', 'text', 'education', 'e.g. B.Tech Computer Science'],
+            ['Graduation Year', 'text', 'year', 'e.g. 2026'],
+            ['Skills (comma separated)', 'text', 'skills', 'React, Node.js, Python'],
+          ].map(([label, type, key, placeholder]) => (
+            <div key={key}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 5 }}>{label}</div>
+              <input
+                type={type}
+                value={form[key]}
+                onChange={e => setForm(prev => ({ ...prev, [key]: e.target.value }))}
+                placeholder={placeholder}
+                className="input-field"
+                style={{ width: '100%', boxSizing: 'border-box' }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* About Me block */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 5 }}>Short Bio / About</div>
+          <textarea
+            value={form.about}
+            onChange={e => setForm(prev => ({ ...prev, about: e.target.value }))}
+            placeholder="Tell us about your learning goals and projects..."
+            className="input-field"
+            style={{ width: '100%', minHeight: 75, resize: 'vertical', boxSizing: 'border-box' }}
+          />
+        </div>
+
+        <button
+          className="btn-primary"
+          style={{ width: '100%', padding: '12px', fontSize: 15, fontWeight: 700 }}
+          disabled={saving}
+          onClick={handleSave}
+        >
+          {saving ? '⏳ Saving Changes...' : '💾 Save Changes'}
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
 function DashboardPage({ user: propUser, courses, theme, setTheme }) {
   const navigate = useNavigate();
   const [active, setActive] = useState("dashboard");
@@ -1726,9 +1948,14 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   background: "linear-gradient(135deg, var(--accent), #6366f1)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: 32, fontWeight: 900, color: "#ffffff",
-                  boxShadow: "0 0 25px rgba(0, 212, 170, 0.35)", flexShrink: 0
+                  boxShadow: "0 0 25px rgba(0, 212, 170, 0.35)", flexShrink: 0,
+                  overflow: "hidden"
                 }}>
-                  {liveUser.av || "ST"}
+                  {liveUser.profilePic ? (
+                    <img src={liveUser.profilePic} alt={liveUser.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    liveUser.av || "ST"
+                  )}
                 </div>
 
                 {/* Profile Details */}
@@ -2746,101 +2973,11 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
       )}
 
       {modal?.type === "editProfile" && (
-        <Modal title="✏️ Edit Profile" onClose={() => setModal(null)}>
-          <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: 10 }}>
-            {/* Image Upload System */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
-              <img id="profile-img-preview" src={liveUser.profilePic || `https://ui-avatars.com/api/?name=${liveUser.name.replace(' ', '+')}&background=random`} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, border: '2px solid var(--accent)' }} alt="Preview" />
-              <input type="file" id="profile-file-input" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onload = (ev) => {
-                    const img = document.getElementById('profile-img-preview');
-                    img.src = ev.target.result;
-                    img.dataset.delete = "false";
-                  };
-                  reader.readAsDataURL(file);
-                }
-              }} />
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button className="btn-outline" style={{ fontSize: 12, padding: '8px 16px', borderRadius: 20 }} onClick={() => document.getElementById('profile-file-input').click()}>Upload</button>
-                <button className="btn-outline" style={{ fontSize: 12, padding: '8px 16px', borderRadius: 20, color: '#f87171', borderColor: '#f87171' }} onClick={() => {
-                  const img = document.getElementById('profile-img-preview');
-                  img.src = `https://ui-avatars.com/api/?name=${liveUser.name.replace(' ', '+')}&background=random`;
-                  img.dataset.delete = "true";
-                }}>Delete</button>
-              </div>
-            </div>
-
-            {/* Profile Fields */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-              {[
-                ["Full Name", "text", liveUser.name, "full"],
-                ["Phone Number", "text", liveUser.phone, "phone"],
-                ["Date of Birth", "date", liveUser.dob, "dob"],
-                ["Roll No.", "text", liveUser.roll, "roll"],
-                ["Branch", "text", liveUser.branch, "branch"],
-                ["Education / Degree", "text", liveUser.education, "education"],
-                ["Graduation Year", "text", liveUser.year, "year"],
-                ["Skills (comma separated)", "text", liveUser.skills, "skills"]
-              ].map(([l, t, v, id]) => (
-                <div key={id}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{l}</div>
-                  <input type={t} defaultValue={v} className="input-field" id={`profile-${id}`} style={{ width: '100%', boxSizing: 'border-box' }} />
-                </div>
-              ))}
-            </div>
-
-            {/* About Me block */}
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Short Bio / About</div>
-              <textarea defaultValue={liveUser.about} className="input-field" id="profile-about" style={{ width: '100%', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
-            </div>
-
-            <button className="btn-primary" style={{ width: "100%", padding: "12px", fontSize: 15 }} onClick={async () => {
-              const nameParts = document.getElementById('profile-full').value.split(' ');
-              const fname = nameParts[0] || '';
-              const lname = nameParts.slice(1).join(' ') || '';
-
-              const payload = {
-                fname, lname,
-                phone: document.getElementById('profile-phone').value,
-                dob: document.getElementById('profile-dob').value,
-                roll: document.getElementById('profile-roll').value,
-                branch: document.getElementById('profile-branch').value,
-                education: document.getElementById('profile-education').value,
-                year: document.getElementById('profile-year').value,
-                skills: document.getElementById('profile-skills').value.split(',').map(s => s.trim()).filter(Boolean),
-                about: document.getElementById('profile-about').value
-              };
-
-              const imgEl = document.getElementById('profile-img-preview');
-              const picSrc = imgEl.src;
-              if (picSrc.startsWith('data:image')) {
-                payload.profilePic = picSrc;
-              } else if (imgEl.dataset.delete === "true") {
-                payload.profilePic = "";
-              }
-
-              try {
-                const saved = await authService.updateProfile(payload);
-                setLiveUser(prev => ({
-                  ...prev,
-                  name: `${fname} ${lname}`.trim(),
-                  phone: payload.phone, dob: payload.dob,
-                  roll: payload.roll, branch: payload.branch,
-                  education: payload.education, year: payload.year,
-                  skills: payload.skills.join(', '), about: payload.about,
-                  profilePic: saved.profilePic === "" ? null : (saved.profilePic || prev.profilePic)
-                }));
-                setModal(null);
-              } catch (e) {
-                alert("Failed to update profile.");
-              }
-            }}>Save Changes</button>
-          </div>
-        </Modal>
+        <EditProfileDialog
+          liveUser={liveUser}
+          setLiveUser={setLiveUser}
+          onClose={() => setModal(null)}
+        />
       )}
 
       {modal?.type === "settings" && (
