@@ -287,7 +287,7 @@ export default function CourseStudio({
       {/* ── Page Header ── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <div className="page-h" style={{ fontSize: 24, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="page-h" style={{ fontSize: 24, fontWeight: 800, color: "var(--text)", display: "flex", alignItems: "center", gap: 8 }}>
             <span>📚</span> Course Studio & Curriculum Catalog
           </div>
           <div className="page-sub" style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 4 }}>
@@ -347,7 +347,7 @@ export default function CourseStudio({
                     {activeRoadmap.phases?.length || 4} Sequential Phases
                   </span>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: "#ffffff", marginTop: 4 }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "var(--text)", marginTop: 4 }}>
                   {activeTitle}
                 </div>
               </div>
@@ -398,7 +398,7 @@ export default function CourseStudio({
                   <div style={{ fontSize: 10.5, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase" }}>
                     Phase {pIdx + 1}
                   </div>
-                  <div style={{ fontSize: 12.5, fontWeight: 700, color: "#ffffff", marginTop: 2 }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text)", marginTop: 2 }}>
                     {phase.title}
                   </div>
                 </div>
@@ -414,7 +414,7 @@ export default function CourseStudio({
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
           <span style={{ fontSize: 20 }}>✨</span>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff" }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text)" }}>
               Synthesize an AI Course on Any Discipline
             </div>
             <div style={{ fontSize: 12, color: "var(--muted)" }}>
@@ -542,7 +542,7 @@ export default function CourseStudio({
                   </div>
 
                   {/* Title & Provider */}
-                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "#ffffff", lineHeight: 1.3, marginBottom: 4 }}>
+                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "var(--text)", lineHeight: 1.3, marginBottom: 4 }}>
                     {c.title}
                   </div>
                   <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}>
@@ -560,7 +560,7 @@ export default function CourseStudio({
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                       {c.modules.map((mod, mIdx) => (
-                        <div key={mIdx} style={{ fontSize: 11.5, color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div key={mIdx} style={{ fontSize: 11.5, color: "var(--text)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                           <span><strong style={{ color: "var(--accent)" }}>•</strong> {mod.title}</span>
                           <span style={{ fontSize: 10.5, color: "var(--muted)" }}>{mod.duration}</span>
                         </div>
@@ -652,7 +652,7 @@ export default function CourseStudio({
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 24 }}>{quizModalCourse.icon || "🎯"}</span>
                 <div>
-                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "#ffffff" }}>
+                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "var(--text)" }}>
                     {quizModalCourse.title}
                   </div>
                   <div style={{ fontSize: 12, color: "var(--accent)" }}>
@@ -728,7 +728,7 @@ export default function CourseStudio({
                 </div>
 
                 {/* Question Text */}
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", lineHeight: 1.45, marginBottom: 18 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", lineHeight: 1.45, marginBottom: 18 }}>
                   {quizQuestions[quizCurrentQ]?.q}
                 </div>
 
@@ -746,7 +746,7 @@ export default function CourseStudio({
                           borderRadius: 12,
                           background: isSelected ? "rgba(0, 212, 170, 0.15)" : "var(--surface2)",
                           border: `1.5px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
-                          color: "#ffffff",
+                          color: "var(--text)",
                           fontSize: 13,
                           cursor: "pointer",
                           display: "flex",

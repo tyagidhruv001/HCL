@@ -229,7 +229,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
       {/* ── Top Header ── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <div className="page-h" style={{ fontSize: 24, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="page-h" style={{ fontSize: 24, fontWeight: 800, color: "var(--text)", display: "flex", alignItems: "center", gap: 8 }}>
             <span>🌳</span> Prerequisite Competency Tree (Knowledge Graph DAG)
           </div>
           <div className="page-sub" style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 4 }}>
@@ -381,7 +381,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
             {/* Graph Header with Database Mastery Progress */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, borderBottom: "1px solid var(--border)", paddingBottom: 14, flexWrap: "wrap", gap: 12 }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#ffffff" }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "var(--text)" }}>
                   {dagData?.topic || "Competency Graph"}
                 </div>
                 <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 3 }}>
@@ -431,7 +431,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                       }}>
                         Stage {tInfo.stage}
                       </div>
-                      <div style={{ fontSize: 13.5, fontWeight: 800, color: "#ffffff", marginTop: 2 }}>
+                      <div style={{ fontSize: 13.5, fontWeight: 800, color: "var(--text)", marginTop: 2 }}>
                         {tInfo.tier}
                       </div>
                     </div>
@@ -513,7 +513,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                               </span>
                             </div>
 
-                            <div style={{ fontSize: 13.5, fontWeight: 700, color: "#ffffff", lineHeight: 1.35, marginBottom: 8 }}>
+                            <div style={{ fontSize: 13.5, fontWeight: 700, color: "var(--text)", lineHeight: 1.35, marginBottom: 8 }}>
                               {node.label}
                             </div>
 
@@ -553,7 +553,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                       <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "var(--accent)" }}>
                         {selectedNode.tier} Stage Competency
                       </div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: "#ffffff", lineHeight: 1.25 }}>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: "var(--text)", lineHeight: 1.25 }}>
                         {selectedNode.label}
                       </div>
                     </div>
@@ -571,7 +571,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                       </div>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                         {selectedNode.keySubtopics.map((sub, sIdx) => (
-                          <span key={sIdx} style={{ fontSize: 11.5, padding: "3px 8px", borderRadius: 6, background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", color: "#ffffff" }}>
+                          <span key={sIdx} style={{ fontSize: 11.5, padding: "3px 8px", borderRadius: 6, background: "var(--surface2)", border: "1px solid var(--border)", color: "var(--text)" }}>
                             • {sub}
                           </span>
                         ))}
@@ -599,9 +599,9 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                               textAlign: "left",
                               padding: "8px 12px",
                               borderRadius: 8,
-                              background: "rgba(255,255,255,0.03)",
-                              border: `1px solid ${isPActive ? "rgba(34,197,94,0.3)" : "rgba(255,255,255,0.08)"}`,
-                              color: "#ffffff",
+                              background: "var(--surface2)",
+                              border: `1px solid ${isPActive ? "rgba(34,197,94,0.3)" : "var(--border)"}`,
+                              color: "var(--text)",
                               fontSize: 12,
                               cursor: "pointer",
                               display: "flex",
@@ -645,9 +645,9 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                                 textAlign: "left",
                                 padding: "6px 10px",
                                 borderRadius: 6,
-                                background: "rgba(255,255,255,0.03)",
-                                border: "1px solid rgba(255,255,255,0.08)",
-                                color: "#ffffff",
+                                background: "var(--surface2)",
+                                border: "1px solid var(--border)",
+                                color: "var(--text)",
                                 fontSize: 11.5,
                                 cursor: "pointer",
                                 display: "flex",
@@ -755,7 +755,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 24 }}>{quizModalNode.icon || "🎯"}</span>
                 <div>
-                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "#ffffff" }}>
+                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "var(--text)" }}>
                     {quizModalNode.label}
                   </div>
                   <div style={{ fontSize: 12, color: "var(--accent)" }}>
@@ -831,7 +831,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                 </div>
 
                 {/* Question Text */}
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", lineHeight: 1.45, marginBottom: 18 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", lineHeight: 1.45, marginBottom: 18 }}>
                   {quizQuestions[quizCurrentQ]?.q}
                 </div>
 
@@ -849,7 +849,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                           borderRadius: 12,
                           background: isSelected ? "rgba(0, 212, 170, 0.15)" : "var(--surface2)",
                           border: `1.5px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
-                          color: "#ffffff",
+                          color: "var(--text)",
                           fontSize: 13,
                           cursor: "pointer",
                           display: "flex",

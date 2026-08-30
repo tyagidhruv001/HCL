@@ -209,7 +209,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
         <div className="wg" style={{ padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "radial-gradient(circle at top left, rgba(0, 212, 170, 0.05), var(--surface))", border: "1px solid var(--border)", borderRadius: 16 }}>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text)", display: "flex", alignItems: "center", gap: 8 }}>
                 <span>📄</span> Resume & Telemetry Input
               </div>
               <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 9px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.15)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.3)" }}>
@@ -285,7 +285,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
         <div className="wg" style={{ padding: "20px 22px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "rgba(99, 102, 241, 0.05)", borderColor: "rgba(99, 102, 241, 0.25)" }}>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text)", display: "flex", alignItems: "center", gap: 6 }}>
                 <span>🤖</span> Industry Readiness Index
               </div>
               {candidateSummary?.readinessTier && (
@@ -417,7 +417,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                       {item.icon || "🏢"}
                     </div>
                     <div>
-                      <div style={{ fontSize: 17, fontWeight: 800, color: "#ffffff", lineHeight: 1.2 }}>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)", lineHeight: 1.2 }}>
                         {item.company}
                       </div>
                       <div style={{ fontSize: 12.5, color: "var(--accent)", fontWeight: 600, marginTop: 2 }}>
@@ -467,7 +467,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                   <div style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>
                     🎯 Why You Qualify
                   </div>
-                  <div style={{ fontSize: 12, color: "#ffffff", lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 12, color: "var(--text)", lineHeight: 1.4 }}>
                     {item.whyYouMatch}
                   </div>
                 </div>
@@ -543,7 +543,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             {/* Modal Header */}
             <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "var(--text)", display: "flex", alignItems: "center", gap: 8 }}>
                   <span>{selectedCompany?.icon || "💼"}</span> Application Toolkit for {selectedCompany?.company}
                 </div>
                 <div style={{ fontSize: 12, color: "var(--accent)", marginTop: 2 }}>
@@ -617,7 +617,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                         borderRadius: 8,
                         background: "var(--surface2)",
                         border: "1px solid var(--border)",
-                        color: "#ffffff",
+                        color: "var(--text)",
                         fontSize: 13,
                         fontWeight: 600,
                         marginTop: 4,
