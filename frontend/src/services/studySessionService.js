@@ -1,7 +1,7 @@
 import api from './api';
 
 /**
- * Study Sessions / Focus API Client for StudySpark
+ * Study Sessions / Focus API Client for Wanderer
  */
 const studySessionService = {
   /**

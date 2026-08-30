@@ -103,7 +103,7 @@ export const matchCompanies = async (req, res) => {
       focusHours: user?.totalSwitches ? `${Math.round((user.totalSwitches * 3) / 60)} hrs` : '15+ hrs',
       projects: completedNodes.length > 0
         ? completedNodes.map(n => n.topic).slice(0, 4).join(', ')
-        : 'StudySpark Adaptive Education Architecture, Full-Stack Project Deliverables',
+        : 'Wanderer Adaptive Education Architecture, Full-Stack Project Deliverables',
       customCompanies: customCompanies || null,
     };
 
@@ -145,7 +145,7 @@ export const generateApplication = async (req, res) => {
       branch: user?.branch || 'Computer Science',
       education: user?.education || 'GLA University',
       skills: user?.skills || 'Data Structures, JavaScript, Python, React, Node.js',
-      projects: activeRoadmap?.nodes?.filter(n => n.status === 'done').map(n => n.topic).join(', ') || 'StudySpark Adaptive AI Engine',
+      projects: activeRoadmap?.nodes?.filter(n => n.status === 'done').map(n => n.topic).join(', ') || 'Wanderer Adaptive AI Engine',
       about: user?.about || '',
       goal: user?.goal || 'Software Engineering',
     };

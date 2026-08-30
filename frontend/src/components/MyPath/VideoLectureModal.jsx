@@ -82,7 +82,7 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
             </div>
             <div>
               <div style={{ fontSize: '11px', fontWeight: 800, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
-                StudySpark Video Lecture Studio
+                Wanderer Video Lecture Studio
               </div>
               <h2 style={{ fontSize: '18px', fontWeight: 800, margin: '2px 0 0 0', color: '#ffffff' }}>
                 {course.title}

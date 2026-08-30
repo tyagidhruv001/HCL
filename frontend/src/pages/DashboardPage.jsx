@@ -1747,7 +1747,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   </div>
 
                   <p style={{ fontSize: 13.5, color: "var(--muted)", margin: "0 0 14px", lineHeight: 1.6, maxWidth: 650 }}>
-                    {liveUser.about || `Passionate technologist dedicated to mastering ${roadmapSubject || liveUser.goal || "Full-Stack Development, Data Structures, and Adaptive AI Systems"}. Actively architecting hands-on projects and verifying competencies through StudySpark.`}
+                    {liveUser.about || `Passionate technologist dedicated to mastering ${roadmapSubject || liveUser.goal || "Full-Stack Development, Data Structures, and Adaptive AI Systems"}. Actively architecting hands-on projects and verifying competencies through Wanderer.`}
                   </p>
 
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

@@ -39,7 +39,7 @@ export async function generateAIQuestions(subject = 'DSA', count = 5, ctx = {}) 
   if (GROQ_API_KEY) {
     try {
       console.log(`[Checkpoint AI] Generating fresh ${targetCount} ${difficulty} questions for "${cleanSubject}" (Variation: ${variationSalt}) via Groq...`);
-      const prompt = `You are the Lead Technical Examiner and Adaptive AI Assessment Engine in StudySpark.
+      const prompt = `You are the Lead Technical Examiner and Adaptive AI Assessment Engine in Wanderer.
 Construct a completely fresh, novel, and intellectually rigorous ${targetCount}-question diagnostic test for the following topic:
 
 🎯 TOPIC / SYLLABUS: "${cleanSubject}"

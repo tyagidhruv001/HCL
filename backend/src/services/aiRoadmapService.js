@@ -23,7 +23,7 @@ export async function generateMultiPhaseRoadmap(goal = 'Full Stack Engineer', le
     phaseConstraint = `Generate EXACTLY ${Number(phaseCount)} distinct, progressive phases as requested by the user.`;
   }
 
-  const systemPrompt = `You are JARVIS's Elite Curriculum Architect and AI Education Engine in StudySpark.
+  const systemPrompt = `You are JARVIS's Elite Curriculum Architect and AI Education Engine in Wanderer.
 You construct comprehensive, structured, multi-phase adaptive learning roadmaps for ANY subject, domain, syllabus, or field of study in the universe (including computer science, data science, quantum physics, robotics, medicine, law, civil services, languages, business, creative arts, and academic exam prep).
 
 You strictly tailor the curriculum to the learner's specific requirements, current background, timeline, and learning style.
@@ -175,7 +175,7 @@ function normalizeRoadmapData(data, goal, timeline) {
     courses: (phase.courses || []).map((course, cIdx) => ({
       id: course.id || `step-${pIdx + 1}-${cIdx + 1}-${Date.now()}`,
       title: course.title || `Topic ${pIdx + 1}.${cIdx + 1}`,
-      provider: course.provider || 'StudySpark Academy',
+      provider: course.provider || 'Wanderer Academy',
       level: course.level || 'Beginner',
       duration: course.duration || '8h',
       rating: course.rating || 4.9,

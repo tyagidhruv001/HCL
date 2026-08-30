@@ -23,7 +23,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
 
   const fileInputRef = useRef(null);
 
-  // Initial auto-match on mount using StudySpark live data
+  // Initial auto-match on mount using Wanderer live data
   useEffect(() => {
     runMatchingAnalysis();
   }, []);
@@ -190,7 +190,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
         <div>
           <div className="page-h">💼 AI Career & Opportunity Studio</div>
           <div className="page-sub">
-            Automated capability matching against hiring companies, cold recruiter emails, and personalized cover letters powered by your live StudySpark learning data.
+            Automated capability matching against hiring companies, cold recruiter emails, and personalized cover letters powered by your live Wanderer learning data.
           </div>
         </div>
         <button
@@ -218,7 +218,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             </div>
 
             <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 14 }}>
-              Upload your latest resume (PDF, DOCX, TXT) or paste text to merge with your active StudySpark learning telemetry.
+              Upload your latest resume (PDF, DOCX, TXT) or paste text to merge with your active Wanderer learning telemetry.
             </div>
 
             {/* Hidden File Input */}
@@ -277,7 +277,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
 
           <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--muted)" }}>
             <span>🔗 Active Pathway: <strong style={{ color: "var(--accent3)" }}>{activeRoadmap?.goal || "Advanced SWE"}</strong></span>
-            <span>{resumeText ? `${resumeText.length} characters parsed` : "Using StudySpark profile data"}</span>
+            <span>{resumeText ? `${resumeText.length} characters parsed` : "Using Wanderer profile data"}</span>
           </div>
         </div>
 
@@ -390,7 +390,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             Synthesizing Company Matches & Job Opportunities...
           </div>
           <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 6 }}>
-            Evaluating engineering cultures, tech stacks, and your real-time StudySpark achievements...
+            Evaluating engineering cultures, tech stacks, and your real-time Wanderer achievements...
           </div>
         </div>
       ) : (

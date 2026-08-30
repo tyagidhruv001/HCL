@@ -19,11 +19,11 @@ export const DEFAULT_COMPANIES = [
 ];
 
 /**
- * Match a candidate's resume + StudySpark learning telemetry against top companies.
+ * Match a candidate's resume + Wanderer learning telemetry against top companies.
  */
 export async function matchCandidateWithCompanies(resumeText = '', userCtx = {}) {
   const cleanResume = (resumeText || '').replace(/\s+/g, ' ').slice(0, 1500);
-  const candidateBio = `Candidate: ${userCtx.name || 'Developer'} (${userCtx.branch || 'CSE'}, ${userCtx.education || 'Univ'}) | Goal: ${userCtx.goal || 'SWE'} | Skills: ${userCtx.skills || 'DSA, WebDev, ML'} | Pathway: ${userCtx.activeRoadmapTitle || 'Advanced CS'} (${userCtx.roadmapCompletionPct || 0}% done) | Diagnostic Score: ${userCtx.checkpointScore || 85}% | Projects: ${userCtx.projects || 'StudySpark Full-Stack Platform'} | Resume: ${cleanResume || 'Verified StudySpark Profile'}`;
+  const candidateBio = `Candidate: ${userCtx.name || 'Developer'} (${userCtx.branch || 'CSE'}, ${userCtx.education || 'Univ'}) | Goal: ${userCtx.goal || 'SWE'} | Skills: ${userCtx.skills || 'DSA, WebDev, ML'} | Pathway: ${userCtx.activeRoadmapTitle || 'Advanced CS'} (${userCtx.roadmapCompletionPct || 0}% done) | Diagnostic Score: ${userCtx.checkpointScore || 85}% | Projects: ${userCtx.projects || 'Wanderer Full-Stack Platform'} | Resume: ${cleanResume || 'Verified Wanderer Profile'}`;
 
   const companiesList = userCtx.customCompanies && userCtx.customCompanies.length > 0
     ? userCtx.customCompanies
@@ -33,7 +33,7 @@ export async function matchCandidateWithCompanies(resumeText = '', userCtx = {})
   if (GROQ_API_KEY) {
     try {
       console.log(`[Career AI] Matching candidate against ${companiesList.length} companies via Groq (${GROQ_MODEL})...`);
-      const prompt = `You are a Technical Recruiter in StudySpark.
+      const prompt = `You are a Technical Recruiter in Wanderer.
 Evaluate this candidate against target companies:
 ${candidateBio}
 
@@ -159,7 +159,7 @@ export async function generateCoverLetter(company, role, companyOverview, resume
 Candidate: ${userCtx.name || 'Developer'} (${userCtx.email || ''})
 Education: ${userCtx.branch || 'Computer Science'} · ${userCtx.education || 'University'}
 Skills: ${userCtx.skills || 'DSA, Full-Stack Development, AI Systems'}
-Projects: ${userCtx.projects || 'StudySpark Adaptive Education Platform'}
+Projects: ${userCtx.projects || 'Wanderer Adaptive Education Platform'}
 Target Company: ${company}
 Target Role: ${role}
 Company Context: ${companyOverview || 'Industry leading technology company'}

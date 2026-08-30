@@ -37,7 +37,7 @@ export default function CourseStudio({
       goal: "Quantum Computing & Qiskit",
       domain: "Quantum Computing",
       icon: "⚛️",
-      provider: "IBM Quantum & StudySpark AI",
+      provider: "IBM Quantum & Wanderer AI",
       duration: "14 Modules · 28 hrs",
       level: "Intermediate to Advanced",
       rating: "4.96",
@@ -58,7 +58,7 @@ export default function CourseStudio({
       goal: "Data Structures and Algorithms",
       domain: "Algorithms & Systems",
       icon: "🧠",
-      provider: "StudySpark Engineering Lab",
+      provider: "Wanderer Engineering Lab",
       duration: "18 Modules · 36 hrs",
       level: "All Levels",
       rating: "4.98",
@@ -79,7 +79,7 @@ export default function CourseStudio({
       goal: "Full Stack Web Development",
       domain: "Web Engineering",
       icon: "🌐",
-      provider: "StudySpark Cloud Lab",
+      provider: "Wanderer Cloud Lab",
       duration: "16 Modules · 32 hrs",
       level: "Intermediate",
       rating: "4.93",
@@ -100,7 +100,7 @@ export default function CourseStudio({
       goal: "Artificial Intelligence and Deep Learning",
       domain: "Artificial Intelligence",
       icon: "🤖",
-      provider: "DeepLearning Lab & StudySpark",
+      provider: "DeepLearning Lab & Wanderer",
       duration: "20 Modules · 40 hrs",
       level: "Advanced",
       rating: "4.97",
@@ -142,7 +142,7 @@ export default function CourseStudio({
       goal: "Cybersecurity and Ethical Hacking",
       domain: "Security Engineering",
       icon: "🛡️",
-      provider: "StudySpark Security Lab",
+      provider: "Wanderer Security Lab",
       duration: "14 Modules · 28 hrs",
       level: "Intermediate",
       rating: "4.89",
@@ -291,7 +291,7 @@ export default function CourseStudio({
             <span>📚</span> Course Studio & Curriculum Catalog
           </div>
           <div className="page-sub" style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 4 }}>
-            Interactive video modules, in-course AI diagnostic tests, and engineering specializations connected to your StudySpark profile.
+            Interactive video modules, in-course AI diagnostic tests, and engineering specializations connected to your Wanderer profile.
           </div>
         </div>
         {activeRoadmap && (

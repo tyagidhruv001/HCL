@@ -16,7 +16,7 @@ export async function generateCompetencyDAG(topic = 'Quantum Computing') {
   if (GROQ_API_KEY) {
     try {
       console.log(`[Competency AI] Generating Knowledge Graph DAG for "${cleanTopic}" via Groq...`);
-      const prompt = `You are a Principal Curriculum Architect in StudySpark.
+      const prompt = `You are a Principal Curriculum Architect in Wanderer.
 Construct an interactive Prerequisite Competency Knowledge Graph (DAG) for: "${cleanTopic}".
 
 Create 8 to 10 distinct competency nodes across 4 tiers:

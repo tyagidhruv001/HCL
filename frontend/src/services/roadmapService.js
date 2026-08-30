@@ -1,7 +1,7 @@
 import api from './api.js';
 
 /**
- * Roadmap & My Path Service for StudySpark
+ * Roadmap & My Path Service for Wanderer
  */
 const roadmapService = {
   /**
