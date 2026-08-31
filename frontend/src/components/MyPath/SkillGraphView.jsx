@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 const DOMAIN_DATA = {
-  all: { label: 'All Competencies', icon: '🌐', color: '#6366f1' },
-  web: { label: 'Web Dev', icon: '💻', color: '#38bdf8' },
-  data: { label: 'Data Science', icon: '📊', color: '#34d399' },
-  ai: { label: 'AI & ML', icon: '🤖', color: '#a855f7' },
-  cloud: { label: 'Cloud & DevOps', icon: '☁️', color: '#f59e0b' },
-  cyber: { label: 'Cybersecurity', icon: '🔒', color: '#ef4444' },
-  design: { label: 'UI/UX Design', icon: '🎨', color: '#ec4899' },
+  all: { label: 'All Competencies', icon: '🌐' },
+  web: { label: 'Web Dev', icon: '💻' },
+  data: { label: 'Data Science', icon: '📊' },
+  ai: { label: 'AI & ML', icon: '🤖' },
+  cloud: { label: 'Cloud & DevOps', icon: '☁️' },
+  cyber: { label: 'Cybersecurity', icon: '🔒' },
+  design: { label: 'UI/UX Design', icon: '🎨' },
 };
 
 // Built-in fallback knowledge tree DAG
@@ -46,34 +46,48 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
-        backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', zIndex: 9999, padding: '16px'
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(14, 26, 20, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '16px'
       }}
       role="dialog"
       aria-modal="true"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        background: 'rgba(10, 15, 30, 0.96)', border: '1px solid rgba(99, 102, 241, 0.35)',
-        borderRadius: '20px', padding: '24px', maxWidth: '960px', width: '95vw',
-        height: '85vh', display: 'flex', flexDirection: 'column', color: '#f1f5f9',
+        background: 'var(--paper-card)',
+        border: '1.5px solid var(--contour-active)',
+        borderRadius: '4px',
+        padding: '26px 30px',
+        maxWidth: '960px',
+        width: '95vw',
+        height: '85vh',
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'var(--ink)',
+        boxShadow: 'var(--shadow)',
         boxSizing: 'border-box'
       }}>
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1.5px solid var(--contour-active)', flexShrink: 0 }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#c7d2fe', background: 'rgba(99,102,241,0.2)', padding: '2px 10px', borderRadius: '9999px' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--ochre)', background: 'rgba(199, 110, 26, 0.1)', border: '1px solid rgba(199, 110, 26, 0.25)', padding: '2px 9px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>
               🕸️ Knowledge Graph DAG
             </span>
-            <h2 style={{ fontSize: '20px', fontWeight: 800, marginTop: '6px', color: '#f8fafc' }}>
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 600, marginTop: '6px', color: 'var(--pine)', fontFamily: 'var(--font-serif)', margin: '6px 0 0 0' }}>
               Prerequisite Competency Tree
             </h2>
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '18px', cursor: 'pointer' }}
+            style={{ background: 'transparent', border: 'none', color: 'var(--slate-subtle)', fontSize: '20px', cursor: 'pointer', padding: '4px 8px' }}
           >
             ✕
           </button>
@@ -87,12 +101,16 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
                 key={key}
                 onClick={() => setSelectedDomain(key)}
                 style={{
-                  padding: '4px 12px', borderRadius: '9999px', fontSize: '12px',
+                  padding: '5px 12px',
+                  borderRadius: '2px',
+                  fontSize: '0.76rem',
                   fontWeight: selectedDomain === key ? 700 : 500,
-                  border: `1px solid ${selectedDomain === key ? info.color : 'rgba(255,255,255,0.08)'}`,
-                  background: selectedDomain === key ? `${info.color}25` : 'transparent',
-                  color: selectedDomain === key ? '#ffffff' : '#94a3b8',
-                  cursor: 'pointer'
+                  fontFamily: 'var(--font-mono)',
+                  border: `1px solid ${selectedDomain === key ? 'var(--pine)' : 'var(--border)'}`,
+                  background: selectedDomain === key ? 'var(--pine)' : 'var(--paper)',
+                  color: selectedDomain === key ? 'var(--paper)' : 'var(--slate)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s'
                 }}
               >
                 <span>{info.icon}</span> {info.label}
@@ -106,9 +124,14 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             style={{
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '8px', padding: '6px 12px', color: '#ffffff', fontSize: '12px',
-              outline: 'none', width: '180px'
+              background: 'var(--paper)',
+              border: '1px solid var(--border)',
+              borderRadius: '2px',
+              padding: '6px 12px',
+              color: 'var(--ink)',
+              fontSize: '0.82rem',
+              outline: 'none',
+              width: '180px'
             }}
           />
         </div>
@@ -118,35 +141,41 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
           
           {/* Node Grid */}
           <div style={{
-            overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '10px', paddingRight: '6px', alignContent: 'start'
+            overflowY: 'auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '10px',
+            paddingRight: '6px',
+            alignContent: 'start'
           }}>
             {filteredNodes.map(node => {
               const isSelected = selectedNode?.id === node.id;
-              const domainColor = DOMAIN_DATA[node.domain]?.color || '#6366f1';
               return (
                 <div
                   key={node.id}
                   onClick={() => setSelectedNode(node)}
                   style={{
-                    background: isSelected ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                    border: `1px solid ${isSelected ? domainColor : 'rgba(255, 255, 255, 0.08)'}`,
-                    borderRadius: '12px', padding: '12px', cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    background: isSelected ? 'rgba(24, 55, 40, 0.08)' : 'var(--paper)',
+                    border: `1.5px solid ${isSelected ? 'var(--pine)' : 'var(--border)'}`,
+                    borderRadius: '3px',
+                    padding: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    boxShadow: isSelected ? '0 2px 8px rgba(24, 55, 40, 0.08)' : 'none'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span style={{ fontSize: '10px', fontWeight: 700, color: domainColor, textTransform: 'uppercase' }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--ochre)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
                       {node.domain}
                     </span>
-                    <span style={{ fontSize: '10px', color: '#94a3b8', background: 'rgba(255,255,255,0.05)', padding: '1px 6px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '0.66rem', color: 'var(--slate-subtle)', background: 'var(--paper-card)', border: '1px solid var(--border)', padding: '1px 6px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>
                       {node.level}
                     </span>
                   </div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#f8fafc', marginBottom: '4px' }}>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--pine)', marginBottom: '4px', fontFamily: 'var(--font-serif)', lineHeight: 1.3 }}>
                     {node.name}
                   </div>
-                  <div style={{ fontSize: '11px', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--slate)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {node.description}
                   </div>
                 </div>
@@ -157,74 +186,91 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
           {/* Inspector Details */}
           {selectedNode && (
             <div style={{
-              background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(99, 102, 241, 0.25)',
-              borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column',
-              justifyContent: 'space-between', overflowY: 'auto'
+              background: 'var(--paper)',
+              border: '1.5px solid var(--contour-active)',
+              borderRadius: '3px',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              overflowY: 'auto'
             }}>
               <div>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
                   <span style={{
-                    fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '9999px',
-                    background: `${DOMAIN_DATA[selectedNode.domain]?.color || '#6366f1'}33`,
-                    color: DOMAIN_DATA[selectedNode.domain]?.color || '#6366f1'
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '2px',
+                    background: 'rgba(24, 55, 40, 0.1)',
+                    color: 'var(--pine)',
+                    border: '1px solid var(--contour-active)',
+                    fontFamily: 'var(--font-mono)'
                   }}>
                     {DOMAIN_DATA[selectedNode.domain]?.icon} {DOMAIN_DATA[selectedNode.domain]?.label}
                   </span>
-                  <span style={{ fontSize: '11px', color: '#94a3b8' }}>
-                    Level: <strong>{selectedNode.level}</strong>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--slate-subtle)', fontFamily: 'var(--font-mono)' }}>
+                    Level: <strong style={{ color: 'var(--pine)' }}>{selectedNode.level}</strong>
                   </span>
                 </div>
 
-                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', marginBottom: '10px' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--pine)', marginBottom: '8px', fontFamily: 'var(--font-serif)', margin: '8px 0' }}>
                   {selectedNode.name}
                 </h3>
-                <p style={{ fontSize: '13px', color: '#cbd5e1', lineHeight: 1.6, marginBottom: '16px' }}>
+                <p style={{ fontSize: '0.86rem', color: 'var(--slate)', lineHeight: 1.55, marginBottom: '16px' }}>
                   {selectedNode.description}
                 </p>
 
                 {/* Prerequisites */}
                 <div style={{ marginBottom: '14px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--ochre)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
                     ⬅️ Required Prerequisites
                   </div>
                   {selectedNode.prerequisites?.length > 0 ? (
                     <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                       {selectedNode.prerequisites.map(p => (
-                        <span key={p} style={{ fontSize: '11px', background: 'rgba(239, 68, 68, 0.15)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '2px 8px', borderRadius: '6px' }}>
+                        <span key={p} style={{ fontSize: '0.74rem', background: 'rgba(199, 110, 26, 0.1)', color: 'var(--ochre)', border: '1px solid var(--ochre)', padding: '2px 8px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>
                           {p}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize: '12px', color: '#64748b' }}>None (Foundational Entry Point)</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--slate-subtle)', fontFamily: 'var(--font-mono)' }}>None (Foundational Entry Point)</span>
                   )}
                 </div>
 
                 {/* Unlocks / Enables */}
                 <div style={{ marginBottom: '14px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--pine)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
                     ➡️ Unlocks Next
                   </div>
                   {selectedNode.enables?.length > 0 ? (
                     <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                       {selectedNode.enables.map(e => (
-                        <span key={e} style={{ fontSize: '11px', background: 'rgba(16, 185, 129, 0.15)', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '2px 8px', borderRadius: '6px' }}>
+                        <span key={e} style={{ fontSize: '0.74rem', background: 'rgba(24, 55, 40, 0.1)', color: 'var(--pine)', border: '1px solid var(--pine)', padding: '2px 8px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>
                           {e}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize: '12px', color: '#64748b' }}>Terminal Capstone Topic</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--slate-subtle)', fontFamily: 'var(--font-mono)' }}>Terminal Capstone Topic</span>
                   )}
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
                 <button
+                  className="btn-primary"
                   onClick={() => onStartQuiz(selectedNode.name, selectedNode.level)}
                   style={{
-                    flex: 1, padding: '10px', borderRadius: '10px', background: '#6366f1',
-                    color: '#ffffff', border: 'none', fontWeight: 700, cursor: 'pointer'
+                    flex: 1,
+                    padding: '11px',
+                    fontSize: '0.88rem',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
                   }}
                 >
                   🧪 Test This Skill
@@ -239,3 +285,4 @@ export default function SkillGraphView({ onStartQuiz, onClose }) {
     </div>
   );
 }
+

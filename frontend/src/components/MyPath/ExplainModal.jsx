@@ -39,42 +39,53 @@ export default function ExplainModal({ course, explanation, learner, onClose }) 
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
-        backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', zIndex: 9999, padding: '16px'
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(14, 26, 20, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '16px'
       }}
       role="dialog"
       aria-modal="true"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        background: 'rgba(10, 15, 30, 0.96)', border: '1px solid rgba(99, 102, 241, 0.35)',
-        borderRadius: '20px', padding: '28px', maxWidth: '540px', width: '100%',
-        boxShadow: '0 24px 60px rgba(0, 0, 0, 0.7)', color: '#f1f5f9'
+        background: 'var(--paper-card)',
+        border: '1.5px solid var(--contour-active)',
+        borderRadius: '4px',
+        padding: '28px',
+        maxWidth: '540px',
+        width: '100%',
+        boxShadow: 'var(--shadow)',
+        color: 'var(--ink)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
-          <div style={{ fontSize: '36px', padding: '10px', background: 'rgba(99,102,241,0.15)', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1.5px solid var(--contour-active)' }}>
+          <div style={{ fontSize: '28px', padding: '10px', background: 'var(--paper)', borderRadius: '3px', border: '1px solid var(--border)' }}>
             {course.icon || '🧠'}
           </div>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: '#a855f7', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--ochre)', textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
               🔬 ML Course Explainability
             </div>
-            <h3 style={{ fontSize: '18px', fontWeight: 700, margin: '2px 0 0 0', color: '#ffffff' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 600, margin: '2px 0 0 0', color: 'var(--pine)', fontFamily: 'var(--font-serif)' }}>
               {course.title}
             </h3>
           </div>
         </div>
 
         <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '9999px', background: 'rgba(99,102,241,0.2)', color: '#c7d2fe' }}>
+          <span style={{ fontSize: '0.74rem', padding: '3px 9px', borderRadius: '2px', background: 'var(--paper)', color: 'var(--slate)', border: '1px solid var(--border)', fontFamily: 'var(--font-mono)' }}>
             {course.provider || 'Verified Course'}
           </span>
-          <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '9999px', background: 'rgba(16,185,129,0.15)', color: '#6ee7b7' }}>
+          <span style={{ fontSize: '0.74rem', padding: '3px 9px', borderRadius: '2px', background: 'rgba(24, 55, 40, 0.1)', color: 'var(--pine)', border: '1px solid var(--contour-active)', fontFamily: 'var(--font-mono)' }}>
             {course.level || 'All Levels'}
           </span>
           {course.rating && (
-            <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '9999px', background: 'rgba(245,158,11,0.15)', color: '#fde68a' }}>
+            <span style={{ fontSize: '0.74rem', padding: '3px 9px', borderRadius: '2px', background: 'rgba(199, 110, 26, 0.1)', color: 'var(--ochre)', border: '1px solid rgba(199, 110, 26, 0.25)', fontFamily: 'var(--font-mono)' }}>
               ⭐ {course.rating}
             </span>
           )}
@@ -82,15 +93,21 @@ export default function ExplainModal({ course, explanation, learner, onClose }) 
 
         {/* AI & ML Reasoning Box */}
         <div style={{
-          background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.25)',
-          borderRadius: '14px', padding: '16px', fontSize: '13.5px', lineHeight: 1.6,
-          color: '#e2e8f0', marginBottom: '18px'
+          background: 'var(--paper)',
+          border: '1px solid var(--border)',
+          borderLeft: '3px solid var(--ochre)',
+          borderRadius: '0 3px 3px 0',
+          padding: '16px',
+          fontSize: '0.88rem',
+          lineHeight: 1.6,
+          color: 'var(--slate)',
+          marginBottom: '18px'
         }}>
-          <div style={{ fontSize: '12px', fontWeight: 700, color: '#c7d2fe', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--ochre)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
             <span>💡</span> Why this was recommended:
           </div>
           {loading ? (
-            <div style={{ color: '#94a3b8', fontStyle: 'italic' }}>Analyzing ML semantic ranking and skill gap...</div>
+            <div style={{ color: 'var(--slate-subtle)', fontStyle: 'italic' }}>Analyzing ML semantic ranking and skill gap...</div>
           ) : (
             displayExplanation
           )}
@@ -99,16 +116,21 @@ export default function ExplainModal({ course, explanation, learner, onClose }) 
         {/* Quantified Skill Gap Breakdown */}
         {skillGaps && Object.keys(skillGaps).length > 0 && (
           <div style={{ marginBottom: '20px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--slate-subtle)', marginBottom: '8px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
               📊 Target Competency Uplift:
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {Object.entries(skillGaps).map(([skill, gap]) => (
                 <div key={skill} style={{
-                  padding: '6px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)', fontSize: '12px', color: '#cbd5e1'
+                  padding: '6px 12px',
+                  borderRadius: '2px',
+                  background: 'var(--paper)',
+                  border: '1px solid var(--border)',
+                  fontSize: '0.78rem',
+                  color: 'var(--slate)',
+                  fontFamily: 'var(--font-mono)'
                 }}>
-                  <strong style={{ color: '#ffffff' }}>{skill}</strong>: +{typeof gap === 'number' ? gap.toFixed(1) : gap} mastery points
+                  <strong style={{ color: 'var(--pine)' }}>{skill}</strong>: +{typeof gap === 'number' ? gap.toFixed(1) : gap} mastery points
                 </div>
               ))}
             </div>
@@ -118,14 +140,20 @@ export default function ExplainModal({ course, explanation, learner, onClose }) 
         {/* Skills Taught */}
         {course.skills && course.skills.length > 0 && (
           <div style={{ marginBottom: '20px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: '#94a3b8', marginBottom: '8px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--slate-subtle)', marginBottom: '8px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
               🎯 Skills Covered:
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {course.skills.map((s, idx) => (
                 <span key={idx} style={{
-                  fontSize: '11px', padding: '3px 8px', borderRadius: '6px',
-                  background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', color: '#c7d2fe'
+                  fontSize: '0.74rem',
+                  fontWeight: 600,
+                  padding: '3px 9px',
+                  borderRadius: '2px',
+                  background: 'var(--paper)',
+                  border: '1.5px solid var(--contour-active)',
+                  color: 'var(--pine)',
+                  fontFamily: 'var(--font-mono)'
                 }}>
                   {s}
                 </span>
@@ -140,10 +168,16 @@ export default function ExplainModal({ course, explanation, learner, onClose }) 
               href={course.url}
               target="_blank"
               rel="noopener noreferrer"
+              className="btn-primary"
               style={{
-                flex: 1, padding: '11px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                color: '#ffffff', textDecoration: 'none', fontWeight: 700, display: 'flex',
-                alignItems: 'center', justifyContent: 'center', fontSize: '13px'
+                flex: 1,
+                padding: '10px',
+                textDecoration: 'none',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.86rem'
               }}
             >
               🚀 Launch Course Material
@@ -151,10 +185,10 @@ export default function ExplainModal({ course, explanation, learner, onClose }) 
           ) : null}
           <button
             onClick={onClose}
+            className="btn-outline"
             style={{
-              padding: '11px 20px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)',
-              color: '#f1f5f9', border: '1px solid rgba(255,255,255,0.12)', fontWeight: 600,
-              cursor: 'pointer', fontSize: '13px'
+              padding: '10px 20px',
+              fontSize: '0.84rem'
             }}
           >
             Close

@@ -74,7 +74,7 @@ function mapRoadPath(nodes) {
 
 // ── Topic Resource Generator ─────────────────────────────────────
 // Builds YouTube search + curated doc links for any roadmap topic
-function getTopicResources(topic, subject) {
+function _getTopicResources(topic, subject) {
   const q = encodeURIComponent(`${topic} ${subject || ""}`.trim());
   const topicQ = encodeURIComponent(topic);
 
@@ -228,7 +228,9 @@ function EditProfileDialog({ liveUser, setLiveUser, onClose }) {
       try {
         const stored = JSON.parse(localStorage.getItem('user') || '{}');
         localStorage.setItem('user', JSON.stringify({ ...stored, ...saved, profilePic: newPic }));
-      } catch (e) {}
+      } catch {
+        /* ignore */
+      }
 
       onClose();
     } catch (e) {
@@ -343,7 +345,7 @@ function EditProfileDialog({ liveUser, setLiveUser, onClose }) {
   );
 }
 
-function DashboardPage({ user: propUser, courses, theme, setTheme }) {
+function DashboardPage({ theme, setTheme }) {
   const navigate = useNavigate();
   const [active, setActive] = useState("dashboard");
   const [sbOpen, setSbOpen] = useState(true);
@@ -417,9 +419,9 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
   const [testQuestions, setTestQuestions] = useState([]);
   const [testSubject, setTestSubject] = useState("");
   const [roadmapSubject, setRoadmapSubject] = useState("");
-  const [topicDrawer, setTopicDrawer] = useState(null); // { topic, subject, color, day, status, index }
+  const [_topicDrawer, _setTopicDrawer] = useState(null); // { topic, subject, color, day, status, index }
   // ── Resource tracking (localStorage-persisted per user) ──
-  const [resourcesRead, setResourcesRead] = useState(() => {
+  const [_resourcesRead, setResourcesRead] = useState(() => {
     try { return JSON.parse(localStorage.getItem('ss_resources') || '{}'); }
     catch { return {}; }
   });
@@ -454,14 +456,14 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
   // ── AI advice state ────────────────────────────────────────
   const [aiAdvice, setAiAdvice] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
-  const [generatingRoadmap, setGeneratingRoadmap] = useState(false);
+  const [_generatingRoadmap, setGeneratingRoadmap] = useState(false);
 
   // ── Add task state ─────────────────────────────────────────
   const [newTask, setNewTask] = useState({ text: "", subject: "DSA", time: "9:00 AM", type: "topic" });
   const [taskAdding, setTaskAdding] = useState(false);
 
   // ── Courses catalog state ──────────────────────────────────
-  const [catalogCourses, setCatalogCourses] = useState([]);
+  const [_catalogCourses, setCatalogCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   const profRef = useRef(null);
@@ -680,7 +682,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
   };
 
   /* ── MARK RESOURCE AS READ ────────────────────────────── */
-  const markResource = async (topicKey, resourceKey, nodeIdx) => {
+  const _markResource = async (topicKey, resourceKey, nodeIdx) => {
     // 1. Update localStorage
     const prev = JSON.parse(localStorage.getItem('ss_resources') || '{}');
     const topicData = { ...(prev[topicKey] || {}), [resourceKey]: true };
@@ -695,7 +697,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
       try {
         const newTask = await taskService.createTask({
           text: `📚 Study: ${topicKey}`,
-          subject: topicDrawer?.subject || 'Roadmap',
+          subject: _topicDrawer?.subject || 'Roadmap',
           type: 'topic',
           time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
         });
@@ -715,7 +717,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
   };
 
   /* ── ROADMAP GENERATION logic ───────────────────────────── */
-  const handleGenerateRoadmap = async () => {
+  const _handleGenerateRoadmap = async () => {
     const subjectToGen = customTopic.trim() || roadmapSubject;
     if (!subjectToGen) return;
 
@@ -856,13 +858,66 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                     borderRadius: '9999px',
                     background: 'linear-gradient(135deg, #a855f7, #6366f1)',
                     color: '#ffffff',
-                    boxShadow: '0 2px 8px rgba(168, 85, 247, 0.4)'
+                    boxShadow: '0 2px 8px rgba(199, 110, 26, 0.4)'
                   }}>
                     {s.badge}
                   </span>
                 )}
               </div>
             )
+          )}
+
+          {/* ── Little Cards Below Navigation ── */}
+          {sbOpen && (
+            <div className="sb-cards-wrap">
+              {/* Little Card 1: Daily Momentum & Focus Telemetry */}
+              <div
+                className="sb-little-card"
+                onClick={() => setActive("focusstudio")}
+                title="Open Focus Studio"
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                  <span className="sb-card-badge">🔥 MOMENTUM</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--ochre)', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                    {streak > 0 ? `${streak}d Streak` : '1d Active'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.86rem', fontWeight: 600, color: 'var(--pine)', fontFamily: 'var(--font-serif)', lineHeight: 1.25 }}>
+                  Focus Index: {focus.score}%
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+                  <div style={{ flex: 1, height: 4, background: 'var(--paper)', borderRadius: 2, overflow: 'hidden', border: '1px solid var(--border)' }}>
+                    <div style={{ width: `${focus.score}%`, height: '100%', background: focus.score > 70 ? 'var(--pine)' : 'var(--ochre)', borderRadius: 2, transition: 'width 0.3s ease' }} />
+                  </div>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--slate-subtle)', fontFamily: 'var(--font-mono)' }}>
+                    {focusStats.todayMinutes ? `${focusStats.todayMinutes}m` : 'Live'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Little Card 2: Active Pathway Quick-Access */}
+              <div
+                className="sb-little-card"
+                onClick={() => setActive("roadmap")}
+                title="Open Linear Pathway"
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                  <span className="sb-card-badge" style={{ color: 'var(--pine)', borderColor: 'var(--contour-active)', background: 'rgba(24, 55, 40, 0.08)' }}>
+                    🚀 TRACK
+                  </span>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--slate-subtle)', fontFamily: 'var(--font-mono)' }}>
+                    {completionPct ? `${completionPct}%` : 'In Progress'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--pine)', fontFamily: 'var(--font-serif)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {activeRoadmap?.goal || "Full-Stack Engineer"}
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--slate)', marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--slate-subtle)' }}>{activeRoadmap?.phases?.length || 4} Phases</span>
+                  <span style={{ color: 'var(--ochre)', fontWeight: 700, fontFamily: 'var(--font-mono)', fontSize: '0.7rem' }}>Resume →</span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
         <div className="sb-foot" style={{ padding: '12px 10px', width: '100%', boxSizing: 'border-box' }}>
@@ -949,43 +1004,27 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
             <div>
               <div className="dash-header">
                 <div>
-                  <div className="page-h" style={{
-                    background: "linear-gradient(90deg, var(--text) 0%, var(--muted) 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent"
-                  }}>
+                  <h1 className="page-h">
                     Welcome back, {liveUser.name.split(" ")[0]}.
-                  </div>
+                  </h1>
+                  <p className="page-sub">Here is your active learning velocity, curriculum telemetry, and upcoming checkpoints.</p>
                 </div>
-                <div className="date-badge" style={{
-                  fontSize: 14,
-                  color: "var(--text)",
-                  background: "rgba(255,255,255,0.03)",
-                  padding: "8px 16px",
-                  borderRadius: "12px",
-                  border: "1px solid var(--border)",
-                  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontWeight: 600,
-                  height: 'fit-content'
-                }}>
-                  <span style={{ fontSize: 16 }}>📅</span>
+                <div className="date-badge">
+                  <span>📅</span>
                   {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
                 </div>
               </div>
 
               {/* AI ADVICE CARD */}
               {(aiAdvice || aiLoading) && (
-                <div className="flex-resp" style={{ background: "linear-gradient(135deg, rgba(0,212,170,0.08), rgba(99,102,241,0.08))", border: "1px solid rgba(0,212,170,0.25)", borderRadius: 16, padding: "18px 22px", marginBottom: 20, alignItems: "flex-start" }}>
+                <div className="flex-resp" style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, padding: "20px 24px", marginBottom: 22, alignItems: "flex-start", boxShadow: "var(--shadow)" }}>
                   <div style={{ fontSize: 28, flexShrink: 0 }}>🤖</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 2, marginBottom: 6 }}>Wanderer AI</div>
+                    <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.74rem", fontWeight: 700, color: "var(--ochre)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6 }}>Wanderer AI Dispatch</div>
                     {aiLoading ? (
-                      <div style={{ fontSize: 13, color: "var(--muted)", fontStyle: "italic" }}>Generating personalized advice...</div>
+                      <div style={{ fontSize: "0.9rem", color: "var(--slate-subtle)", fontStyle: "italic" }}>Synthesizing personalized study recommendations...</div>
                     ) : (
-                      <div style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.7 }}>{aiAdvice}</div>
+                      <div style={{ fontSize: "0.94rem", color: "var(--slate)", lineHeight: 1.65 }}>{aiAdvice}</div>
                     )}
                   </div>
                 </div>
@@ -1197,7 +1236,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                           const activity = consistencyData[dateStr] || 0;
                           const intensity = Math.min(activity, 5);
                           const isToday = now.getDate() === day && now.getMonth() === month && now.getFullYear() === year;
-                          const colors = ["var(--surface3)", "rgba(0,212,170,0.15)", "rgba(0,212,170,0.3)", "rgba(0,212,170,0.5)", "rgba(0,212,170,0.75)", "var(--accent)"];
+                          const colors = ["var(--surface3)", "rgba(24,55,40,0.15)", "rgba(24,55,40,0.32)", "rgba(24,55,40,0.55)", "rgba(24,55,40,0.8)", "var(--pine)"];
 
                           slots.push(
                             <div
@@ -1206,14 +1245,14 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                               style={{
                                 height: 26,
                                 background: colors[intensity],
-                                border: isToday ? "1.5px solid var(--accent)" : "1px solid rgba(255,255,255,0.04)",
-                                borderRadius: 5,
+                                border: isToday ? "1.5px solid var(--ochre)" : "1px solid var(--contour-faint)",
+                                borderRadius: 3,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: 10.5,
                                 fontWeight: 700,
-                                color: intensity > 2 ? "#000" : "var(--text)",
+                                color: intensity > 2 ? "#fff" : "var(--ink)",
                                 transition: 'all 0.15s ease',
                                 cursor: 'pointer',
                                 position: 'relative'
@@ -1221,7 +1260,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                             >
                               {day}
                               {activity > 0 && (
-                                <div style={{ position: 'absolute', top: 2, right: 2, width: 3, height: 3, borderRadius: '50%', background: intensity > 2 ? '#000' : 'var(--accent)' }} />
+                                <div style={{ position: 'absolute', top: 2, right: 2, width: 4, height: 4, borderRadius: '50%', background: intensity > 2 ? '#fff' : 'var(--ochre)' }} />
                               )}
                             </div>
                           );
@@ -1231,12 +1270,12 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 10, color: "var(--muted)", paddingTop: 4, borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.76rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)", paddingTop: 8, borderTop: "1px solid var(--contour-faint)" }}>
                     <span>Active Study Heatmap</span>
-                    <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
                       <span>Less</span>
-                      {["var(--surface3)", "rgba(0,212,170,0.15)", "rgba(0,212,170,0.3)", "rgba(0,212,170,0.5)", "rgba(0,212,170,0.75)", "var(--accent)"].map((col, i) => (
-                        <div key={i} style={{ width: 7, height: 7, borderRadius: 1.5, background: col }} />
+                      {["var(--surface3)", "rgba(24,55,40,0.15)", "rgba(24,55,40,0.32)", "rgba(24,55,40,0.55)", "rgba(24,55,40,0.8)", "var(--pine)"].map((col, i) => (
+                        <div key={i} style={{ width: 8, height: 8, borderRadius: 2, background: col }} />
                       ))}
                       <span>More</span>
                     </div>
@@ -1251,7 +1290,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   <div className="wg-title">
                     <span>⏰ Upcoming Checkpoints</span>
                     <span
-                      style={{ marginLeft: "auto", fontSize: 12, color: "var(--accent)", cursor: "pointer" }}
+                      style={{ marginLeft: "auto", fontSize: "0.76rem", color: "var(--ochre)", cursor: "pointer", fontWeight: 700 }}
                       onClick={() => setActive("roadmap")}
                     >
                       My Path →
@@ -1259,19 +1298,19 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   </div>
                   {activeRoadmap && Array.isArray(activeRoadmap.phases) && activeRoadmap.phases.length > 0 ? (
                     activeRoadmap.phases.slice(0, 2).map((phase, pIdx) => (
-                      <div key={pIdx} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: 12, padding: "14px 16px", marginBottom: 12 }}>
+                      <div key={pIdx} style={{ background: "var(--paper)", border: "1px solid var(--contour-active)", borderRadius: 4, padding: "14px 16px", marginBottom: 12 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                          <div style={{ fontWeight: 700, fontSize: 14, color: "#ffffff" }}>{phase.title || `Phase ${pIdx + 1}`}</div>
-                          <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 9999, background: "rgba(99, 102, 241, 0.15)", color: "#a5b4fc", fontWeight: 700 }}>
+                          <div style={{ fontWeight: 600, fontSize: "0.94rem", color: "var(--pine)" }}>{phase.title || `Phase ${pIdx + 1}`}</div>
+                          <span style={{ fontSize: "0.72rem", padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.1)", color: "var(--pine)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
                             Phase {pIdx + 1}
                           </span>
                         </div>
-                        <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}>
+                        <div style={{ fontSize: "0.85rem", color: "var(--slate)", marginBottom: 10 }}>
                           {phase.theme || `${phase.courses?.length || 0} milestones to verify`}
                         </div>
                         <button
                           className="btn-primary"
-                          style={{ width: "100%", padding: "8px", fontSize: 13 }}
+                          style={{ width: "100%", padding: "9px", fontSize: "0.88rem" }}
                           onClick={() => {
                             setActive("checkpoint");
                             startTest(phase.title || activeRoadmap.goal || "DSA");
@@ -1359,7 +1398,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                 level: liveUser.year === "1st" ? "Beginner" : liveUser.year === "2nd" || liveUser.year === "3rd" ? "Intermediate" : "Advanced",
                 interests: enrolledCourses.length > 0 ? enrolledCourses : ["Web Development", "DSA", "System Design"],
               }}
-              onLaunchFocusStudio={(topic) => {
+              onLaunchFocusStudio={() => {
                 setActive("focusstudio");
               }}
               onProgressUpdate={() => {
@@ -1379,7 +1418,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   {/* 1. Active Pathway Milestone Tests */}
                   {activeRoadmap && Array.isArray(activeRoadmap.phases) && activeRoadmap.phases.length > 0 && (
                     <div style={{ marginBottom: 24 }}>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--pine)", marginBottom: 12, display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
                         <span>🗺️</span> Active Pathway Phase Checkpoints ({activeRoadmap.goal || activeRoadmap.title || "Curriculum"})
                       </div>
                       <div className="g2" style={{ gap: 14 }}>
@@ -1389,35 +1428,36 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                             <div
                               key={pIdx}
                               style={{
-                                background: isSelected ? "rgba(99, 102, 241, 0.12)" : "rgba(255,255,255,0.02)",
-                                border: `1.5px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
-                                borderRadius: 14,
+                                background: isSelected ? "rgba(24, 55, 40, 0.08)" : "var(--paper-card)",
+                                border: `1.5px solid ${isSelected ? "var(--pine)" : "var(--contour-active)"}`,
+                                borderRadius: 4,
                                 padding: "18px 20px",
                                 display: "flex",
                                 flexDirection: "column",
                                 justifyContent: "space-between",
-                                transition: "all 0.2s ease"
+                                transition: "all 0.2s ease",
+                                boxShadow: "var(--shadow)"
                               }}
                             >
                               <div>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                                  <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 8px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.15)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.3)" }}>
+                                  <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.1)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontFamily: "var(--font-mono)" }}>
                                     Phase {pIdx + 1}
                                   </span>
-                                  <span style={{ fontSize: 11.5, color: "var(--muted)" }}>
+                                  <span style={{ fontSize: "0.76rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                                     {phase.courses?.length || 3} Milestones
                                   </span>
                                 </div>
-                                <div style={{ fontSize: 14.5, fontWeight: 700, color: "#ffffff", marginBottom: 6, lineHeight: 1.3 }}>
+                                <div style={{ fontSize: "1.05rem", fontWeight: 600, color: "var(--pine)", marginBottom: 6, lineHeight: 1.3, fontFamily: "var(--font-serif)" }}>
                                   {phase.title || `Phase ${pIdx + 1}`}
                                 </div>
-                                <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 16, lineHeight: 1.4 }}>
+                                <div style={{ fontSize: "0.85rem", color: "var(--slate)", marginBottom: 16, lineHeight: 1.45 }}>
                                   {phase.theme || "Core competencies and foundational principles"}
                                 </div>
                               </div>
                               <button
                                 className="btn-primary"
-                                style={{ width: "100%", padding: "9px 14px", fontSize: 13 }}
+                                style={{ width: "100%", padding: "9px 14px", fontSize: "0.85rem", fontWeight: 700 }}
                                 onClick={() => startTest(phase.title || `Phase ${pIdx + 1}`)}
                                 disabled={testLoading}
                               >
@@ -1431,16 +1471,16 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   )}
 
                   {/* 2. Custom Topic / Custom Diagnostic Generator */}
-                  <div className="wg" style={{ marginBottom: 24, padding: "24px 26px" }}>
+                  <div style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, marginBottom: 24, padding: "24px 26px", boxShadow: "var(--shadow)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                      <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 800, color: "#ffffff" }}>
+                      <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.2rem", fontWeight: 600, color: "var(--pine)" }}>
                         ✨ Custom AI Topic Diagnostic
                       </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 6, background: "rgba(168, 85, 247, 0.15)", color: "#c084fc" }}>
+                      <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(199, 110, 26, 0.1)", color: "var(--ochre)", border: "1px solid rgba(199, 110, 26, 0.25)", fontFamily: "var(--font-mono)" }}>
                         🧠 Dynamic LLM Generation
                       </span>
                     </div>
-                    <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 14 }}>
+                    <div style={{ fontSize: "0.86rem", color: "var(--slate)", marginBottom: 14 }}>
                       Type any topic, concept, or interview domain to generate an instant 100% unique checkpoint test with AI evaluation.
                     </div>
 
@@ -1457,17 +1497,17 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                           flex: 1,
                           minWidth: 220,
                           padding: "11px 16px",
-                          borderRadius: 10,
-                          background: "var(--surface2)",
-                          border: "1px solid var(--border)",
-                          color: "var(--text)",
-                          fontSize: 13.5,
+                          borderRadius: 3,
+                          background: "var(--paper)",
+                          border: "1.5px solid var(--border)",
+                          color: "var(--ink)",
+                          fontSize: "0.88rem",
                           outline: "none"
                         }}
                       />
                       <button
                         className="btn-primary"
-                        style={{ padding: "11px 22px", fontSize: 13.5, whiteSpace: "nowrap" }}
+                        style={{ padding: "11px 22px", fontSize: "0.86rem", fontWeight: 700, whiteSpace: "nowrap" }}
                         onClick={() => startTest(customTopic.trim() || testSubject || "Software Engineering")}
                         disabled={testLoading || (!customTopic.trim() && !testSubject)}
                       >
@@ -1477,7 +1517,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
                     {/* Quick Suggestion Chips */}
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                      <span style={{ fontSize: 11.5, color: "var(--muted)", fontWeight: 600 }}>Quick Topics:</span>
+                      <span style={{ fontSize: "0.74rem", color: "var(--slate-subtle)", fontWeight: 700, fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>Quick Topics:</span>
                       {[
                         activeRoadmap?.goal || "Quantum Computing",
                         "Data Structures & Algorithms",
@@ -1494,11 +1534,12 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                           }}
                           style={{
                             padding: "4px 10px",
-                            borderRadius: 6,
-                            border: `1px solid ${testSubject === topic ? "var(--accent)" : "rgba(255,255,255,0.08)"}`,
-                            background: testSubject === topic ? "rgba(0, 212, 170, 0.12)" : "rgba(255,255,255,0.02)",
-                            color: testSubject === topic ? "var(--accent)" : "var(--muted)",
-                            fontSize: 11.5,
+                            borderRadius: 2,
+                            border: `1px solid ${testSubject === topic ? "var(--pine)" : "var(--border)"}`,
+                            background: testSubject === topic ? "var(--pine)" : "var(--paper)",
+                            color: testSubject === topic ? "var(--paper)" : "var(--slate)",
+                            fontSize: "0.74rem",
+                            fontFamily: "var(--font-mono)",
                             cursor: "pointer",
                             transition: "all 0.15s"
                           }}
@@ -1510,24 +1551,24 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   </div>
 
                   {/* 3. Past Results History */}
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--pine)", marginBottom: 12, display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
                     <span>📊</span> Past Checkpoint Diagnostics
                   </div>
                   {cpScores.length > 0 ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                       {cpScores.map((c, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: 10, padding: "10px 16px" }}>
-                          <span style={{ fontSize: 12, fontWeight: 800, color: "var(--accent)", width: 30 }}>{c.week}</span>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", flex: 1 }}>{c.subject || "Checkpoint Diagnostic"}</span>
-                          <div className="bar-track" style={{ width: 140 }}>
-                            <div className="bar-fill" style={{ width: `${c.s}%`, background: c.s >= 80 ? "var(--green)" : c.s >= 50 ? "var(--yellow)" : "var(--red)" }} />
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, padding: "12px 18px", boxShadow: "var(--shadow)" }}>
+                          <span style={{ fontSize: "0.76rem", fontWeight: 700, color: "var(--ochre)", width: 34, fontFamily: "var(--font-mono)" }}>{c.week}</span>
+                          <span style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--pine)", flex: 1, fontFamily: "var(--font-serif)" }}>{c.subject || "Checkpoint Diagnostic"}</span>
+                          <div className="bar-track" style={{ width: 140, height: 6, background: "var(--paper)", border: "1px solid var(--contour-faint)", borderRadius: 2 }}>
+                            <div className="bar-fill" style={{ width: `${c.s}%`, background: c.s >= 80 ? "var(--pine)" : c.s >= 50 ? "var(--ochre)" : "var(--red)" }} />
                           </div>
-                          <span style={{ fontWeight: 800, color: c.s >= 80 ? "var(--green)" : c.s >= 50 ? "var(--yellow)" : "var(--red)", width: 38, textAlign: "right", fontSize: 13 }}>
+                          <span style={{ fontWeight: 700, color: c.s >= 80 ? "var(--pine)" : c.s >= 50 ? "var(--ochre)" : "var(--red)", width: 44, textAlign: "right", fontSize: "0.85rem", fontFamily: "var(--font-mono)" }}>
                             {c.s}%
                           </span>
                           <button
-                            className="lp-btn lp-btn-secondary lp-btn-sm"
-                            style={{ padding: "4px 10px", fontSize: 11.5 }}
+                            className="btn-outline"
+                            style={{ padding: "4px 10px", fontSize: "0.78rem" }}
                             onClick={() => startTest(c.subject)}
                           >
                             Retake 🔁
@@ -1536,14 +1577,14 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                       ))}
                     </div>
                   ) : (
-                    <div style={{ color: "var(--muted)", fontSize: 13, padding: "12px 0" }}>No checkpoint results recorded yet. Launch your first test above!</div>
+                    <div style={{ color: "var(--slate-subtle)", fontSize: "0.88rem", padding: "12px 0", fontFamily: "var(--font-mono)" }}>No checkpoint results recorded yet. Launch your first test above!</div>
                   )}
                 </>
               ) : testState.submitting ? (
                 <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center", padding: "60px 0" }}>
                   <div style={{ fontSize: 48, marginBottom: 16, animation: "spin 1s linear infinite", display: "inline-block" }}>⏳</div>
-                  <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--accent)" }}>Submitting your answers...</div>
-                  <div style={{ fontSize: 14, color: "var(--muted)", marginTop: 8 }}>Calculating your results...</div>
+                  <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.35rem", fontWeight: 600, color: "var(--pine)" }}>Submitting your answers...</div>
+                  <div style={{ fontSize: "0.88rem", color: "var(--slate)", marginTop: 8 }}>Calculating your results...</div>
                 </div>
               ) : testState.score !== null ? (
                 <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px 0" }}>
@@ -1552,15 +1593,15 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                     <div style={{ fontSize: 64, marginBottom: 8 }}>
                       {testState.score < 0 ? "⚠️" : testState.score >= 80 ? "🏆" : testState.score >= 50 ? "⚡" : "❌"}
                     </div>
-                    <div style={{ fontFamily: "var(--display)", fontSize: 44, fontWeight: 900, color: testState.score < 0 ? "var(--red)" : testState.score >= 80 ? "var(--green)" : testState.score >= 50 ? "var(--yellow)" : "var(--red)" }}>
+                    <div style={{ fontFamily: "var(--font-serif)", fontSize: "2.8rem", fontWeight: 600, color: testState.score < 0 ? "var(--red)" : testState.score >= 80 ? "var(--pine)" : testState.score >= 50 ? "var(--ochre)" : "var(--red)" }}>
                       {testState.score < 0 ? "Error" : `${testState.score}%`}
                     </div>
-                    <div style={{ fontSize: 15, color: "var(--muted)", margin: "6px 0 14px" }}>
+                    <div style={{ fontSize: "0.95rem", color: "var(--slate)", margin: "6px 0 14px" }}>
                       {testState.score >= 0 ? `${testState.correct} out of ${testState.total} correct` : "Could not submit. Try again."}
                     </div>
                     {/* Feedback chip */}
                     {testState.score >= 0 && (
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 18px", borderRadius: 99, border: `1.5px solid ${testState.score >= 80 ? "var(--green)" : testState.score >= 50 ? "var(--yellow)" : "var(--red)"}`, background: testState.score >= 80 ? "rgba(34,197,94,0.1)" : testState.score >= 50 ? "rgba(245,158,11,0.1)" : "rgba(239,68,68,0.1)", fontSize: 13.5, fontWeight: 600, color: testState.score >= 80 ? "var(--green)" : testState.score >= 50 ? "var(--yellow)" : "var(--red)" }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 18px", borderRadius: 3, border: `1.5px solid ${testState.score >= 80 ? "var(--pine)" : testState.score >= 50 ? "var(--ochre)" : "var(--red)"}`, background: testState.score >= 80 ? "rgba(24,55,40,0.1)" : testState.score >= 50 ? "rgba(199,110,26,0.1)" : "rgba(239,68,68,0.1)", fontSize: "0.86rem", fontWeight: 600, color: testState.score >= 80 ? "var(--pine)" : testState.score >= 50 ? "var(--ochre)" : "var(--red)" }}>
                         {testState.score >= 80 ? "✅ Exceptional! Ready for advanced milestone projects." : testState.score >= 50 ? "⚠️ Moderate — revision recommended for missed concepts." : "🔃 Below 50% — consider targeted review in Focus Studio."}
                       </div>
                     )}
@@ -1568,11 +1609,11 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
                   {/* ML Recommendation Card */}
                   {testState.analysis?.recommendation && (
-                    <div style={{ background: "rgba(99,102,241,0.08)", border: "1.5px solid rgba(99,102,241,0.3)", borderRadius: 14, padding: "16px 20px", marginBottom: 24 }}>
-                      <div style={{ fontSize: 13, fontWeight: 800, color: "#a5b4fc", display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <div style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderLeft: "3px solid var(--ochre)", borderRadius: 4, padding: "16px 20px", marginBottom: 24, boxShadow: "var(--shadow)" }}>
+                      <div style={{ fontSize: "0.74rem", fontWeight: 700, color: "var(--ochre)", display: "flex", alignItems: "center", gap: 6, marginBottom: 4, textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>
                         <span>🤖</span> AI Diagnostic & ML Recommendations
                       </div>
-                      <div style={{ fontSize: 13.5, color: "var(--text)", lineHeight: 1.5 }}>
+                      <div style={{ fontSize: "0.9rem", color: "var(--slate)", lineHeight: 1.6 }}>
                         {testState.analysis.recommendation}
                       </div>
                     </div>
@@ -1582,13 +1623,13 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   {testState.score >= 0 && (
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 24 }}>
                       {[
-                        { label: "Accuracy Score", val: `${testState.score}%`, color: testState.score >= 80 ? "var(--green)" : testState.score >= 50 ? "var(--yellow)" : "var(--red)" },
-                        { label: "Correct Answers", val: `${testState.correct}/${testState.total}`, color: "var(--accent)" },
-                        { label: "Tested Subject", val: testSubject.length > 18 ? testSubject.substring(0, 16) + '...' : testSubject, color: "var(--accent3)" },
+                        { label: "Accuracy Score", val: `${testState.score}%`, color: testState.score >= 80 ? "var(--pine)" : testState.score >= 50 ? "var(--ochre)" : "var(--red)" },
+                        { label: "Correct Answers", val: `${testState.correct}/${testState.total}`, color: "var(--pine)" },
+                        { label: "Tested Subject", val: testSubject.length > 18 ? testSubject.substring(0, 16) + '...' : testSubject, color: "var(--ochre)" },
                       ].map(s => (
-                        <div key={s.label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "14px", textAlign: "center" }}>
-                          <div style={{ fontSize: 20, fontWeight: 900, color: s.color, fontFamily: "var(--display)" }}>{s.val}</div>
-                          <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 3 }}>{s.label}</div>
+                        <div key={s.label} style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, padding: "14px", textAlign: "center", boxShadow: "var(--shadow)" }}>
+                          <div style={{ fontSize: "1.5rem", fontWeight: 600, color: s.color, fontFamily: "var(--font-serif)" }}>{s.val}</div>
+                          <div style={{ fontSize: "0.74rem", color: "var(--slate-subtle)", marginTop: 3, fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>{s.label}</div>
                         </div>
                       ))}
                     </div>
@@ -1597,48 +1638,48 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   {/* Question-by-Question AI Review & Explanations */}
                   {Array.isArray(testState.review) && testState.review.length > 0 && (
                     <div style={{ marginBottom: 28 }}>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--pine)", marginBottom: 12, display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
                         <span>📋</span> Question-by-Question Evaluation & Explanations
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                         {testState.review.map((item, rIdx) => (
-                          <div key={rIdx} style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${item.isCorrect ? "rgba(34,197,94,0.35)" : "rgba(239,68,68,0.35)"}`, borderRadius: 12, padding: "16px 18px" }}>
+                          <div key={rIdx} style={{ background: "var(--paper-card)", border: `1.5px solid ${item.isCorrect ? "var(--pine)" : "var(--red)"}`, borderRadius: 4, padding: "16px 18px", boxShadow: "var(--shadow)" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
-                              <div style={{ fontSize: 13.5, fontWeight: 700, color: "#ffffff", lineHeight: 1.4 }}>
+                              <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--pine)", lineHeight: 1.4, fontFamily: "var(--font-serif)" }}>
                                 {rIdx + 1}. {item.q}
                               </div>
-                              <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 8px", borderRadius: 9999, flexShrink: 0, background: item.isCorrect ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)", color: item.isCorrect ? "var(--green)" : "var(--red)" }}>
+                              <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, flexShrink: 0, background: item.isCorrect ? "rgba(24,55,40,0.1)" : "rgba(239,68,68,0.1)", color: item.isCorrect ? "var(--pine)" : "var(--red)", fontFamily: "var(--font-mono)" }}>
                                 {item.isCorrect ? "✓ Correct" : "✗ Incorrect"}
                               </span>
                             </div>
 
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 6, marginBottom: 10, fontSize: 12 }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 6, marginBottom: 10, fontSize: "0.82rem" }}>
                               {item.opts.map((opt, oIdx) => {
                                 const isUser = item.userAns === oIdx;
                                 const isTarget = item.correctAns === oIdx;
-                                let bg = "rgba(255,255,255,0.02)";
-                                let col = "var(--muted)";
+                                let bg = "var(--paper)";
+                                let col = "var(--slate)";
                                 let bdr = "var(--border)";
                                 if (isTarget) {
-                                  bg = "rgba(34,197,94,0.12)";
-                                  col = "var(--green)";
-                                  bdr = "rgba(34,197,94,0.4)";
+                                  bg = "rgba(24, 55, 40, 0.1)";
+                                  col = "var(--pine)";
+                                  bdr = "var(--pine)";
                                 } else if (isUser && !item.isCorrect) {
-                                  bg = "rgba(239,68,68,0.12)";
+                                  bg = "rgba(239, 68, 68, 0.1)";
                                   col = "var(--red)";
-                                  bdr = "rgba(239,68,68,0.4)";
+                                  bdr = "var(--red)";
                                 }
                                 return (
-                                  <div key={oIdx} style={{ padding: "6px 10px", borderRadius: 6, background: bg, border: `1px solid ${bdr}`, color: col }}>
-                                    <strong>{String.fromCharCode(65 + oIdx)}.</strong> {opt} {isUser && <span style={{ fontSize: 10, fontWeight: 700 }}>(Your choice)</span>} {isTarget && <span style={{ fontSize: 10, fontWeight: 700 }}>✓ Key</span>}
+                                  <div key={oIdx} style={{ padding: "6px 10px", borderRadius: 2, background: bg, border: `1px solid ${bdr}`, color: col, fontFamily: "var(--font-mono)" }}>
+                                    <strong>{String.fromCharCode(65 + oIdx)}.</strong> {opt} {isUser && <span style={{ fontSize: "0.68rem", fontWeight: 700 }}>(Your choice)</span>} {isTarget && <span style={{ fontSize: "0.68rem", fontWeight: 700 }}>✓ Key</span>}
                                   </div>
                                 );
                               })}
                             </div>
 
                             {item.explanation && (
-                              <div style={{ fontSize: 12, color: "#a5b4fc", background: "rgba(99,102,241,0.06)", borderLeft: "3px solid #6366f1", padding: "6px 10px", borderRadius: "0 6px 6px 0", lineHeight: 1.4 }}>
-                                💡 <strong>Explanation:</strong> {item.explanation}
+                              <div style={{ fontSize: "0.84rem", color: "var(--slate)", background: "var(--paper)", borderLeft: "3px solid var(--ochre)", padding: "8px 12px", borderRadius: "0 3px 3px 0", lineHeight: 1.5 }}>
+                                <strong style={{ color: "var(--pine)" }}>💡 Explanation:</strong> {item.explanation}
                               </div>
                             )}
                           </div>
@@ -1649,14 +1690,14 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
                   {/* Action buttons */}
                   <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-                    <button className="btn-primary" style={{ padding: "10px 24px", fontSize: 13.5 }} onClick={resetTest}>
+                    <button className="btn-primary" style={{ padding: "10px 24px", fontSize: "0.88rem" }} onClick={resetTest}>
                       🔁 Retake or Choose Subject
                     </button>
-                    <button className="btn-outline" style={{ padding: "10px 24px", fontSize: 13.5 }}
+                    <button className="btn-outline" style={{ padding: "10px 24px", fontSize: "0.88rem" }}
                       onClick={() => { resetTest(); setActive("dashboard"); }}>
                       📊 View Dashboard
                     </button>
-                    <button className="btn-outline" style={{ padding: "10px 24px", fontSize: 13.5, borderColor: "var(--accent)", color: "var(--accent)" }}
+                    <button className="btn-outline" style={{ padding: "10px 24px", fontSize: "0.88rem", borderColor: "var(--pine)", color: "var(--pine)" }}
                       onClick={() => { resetTest(); setActive("roadmap"); }}>
                       🗺️ View Pathway
                     </button>
@@ -1665,43 +1706,50 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
               ) : (
                 <div style={{ maxWidth: 660, margin: "0 auto" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                    <span style={{ fontSize: 13.5, color: "var(--muted)" }}>Question {testState.q + 1} of {testQuestions.length}</span>
-                    <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: 13 }}>{testSubject} · {Math.round((testState.q / (testQuestions.length || 1)) * 100)}% done</span>
+                    <span style={{ fontSize: "0.84rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>Question {testState.q + 1} of {testQuestions.length}</span>
+                    <span style={{ color: "var(--ochre)", fontWeight: 700, fontSize: "0.84rem", fontFamily: "var(--font-mono)" }}>{testSubject} · {Math.round((testState.q / (testQuestions.length || 1)) * 100)}% done</span>
                   </div>
-                  <div className="bar-track" style={{ marginBottom: 22 }}><div className="bar-fill" style={{ width: `${(testState.q / (testQuestions.length || 1)) * 100}%`, background: "var(--accent)" }} /></div>
-                  <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "26px 28px" }}>
+                  <div className="bar-track" style={{ marginBottom: 22, height: 6, background: "var(--paper)", border: "1px solid var(--contour-faint)", borderRadius: 2 }}><div className="bar-fill" style={{ width: `${(testState.q / (testQuestions.length || 1)) * 100}%`, background: "var(--pine)" }} /></div>
+                  <div style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, padding: "26px 28px", boxShadow: "var(--shadow)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                      <div style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 2 }}>Question {testState.q + 1}</div>
+                      <div style={{ fontSize: "0.74rem", fontWeight: 700, color: "var(--ochre)", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "var(--font-mono)" }}>Question {testState.q + 1}</div>
                       {testQuestions[testState.q]?.type && (
                         <span style={{
-                          fontSize: 10.5,
-                          fontWeight: 800,
-                          padding: "3px 9px",
-                          borderRadius: 6,
-                          background: testQuestions[testState.q].type === 'conceptual' ? 'rgba(56,189,248,0.15)' : testQuestions[testState.q].type === 'code_analysis' ? 'rgba(168,85,247,0.15)' : testQuestions[testState.q].type === 'applied_scenario' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
-                          color: testQuestions[testState.q].type === 'conceptual' ? '#38bdf8' : testQuestions[testState.q].type === 'code_analysis' ? '#c084fc' : testQuestions[testState.q].type === 'applied_scenario' ? '#34d399' : '#fbbf24',
-                          textTransform: 'uppercase',
-                          letterSpacing: 0.5
+                          fontSize: "0.72rem",
+                          fontWeight: 700,
+                          padding: "2px 8px",
+                          borderRadius: 2,
+                          background: "rgba(24,55,40,0.1)",
+                          color: "var(--pine)",
+                          border: "1px solid var(--contour-active)",
+                          fontFamily: "var(--font-mono)",
+                          textTransform: 'uppercase'
                         }}>
                           {testQuestions[testState.q].type === 'conceptual' ? '🧠 Conceptual' : testQuestions[testState.q].type === 'code_analysis' ? '💻 Logic Analysis' : testQuestions[testState.q].type === 'applied_scenario' ? '🔬 Applied Scenario' : '⚙️ Edge Diagnostics'}
                         </span>
                       )}
                     </div>
-                    <div style={{ fontFamily: "var(--display)", fontSize: 17.5, fontWeight: 700, marginBottom: 22, lineHeight: 1.6, color: "#ffffff" }}>{testQuestions[testState.q]?.q}</div>
+                    <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", fontWeight: 600, marginBottom: 22, lineHeight: 1.5, color: "var(--pine)" }}>{testQuestions[testState.q]?.q}</div>
                     {testQuestions[testState.q]?.opts.map((opt, oi) => (
                       <button key={oi} onClick={() => answerQ(oi)}
                         disabled={selectedAnswer !== null}
                         style={{
-                          width: "100%", padding: "12px 18px",
-                          background: selectedAnswer === oi ? "rgba(0,212,170,0.15)" : "var(--surface2)",
-                          border: `1.5px solid ${selectedAnswer === oi ? "var(--accent)" : "var(--border)"}`,
-                          borderRadius: 10, color: selectedAnswer === oi ? "var(--accent)" : "var(--text)",
-                          fontSize: 13.5, textAlign: "left", marginBottom: 10,
+                          width: "100%",
+                          padding: "12px 18px",
+                          background: selectedAnswer === oi ? "rgba(24,55,40,0.1)" : "var(--paper)",
+                          border: `1.5px solid ${selectedAnswer === oi ? "var(--pine)" : "var(--border)"}`,
+                          borderRadius: 3,
+                          color: selectedAnswer === oi ? "var(--pine)" : "var(--ink)",
+                          fontSize: "0.88rem",
+                          textAlign: "left",
+                          marginBottom: 10,
                           cursor: selectedAnswer !== null ? "default" : "pointer",
-                          transition: "all 0.2s", fontFamily: "var(--font)",
-                          transform: selectedAnswer === oi ? "scale(1.01)" : "scale(1)",
+                          transition: "all 0.15s ease",
+                          fontFamily: "var(--font-sans)",
+                          display: "flex",
+                          alignItems: "center"
                         }}>
-                        <span style={{ fontWeight: 700, marginRight: 10, color: "var(--accent)" }}>{String.fromCharCode(65 + oi)}.</span>{opt}
+                        <span style={{ fontWeight: 700, marginRight: 10, color: "var(--ochre)", fontFamily: "var(--font-mono)" }}>{String.fromCharCode(65 + oi)}.</span>{opt}
                       </button>
                     ))}
                   </div>
@@ -1729,32 +1777,32 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                 justifyContent: "space-between",
                 flexWrap: "wrap",
                 gap: 16,
-                padding: "16px 24px",
-                background: "radial-gradient(circle at top left, rgba(0, 212, 170, 0.08), var(--surface))",
-                border: "1.5px solid rgba(0, 212, 170, 0.35)",
-                borderRadius: 16,
+                padding: "18px 24px",
+                background: "var(--paper-card)",
+                border: "1.5px solid var(--contour-active)",
+                borderRadius: 4,
                 marginBottom: 22,
-                boxShadow: "0 6px 24px rgba(0,0,0,0.25)"
+                boxShadow: "var(--shadow)"
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   <div style={{
-                    width: 14,
-                    height: 14,
+                    width: 12,
+                    height: 12,
                     borderRadius: "50%",
-                    background: focus.score > 70 ? "var(--accent)" : focus.score > 40 ? "var(--yellow)" : "var(--red)",
-                    boxShadow: `0 0 12px ${focus.score > 70 ? "var(--accent)" : focus.score > 40 ? "var(--yellow)" : "var(--red)"}`,
+                    background: focus.score > 70 ? "var(--pine)" : focus.score > 40 ? "var(--ochre)" : "var(--red)",
+                    boxShadow: `0 0 8px ${focus.score > 70 ? "var(--pine)" : focus.score > 40 ? "var(--ochre)" : "var(--red)"}`,
                     flexShrink: 0
                   }} />
                   <div>
                     <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 26, fontWeight: 900, fontFamily: "var(--display)", color: focus.score > 70 ? "var(--accent)" : focus.score > 40 ? "var(--yellow)" : "var(--red)" }}>
+                      <span style={{ fontSize: "1.85rem", fontWeight: 600, fontFamily: "var(--font-serif)", color: focus.score > 70 ? "var(--pine)" : focus.score > 40 ? "var(--ochre)" : "var(--red)" }}>
                         {focus.score}%
                       </span>
-                      <span style={{ fontSize: 13, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--muted)" }}>
+                      <span style={{ fontSize: "0.74rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                         REAL-TIME FOCUS TELEMETRY ⏱️
                       </span>
                     </div>
-                    <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 2 }}>
+                    <div style={{ fontSize: "0.88rem", color: "var(--slate)", marginTop: 2 }}>
                       {focus.score > 70 ? "🔥 Optimum concentration level maintained. Zero active distraction." : focus.score > 40 ? "⚠️ Moderate focus. Minimize switching between external applications." : "🚨 High distraction index detected. Launch a Pomodoro sprint to reset concentration."}
                     </div>
                   </div>
@@ -1762,13 +1810,13 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
                 <div style={{
                   paddingLeft: 20,
-                  borderLeft: "1px solid var(--border)",
+                  borderLeft: "1px solid var(--contour-faint)",
                   textAlign: "right"
                 }}>
-                  <div style={{ fontSize: 22, fontWeight: 900, fontFamily: "var(--display)", color: "#ffffff" }}>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 600, fontFamily: "var(--font-serif)", color: "var(--pine)" }}>
                     {focus.tabSwitches}
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "var(--muted)", letterSpacing: 1 }}>
+                  <div style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", color: "var(--slate-subtle)", letterSpacing: "0.04em", fontFamily: "var(--font-mono)" }}>
                     Tab Switches
                   </div>
                 </div>
@@ -1780,7 +1828,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   <FocusStudio
                     isModal={false}
                     defaultTopic={roadmapSubject ? `${roadmapSubject.toUpperCase()} Deep Work` : "Deep Focus Session"}
-                    onSessionComplete={({ durationMinutes, topic, session, streak: newStreak }) => {
+                    onSessionComplete={({ streak: newStreak }) => {
                       fetchFocusData();
                       fetchDashboardData();
                       if (newStreak) setStreak(newStreak);
@@ -1931,25 +1979,26 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
               {/* Developer Hero Card */}
               <div style={{
-                background: "radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 60%), var(--surface)",
-                border: "1.5px solid rgba(99, 102, 241, 0.35)",
-                borderRadius: 20,
-                padding: "30px 34px",
+                background: "var(--paper-card)",
+                border: "1.5px solid var(--contour-active)",
+                borderRadius: 4,
+                padding: "28px 32px",
                 marginBottom: 24,
-                boxShadow: "0 12px 35px rgba(0,0,0,0.3)",
+                boxShadow: "var(--shadow)",
                 display: "flex",
                 gap: 24,
                 alignItems: "center",
                 flexWrap: "wrap"
               }}>
-                {/* Avatar with Glow */}
+                {/* Avatar with Pine Circle */}
                 <div style={{
-                  width: 90, height: 90, borderRadius: "50%",
-                  background: "linear-gradient(135deg, var(--accent), #6366f1)",
+                  width: 86, height: 86, borderRadius: "50%",
+                  background: "var(--pine)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 32, fontWeight: 900, color: "#ffffff",
-                  boxShadow: "0 0 25px rgba(0, 212, 170, 0.35)", flexShrink: 0,
-                  overflow: "hidden"
+                  fontSize: 28, fontWeight: 700, color: "var(--paper)",
+                  boxShadow: "0 4px 16px rgba(24, 55, 40, 0.2)", flexShrink: 0,
+                  overflow: "hidden",
+                  fontFamily: "var(--font-mono)"
                 }}>
                   {liveUser.profilePic ? (
                     <img src={liveUser.profilePic} alt={liveUser.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -1960,33 +2009,33 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
                 {/* Profile Details */}
                 <div style={{ flex: 1, minWidth: 260 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
-                    <h2 style={{ fontFamily: "var(--display)", fontSize: 24, fontWeight: 800, margin: 0, color: "#ffffff" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+                    <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.65rem", fontWeight: 600, margin: 0, color: "var(--pine)" }}>
                       {liveUser.name || "Student Developer"}
                     </h2>
-                    <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 10px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.15)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.3)" }}>
+                    <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.08)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontFamily: "var(--font-mono)" }}>
                       ✓ Verified Learner
                     </span>
                   </div>
 
-                  <div style={{ fontSize: 13.5, color: "#a5b4fc", fontWeight: 600, marginBottom: 8 }}>
+                  <div style={{ fontSize: "0.92rem", color: "var(--slate)", fontWeight: 500, marginBottom: 8 }}>
                     🎓 {liveUser.branch || "Computer Science"} Engineering · {liveUser.year || "4th Semester"} · {liveUser.education || "GLA University"}
                   </div>
 
-                  <p style={{ fontSize: 13.5, color: "var(--muted)", margin: "0 0 14px", lineHeight: 1.6, maxWidth: 650 }}>
+                  <p style={{ fontSize: "0.92rem", color: "var(--slate-subtle)", margin: "0 0 14px", lineHeight: 1.6, maxWidth: 650 }}>
                     {liveUser.about || `Passionate technologist dedicated to mastering ${roadmapSubject || liveUser.goal || "Full-Stack Development, Data Structures, and Adaptive AI Systems"}. Actively architecting hands-on projects and verifying competencies through Wanderer.`}
                   </p>
 
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     {liveUser.email && (
-                      <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 8, background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", color: "var(--text)" }}>
+                      <span style={{ fontSize: "0.78rem", padding: "4px 10px", borderRadius: 2, background: "var(--paper)", border: "1px solid var(--border)", color: "var(--ink)", fontFamily: "var(--font-mono)" }}>
                         📧 {liveUser.email}
                       </span>
                     )}
-                    <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 8, background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", color: "var(--text)" }}>
+                    <span style={{ fontSize: "0.78rem", padding: "4px 10px", borderRadius: 2, background: "var(--paper)", border: "1px solid var(--border)", color: "var(--ink)", fontFamily: "var(--font-mono)" }}>
                       🎯 Goal: {roadmapSubject || liveUser.goal || "Software Engineering"}
                     </span>
-                    <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 8, background: "rgba(245, 158, 11, 0.1)", border: "1px solid rgba(245, 158, 11, 0.3)", color: "#fde68a" }}>
+                    <span style={{ fontSize: "0.78rem", padding: "4px 10px", borderRadius: 2, background: "rgba(199, 110, 26, 0.1)", border: "1px solid rgba(199, 110, 26, 0.3)", color: "var(--ochre)", fontFamily: "var(--font-mono)", fontWeight: 700 }}>
                       🔥 {streak} Day Streak
                     </span>
                   </div>
@@ -1996,7 +2045,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10, flexShrink: 0 }}>
                   <button
                     className="btn-primary"
-                    style={{ padding: "10px 20px", fontSize: 13.5 }}
+                    style={{ padding: "10px 20px", fontSize: "0.9rem" }}
                     onClick={() => setModal({ type: "editProfile" })}
                   >
                     ✏️ Edit Profile Info
@@ -2007,17 +2056,17 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
               {/* Quantified Competency Telemetry (4 Cards) */}
               <div className="g4" style={{ marginBottom: 24 }}>
                 {[
-                  { label: "Core Skills", val: `${(liveUser.skills?.split(',').filter(Boolean).length || 6) + 4}+`, sub: "Verified Competencies", icon: "🧠", color: "var(--accent)" },
-                  { label: "Projects Built", val: `${roadPath.filter(n => n.status === "done").length || 1}`, sub: "Hands-on Deliverables", icon: "🛠️", color: "var(--accent3)" },
-                  { label: "Deep Focus Time", val: `${formatFocusTime(focusStats.totalMinutes || 45)}`, sub: "Distraction-Free Study", icon: "⏱️", color: "var(--accent4)" },
-                  { label: "Knowledge Rating", val: `${stats.avgScore || (analyticsData.length ? Math.round(analyticsData.reduce((a, b) => a + b.score, 0) / analyticsData.length) : 85)}%`, sub: "Checkpoint Accuracy", icon: "🏆", color: "#38bdf8" },
+                  { label: "Core Skills", val: `${(liveUser.skills?.split(',').filter(Boolean).length || 6) + 4}+`, sub: "Verified Competencies", icon: "🧠", color: "var(--pine)" },
+                  { label: "Projects Built", val: `${roadPath.filter(n => n.status === "done").length || 1}`, sub: "Hands-on Deliverables", icon: "🛠️", color: "var(--ochre)" },
+                  { label: "Deep Focus Time", val: `${formatFocusTime(focusStats.totalMinutes || 45)}`, sub: "Distraction-Free Study", icon: "⏱️", color: "var(--pine)" },
+                  { label: "Knowledge Rating", val: `${stats.avgScore || (analyticsData.length ? Math.round(analyticsData.reduce((a, b) => a + b.score, 0) / analyticsData.length) : 85)}%`, sub: "Checkpoint Accuracy", icon: "🏆", color: "var(--ochre)" },
                 ].map(s => (
                   <div className="wg" key={s.label} style={{ padding: "20px" }}>
                     <div className="wg-title" style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       <span>{s.icon}</span> {s.label}
                     </div>
-                    <div style={{ fontSize: 28, fontWeight: 900, color: s.color, fontFamily: "var(--display)", marginTop: 6 }}>{s.val}</div>
-                    <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>{s.sub}</div>
+                    <div style={{ fontSize: "1.85rem", fontWeight: 600, color: s.color, fontFamily: "var(--font-serif)", marginTop: 6 }}>{s.val}</div>
+                    <div style={{ fontSize: "0.82rem", color: "var(--slate-subtle)", marginTop: 4 }}>{s.sub}</div>
                   </div>
                 ))}
               </div>
@@ -2105,18 +2154,18 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                     <div className="wg" style={{ padding: "26px 28px", display: "flex", flexDirection: "column" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                         <div>
-                          <div className="wg-title" style={{ fontSize: 17, margin: 0 }}>Skill Profile</div>
-                          <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 3 }}>
-                            {activeRoadmap ? `Active Pathway: ${roadmapSubject || activeRoadmap.goal || activeRoadmap.title}` : "Estimated skill levels across your domains"}
+                          <div className="wg-title" style={{ fontSize: "0.82rem", margin: 0 }}>Skill Profile Telemetry</div>
+                          <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", marginTop: 3 }}>
+                            {activeRoadmap ? `Active Pathway: ${roadmapSubject || activeRoadmap.goal || activeRoadmap.title}` : "Estimated skill levels across your curriculum"}
                           </div>
                         </div>
                         {/* Legend */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 12, fontWeight: 600 }}>
-                          <span style={{ display: "flex", alignItems: "center", gap: 5, color: "#c084fc" }}>
-                            <span style={{ width: 10, height: 10, borderRadius: 2, background: "#8b5cf6", border: "1px solid #c084fc" }} /> Current
+                        <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: "0.78rem", fontWeight: 600, fontFamily: "var(--font-mono)" }}>
+                          <span style={{ display: "flex", alignItems: "center", gap: 5, color: "var(--pine)" }}>
+                            <span style={{ width: 10, height: 10, borderRadius: 2, background: "var(--pine)" }} /> Current
                           </span>
-                          <span style={{ display: "flex", alignItems: "center", gap: 5, color: "#22d3ee" }}>
-                            <span style={{ width: 10, height: 10, borderRadius: 2, border: "2px dashed #06b6d4", background: "rgba(6, 182, 212, 0.2)" }} /> After Path
+                          <span style={{ display: "flex", alignItems: "center", gap: 5, color: "var(--ochre)" }}>
+                            <span style={{ width: 10, height: 10, borderRadius: 2, border: "1.5px dashed var(--ochre)", background: "rgba(199, 110, 26, 0.15)" }} /> Target Path
                           </span>
                         </div>
                       </div>
@@ -2126,13 +2175,9 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                         <svg viewBox="0 0 340 310" style={{ width: "100%", maxWidth: 340, height: "auto", overflow: "visible" }}>
                           <defs>
                             <linearGradient id="currentAreaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.45" />
-                              <stop offset="100%" stopColor="#6366f1" stopOpacity="0.2" />
+                              <stop offset="0%" stopColor="#183728" stopOpacity="0.3" />
+                              <stop offset="100%" stopColor="#183728" stopOpacity="0.1" />
                             </linearGradient>
-                            <filter id="cyanGlow" x="-20%" y="-20%" width="140%" height="140%">
-                              <feGaussianBlur stdDeviation="3" result="blur" />
-                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                            </filter>
                           </defs>
 
                           {/* Concentric Grid Lines & Level Numbers */}
@@ -2148,16 +2193,17 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                                 <polygon
                                   points={hexPoints}
                                   fill="none"
-                                  stroke="rgba(255, 255, 255, 0.08)"
+                                  stroke="var(--contour-faint)"
                                   strokeWidth="1"
                                 />
                                 <text
                                   x={cx}
                                   y={cy - r + 3}
-                                  fill="var(--muted)"
+                                  fill="var(--slate-subtle)"
                                   fontSize="9"
                                   textAnchor="middle"
                                   fontWeight="600"
+                                  fontFamily="var(--font-mono)"
                                 >
                                   {level}
                                 </text>
@@ -2181,15 +2227,16 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                                   y1={cy}
                                   x2={xEnd}
                                   y2={yEnd}
-                                  stroke="rgba(255, 255, 255, 0.12)"
+                                  stroke="var(--contour-faint)"
                                   strokeWidth="1"
                                 />
                                 <text
                                   x={xLabel}
                                   y={yLabel}
-                                  fill="var(--text)"
+                                  fill="var(--pine)"
                                   fontSize="10.5"
                                   fontWeight="600"
+                                  fontFamily="var(--font-sans)"
                                   textAnchor={anchor}
                                 >
                                   {dom.shortLabel}
@@ -2198,7 +2245,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                             );
                           })}
 
-                          {/* After Path Projected Polygon (Cyan Dashed) */}
+                          {/* Target Path Projected Polygon (Ochre Dashed) */}
                           {(() => {
                             const projPoints = domains.map((dom, idx) => {
                               const angle = -Math.PI / 2 + (idx * 2 * Math.PI) / numAxes;
@@ -2207,11 +2254,11 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                             }).join(" ");
 
                             return (
-                              <g filter="url(#cyanGlow)">
+                              <g>
                                 <polygon
                                   points={projPoints}
-                                  fill="rgba(6, 182, 212, 0.12)"
-                                  stroke="#06b6d4"
+                                  fill="rgba(199, 110, 26, 0.12)"
+                                  stroke="var(--ochre)"
                                   strokeWidth="2"
                                   strokeDasharray="4 4"
                                 />
@@ -2225,8 +2272,8 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                                       key={`proj-${idx}`}
                                       cx={px}
                                       cy={py}
-                                      r="4.5"
-                                      fill="#06b6d4"
+                                      r="4"
+                                      fill="var(--ochre)"
                                       stroke="#ffffff"
                                       strokeWidth="1.5"
                                     />
@@ -2236,7 +2283,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                             );
                           })()}
 
-                          {/* Current Skill Polygon (Purple Solid) */}
+                          {/* Current Skill Polygon (Pine Solid) */}
                           {(() => {
                             const curPoints = domains.map((dom, idx) => {
                               const angle = -Math.PI / 2 + (idx * 2 * Math.PI) / numAxes;
@@ -2249,7 +2296,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                                 <polygon
                                   points={curPoints}
                                   fill="url(#currentAreaGrad)"
-                                  stroke="#a855f7"
+                                  stroke="var(--pine)"
                                   strokeWidth="2.5"
                                 />
                                 {domains.map((dom, idx) => {
@@ -2263,7 +2310,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                                       cx={px}
                                       cy={py}
                                       r="4"
-                                      fill="#a855f7"
+                                      fill="var(--pine)"
                                       stroke="#ffffff"
                                       strokeWidth="1.5"
                                     />
@@ -2281,13 +2328,13 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                       <div>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                           <div>
-                            <div className="wg-title" style={{ fontSize: 17, margin: 0 }}>Progress by Domain</div>
-                            <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 3, marginBottom: 18 }}>
+                            <div className="wg-title" style={{ fontSize: "0.82rem", margin: 0 }}>Progress by Domain</div>
+                            <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", marginTop: 3, marginBottom: 18 }}>
                               Milestones & courses completed per category
                             </div>
                           </div>
                           <span
-                            style={{ fontSize: 12, color: "var(--accent)", cursor: "pointer", fontWeight: 600 }}
+                            style={{ fontSize: "0.78rem", color: "var(--ochre)", cursor: "pointer", fontWeight: 700 }}
                             onClick={() => setActive("roadmap")}
                           >
                             My Path →
@@ -2299,26 +2346,26 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                           {domains.map(dom => (
                             <div
                               key={dom.name}
-                              style={{ cursor: "pointer", padding: "4px 6px", borderRadius: 8, transition: "background 0.2s" }}
+                              style={{ cursor: "pointer", padding: "4px 6px", borderRadius: 3, transition: "background 0.2s" }}
                               onClick={() => setActive("roadmap")}
                               title="Click to view in My Path"
                             >
                               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.92rem", fontWeight: 600, color: "var(--pine)" }}>
                                   <span style={{ fontSize: 16 }}>{dom.icon}</span>
                                   <span>{dom.name}</span>
                                 </div>
-                                <span style={{ fontSize: 13, fontWeight: 700, color: dom.pct > 0 ? dom.col : "var(--muted)", fontFamily: "var(--display)" }}>
+                                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: dom.pct > 0 ? "var(--pine)" : "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                                   {dom.done}/{dom.total} ({dom.pct}%)
                                 </span>
                               </div>
-                              <div className="bar-track" style={{ height: 5, background: "rgba(255, 255, 255, 0.05)" }}>
+                              <div className="bar-track" style={{ height: 6, background: "var(--paper)", border: "1px solid var(--contour-faint)" }}>
                                 <div
                                   className="bar-fill"
                                   style={{
                                     width: `${Math.max(dom.pct, dom.done > 0 ? 8 : 0)}%`,
-                                    background: dom.col,
-                                    borderRadius: 9999,
+                                    background: dom.pct > 50 ? "var(--pine)" : "var(--ochre)",
+                                    borderRadius: 2,
                                     transition: "width 0.6s ease"
                                   }}
                                 />
@@ -2360,8 +2407,8 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                       skills: ["MongoDB", "PostgreSQL", "Git & GitHub", "Redis Caching", "Unit Testing", "CI/CD"]
                     },
                   ].map(cat => (
-                    <div key={cat.category} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px" }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#c7d2fe", marginBottom: 12 }}>
+                    <div key={cat.category} style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3, padding: "16px" }}>
+                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--pine)", marginBottom: 12, fontFamily: "var(--font-mono)" }}>
                         {cat.category}
                       </div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -2369,9 +2416,9 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                           <span
                             key={sIdx}
                             style={{
-                              fontSize: 12, padding: "5px 10px", borderRadius: 8,
-                              background: "rgba(99, 102, 241, 0.12)", border: "1px solid rgba(99, 102, 241, 0.25)",
-                              color: "#e2e8f0", fontWeight: 500
+                              fontSize: "0.78rem", padding: "4px 8px", borderRadius: 2,
+                              background: "var(--surface)", border: "1px solid var(--border)",
+                              color: "var(--ink)", fontWeight: 500, fontFamily: "var(--font-mono)"
                             }}
                           >
                             +{skill}
@@ -2388,7 +2435,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                 <div className="wg-title" style={{ marginBottom: 14 }}>
                   <span>🛠️ Verified Engineering Projects Portfolio</span>
                   <span
-                    style={{ marginLeft: "auto", fontSize: 12, color: "var(--accent)", cursor: "pointer" }}
+                    style={{ marginLeft: "auto", fontSize: "0.78rem", color: "var(--ochre)", cursor: "pointer", fontWeight: 700 }}
                     onClick={() => setActive("roadmap")}
                   >
                     View in My Path →
@@ -2402,38 +2449,38 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                       desc: "Matrix-based state vector simulation using NumPy, gate decomposition, and unitary transformations.",
                       skills: ["NumPy", "Quantum State Vectors", "Linear Algebra"],
                       status: "Completed & Verified",
-                      color: "var(--green)"
+                      color: "var(--pine)"
                     },
                     {
                       title: "Distributed Microservices E-Commerce",
                       desc: "Event-driven backend with Spring Boot, Kafka messaging, Dockerized containers, and PostgreSQL.",
                       skills: ["Spring Boot", "Kafka", "Docker", "PostgreSQL"],
                       status: "In Progress",
-                      color: "var(--accent)"
+                      color: "var(--ochre)"
                     },
                     {
                       title: "Adaptive Habit & Telemetry Engine",
                       desc: "Predictive academic monitoring with tab-switching detection, ML syllabus generation, and Pomodoro focus tracking.",
                       skills: ["React", "FastAPI", "MongoDB", "AI Embeddings"],
                       status: "Active Production",
-                      color: "#a855f7"
+                      color: "var(--pine)"
                     }
                   ].map(proj => (
-                    <div key={proj.title} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: 14, padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <div key={proj.title} style={{ background: "var(--paper)", border: "1px solid var(--contour-active)", borderRadius: 3, padding: "18px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                       <div>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                          <h4 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#ffffff" }}>{proj.title}</h4>
-                          <span style={{ fontSize: 10.5, fontWeight: 700, padding: "2px 8px", borderRadius: 9999, background: `${proj.color}20`, color: proj.color, border: `1px solid ${proj.color}40` }}>
+                          <h4 style={{ margin: 0, fontSize: "0.98rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>{proj.title}</h4>
+                          <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.08)", color: proj.color, border: "1px solid var(--border)", fontFamily: "var(--font-mono)" }}>
                             {proj.status}
                           </span>
                         </div>
-                        <p style={{ fontSize: 12.5, color: "var(--muted)", margin: "0 0 12px", lineHeight: 1.5 }}>
+                        <p style={{ fontSize: "0.86rem", color: "var(--slate)", margin: "0 0 12px", lineHeight: 1.55 }}>
                           {proj.desc}
                         </p>
                       </div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                         {proj.skills.map((s, idx) => (
-                          <span key={idx} style={{ fontSize: 11, padding: "2px 7px", borderRadius: 6, background: "rgba(255,255,255,0.05)", color: "#cbd5e1" }}>
+                          <span key={idx} style={{ fontSize: "0.74rem", padding: "2px 7px", borderRadius: 2, background: "var(--surface)", border: "1px solid var(--border)", color: "var(--ink)", fontFamily: "var(--font-mono)" }}>
                             {s}
                           </span>
                         ))}
@@ -2521,17 +2568,17 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                       {[leaderboard[1], leaderboard[0], leaderboard[2]].map((u, pi) => {
                         const podiumH = pi === 1 ? 110 : 80;
                         const medal = pi === 1 ? "🥇" : pi === 0 ? "🥈" : "🥉";
-                        const col = pi === 1 ? "#FFD700" : pi === 0 ? "#C0C0C0" : "#CD7F32";
+                        const col = pi === 1 ? "var(--ochre)" : pi === 0 ? "var(--slate)" : "var(--pine)";
                         return u ? (
                           <div key={u.name} style={{ textAlign: "center", flex: 1, maxWidth: 180 }}>
                             <div style={{ fontSize: 28, marginBottom: 4 }}>{medal}</div>
-                            <div style={{ width: 52, height: 52, borderRadius: "50%", background: `${col}22`, border: `3px solid ${col}`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 18, fontFamily: "var(--display)", color: col, margin: "0 auto 8px" }}>
+                            <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--paper)", border: `2px solid ${col}`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-mono)", color: col, margin: "0 auto 8px" }}>
                               {u.name.split(" ").map(w => w[0]).join("").slice(0, 2)}
                             </div>
-                            <div style={{ fontWeight: 700, fontSize: 14 }}>{u.name}</div>
-                            <div style={{ fontSize: 12, color: "var(--muted)" }}>{u.branch}</div>
-                            <div style={{ height: podiumH, background: `${col}18`, border: `2px solid ${col}40`, borderRadius: "10px 10px 0 0", marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <span style={{ fontFamily: "var(--display)", fontWeight: 900, fontSize: 22, color: col }}>{u.score}%</span>
+                            <div style={{ fontWeight: 600, fontSize: "0.92rem", color: "var(--pine)" }}>{u.name}</div>
+                            <div style={{ fontSize: "0.78rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>{u.branch}</div>
+                            <div style={{ height: podiumH, background: "var(--paper-card)", border: `1.5px solid var(--contour-active)`, borderRadius: "4px 4px 0 0", marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "var(--shadow)" }}>
+                              <span style={{ fontFamily: "var(--font-serif)", fontWeight: 700, fontSize: "1.4rem", color: col }}>{u.score}%</span>
                             </div>
                           </div>
                         ) : null;
@@ -2540,20 +2587,20 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                   )}
 
                   {/* Full ranking list */}
-                  <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden" }}>
-                    <div style={{ padding: "12px 20px", borderBottom: "1px solid var(--border)", display: "grid", gridTemplateColumns: "40px 1fr 80px 80px 70px", fontSize: 11, fontWeight: 800, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1.5 }}>
+                  <div style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, overflow: "hidden", boxShadow: "var(--shadow)" }}>
+                    <div style={{ padding: "12px 20px", borderBottom: "1px solid var(--border)", display: "grid", gridTemplateColumns: "40px 1fr 80px 80px 70px", fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "var(--font-mono)", background: "var(--paper)" }}>
                       <span>#</span><span>Student</span><span style={{ textAlign: "center" }}>Score</span><span style={{ textAlign: "center" }}>Streak</span><span style={{ textAlign: "center" }}>Badges</span>
                     </div>
                     {leaderboard.map((u, i) => (
-                      <div key={u.name + i} style={{ padding: "14px 20px", borderBottom: "1px solid var(--border)", display: "grid", gridTemplateColumns: "40px 1fr 80px 80px 70px", alignItems: "center", background: u.isMe ? "rgba(0,212,170,0.05)" : "transparent", transition: "background 0.2s" }}>
-                        <span style={{ fontWeight: 900, color: i < 3 ? ["#FFD700", "#C0C0C0", "#CD7F32"][i] : "var(--muted)", fontSize: 15 }}>{i + 1}</span>
+                      <div key={u.name + i} style={{ padding: "14px 20px", borderBottom: "1px solid var(--contour-faint)", display: "grid", gridTemplateColumns: "40px 1fr 80px 80px 70px", alignItems: "center", background: u.isMe ? "rgba(24, 55, 40, 0.05)" : "transparent", transition: "background 0.2s" }}>
+                        <span style={{ fontWeight: 700, color: i < 3 ? "var(--ochre)" : "var(--slate-subtle)", fontSize: "0.95rem", fontFamily: "var(--font-mono)" }}>{i + 1}</span>
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: 14 }}>{u.name} {u.isMe && <span style={{ fontSize: 10, background: "var(--accent)", color: "#000", borderRadius: 4, padding: "1px 6px", fontWeight: 800, marginLeft: 6 }}>YOU</span>}</div>
-                          <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 1 }}>{u.branch} · {u.subjects || "—"}</div>
+                          <div style={{ fontWeight: 600, fontSize: "0.92rem", color: "var(--pine)" }}>{u.name} {u.isMe && <span style={{ fontSize: "0.68rem", background: "var(--pine)", color: "var(--paper)", borderRadius: 2, padding: "1px 6px", fontWeight: 700, marginLeft: 6, fontFamily: "var(--font-mono)" }}>YOU</span>}</div>
+                          <div style={{ fontSize: "0.78rem", color: "var(--slate-subtle)", marginTop: 1 }}>{u.branch} · {u.subjects || "—"}</div>
                         </div>
-                        <div style={{ textAlign: "center", fontFamily: "var(--display)", fontWeight: 900, fontSize: 18, color: u.score >= 70 ? "var(--green)" : u.score >= 50 ? "var(--yellow)" : "var(--red)" }}>{u.score}%</div>
-                        <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: "var(--accent4)" }}>🔥 {u.streak}d</div>
-                        <div style={{ textAlign: "center", fontSize: 13, color: "var(--muted)" }}>🏅 {u.badgeCount}</div>
+                        <div style={{ textAlign: "center", fontFamily: "var(--font-serif)", fontWeight: 700, fontSize: "1.1rem", color: u.score >= 70 ? "var(--pine)" : u.score >= 50 ? "var(--ochre)" : "var(--red)" }}>{u.score}%</div>
+                        <div style={{ textAlign: "center", fontSize: "0.82rem", fontWeight: 700, color: "var(--ochre)", fontFamily: "var(--font-mono)" }}>🔥 {u.streak}d</div>
+                        <div style={{ textAlign: "center", fontSize: "0.82rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>🏅 {u.badgeCount}</div>
                       </div>
                     ))}
                   </div>
@@ -2569,30 +2616,30 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
               {/* Main Mission Banner */}
               <div style={{
-                background: "radial-gradient(circle at top right, rgba(0, 212, 170, 0.12), transparent 60%), var(--surface)",
-                border: "1px solid var(--border)",
-                borderRadius: 20,
+                background: "var(--paper-card)",
+                border: "1.5px solid var(--contour-active)",
+                borderRadius: 4,
                 padding: "32px 36px",
                 marginBottom: 26,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+                boxShadow: "var(--shadow)"
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
                   <span style={{ fontSize: 28 }}>🚀</span>
-                  <div style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 800, color: "var(--accent)" }}>
+                  <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.45rem", fontWeight: 600, color: "var(--pine)" }}>
                     Wanderer — AI Habit Forge & Academic Velocity Engine
                   </div>
                 </div>
-                <p style={{ color: "var(--text)", fontSize: 15, lineHeight: 1.8, margin: "0 0 16px" }}>
+                <p style={{ color: "var(--slate)", fontSize: "0.96rem", lineHeight: 1.7, margin: "0 0 16px" }}>
                   <strong>Wanderer</strong> is an intelligent, preventive academic monitoring and adaptive study management ecosystem. It is engineered to solve the most pervasive challenge in modern higher education: <em>the gap between passive tutorial consumption and consistent, project-backed mastery.</em>
                 </p>
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 12, padding: "4px 12px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.15)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.3)", fontWeight: 700 }}>
+                  <span style={{ fontSize: "0.74rem", padding: "4px 12px", borderRadius: 2, background: "rgba(24, 55, 40, 0.08)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
                     🧠 AI-Driven Adaptivity
                   </span>
-                  <span style={{ fontSize: 12, padding: "4px 12px", borderRadius: 9999, background: "rgba(99, 102, 241, 0.15)", color: "#a5b4fc", border: "1px solid rgba(99, 102, 241, 0.3)", fontWeight: 700 }}>
+                  <span style={{ fontSize: "0.74rem", padding: "4px 12px", borderRadius: 2, background: "rgba(199, 110, 26, 0.1)", color: "var(--ochre)", border: "1px solid rgba(199, 110, 26, 0.3)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
                     🛡️ Preventive Risk Analytics
                   </span>
-                  <span style={{ fontSize: 12, padding: "4px 12px", borderRadius: 9999, background: "rgba(245, 158, 11, 0.15)", color: "#fde68a", border: "1px solid rgba(245, 158, 11, 0.3)", fontWeight: 700 }}>
+                  <span style={{ fontSize: "0.74rem", padding: "4px 12px", borderRadius: 2, background: "var(--paper)", color: "var(--ink)", border: "1px solid var(--border)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
                     ⚡ Focus & Habit Formation
                   </span>
                 </div>
@@ -2605,49 +2652,49 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                     icon: "🎯",
                     title: "The Problem We Solve",
                     desc: "Students often suffer from 'Tutorial Hell' and inconsistent study schedules—spending hundreds of hours reading or watching content without structured hands-on implementation or verifiable retention.",
-                    col: "#ef4444"
+                    col: "var(--red)"
                   },
                   {
                     icon: "🔥",
                     title: "Our Core Motive",
                     desc: "To empower learners with automated habit loops, continuous streak reinforcement, and real-time academic risk forecasting before exam or project deadlines slip away.",
-                    col: "#f59e0b"
+                    col: "var(--ochre)"
                   },
                   {
                     icon: "🗺️",
                     title: "Dynamic AI Roadmaps",
                     desc: "Multi-engine AI curriculum architect capable of structuring end-to-end multi-phase master pathways for ANY subject with tailored project briefs and direct video lecture access.",
-                    col: "#00d4aa"
+                    col: "var(--pine)"
                   },
                   {
                     icon: "⏱️",
                     title: "Deep Work Focus Studio",
                     desc: "A distraction-free Pomodoro environment with tab switch tracking, ambient audio, and live focus scoring to build lasting deep-work stamina.",
-                    col: "#6366f1"
+                    col: "var(--pine)"
                   },
                   {
                     icon: "🧪",
                     title: "Checkpoint Mastery Tests",
                     desc: "Adaptive AI quizzes that diagnose weak topics on-the-fly and feed retention analytics directly into the student performance matrix.",
-                    col: "#a855f7"
+                    col: "var(--ochre)"
                   },
                   {
                     icon: "📊",
                     title: "Quantified Performance",
                     desc: "Live analytics, heatmap tracking, and peer leaderboard benchmarks that transform self-study into a transparent, gamified progression system.",
-                    col: "#38bdf8"
+                    col: "var(--pine)"
                   },
                 ].map(card => (
                   <div key={card.title} className="wg" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: 10 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ fontSize: 24, padding: "8px", borderRadius: 10, background: `${card.col}18`, border: `1px solid ${card.col}33` }}>
+                      <div style={{ fontSize: 22, padding: "6px 8px", borderRadius: 2, background: "var(--paper)", border: `1px solid var(--border)` }}>
                         {card.icon}
                       </div>
-                      <div style={{ fontFamily: "var(--display)", fontSize: 16, fontWeight: 700, color: "var(--text)" }}>
+                      <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.1rem", fontWeight: 600, color: "var(--pine)" }}>
                         {card.title}
                       </div>
                     </div>
-                    <p style={{ fontSize: 13.5, color: "var(--muted)", lineHeight: 1.65, margin: 0 }}>
+                    <p style={{ fontSize: "0.88rem", color: "var(--slate)", lineHeight: 1.6, margin: 0 }}>
                       {card.desc}
                     </p>
                   </div>
@@ -2656,20 +2703,21 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
 
               {/* Guiding Philosophy Box */}
               <div style={{
-                background: "linear-gradient(135deg, rgba(99,102,241,0.08), rgba(0,212,170,0.08))",
-                border: "1px solid var(--border)",
-                borderRadius: 16,
+                background: "var(--paper-card)",
+                border: "1.5px solid var(--contour-active)",
+                borderRadius: 4,
                 padding: "24px 28px",
                 display: "flex",
                 alignItems: "center",
-                gap: 18
+                gap: 18,
+                boxShadow: "var(--shadow)"
               }}>
                 <div style={{ fontSize: 32, flexShrink: 0 }}>🏛️</div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--ochre)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, fontFamily: "var(--font-mono)" }}>
                     Guiding Philosophy
                   </div>
-                  <div style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.7 }}>
+                  <div style={{ fontSize: "0.94rem", color: "var(--slate)", lineHeight: 1.65 }}>
                     <em>"Consistency is the ultimate competitive advantage. By pairing predictive AI feedback with disciplined daily execution, every student can attain mastery in any domain they pursue."</em>
                   </div>
                 </div>
@@ -2682,29 +2730,28 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
             <div>
               <div className="page-h">✉️ Contact Us</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: 28 }}>
-                  <h3 style={{ fontFamily: "var(--display)", fontSize: 17, fontWeight: 700, marginBottom: 20 }}>Send a Message</h3>
+                <div style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, padding: 28, boxShadow: "var(--shadow)" }}>
+                  <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", fontWeight: 600, color: "var(--pine)", marginBottom: 20 }}>Send a Message</h3>
                   {[["Name", "text", "Your name", "contact-name"], ["Email", "email", "your@email.com", "contact-email"], ["Subject", "text", "How can we help?", "contact-subject"]].map(([l, t, ph, id]) => (
                     <div key={l} style={{ marginBottom: 14 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{l}</div>
-                      <input type={t} id={id} placeholder={ph} className="input-field" />
+                      <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontFamily: "var(--font-mono)" }}>{l}</div>
+                      <input type={t} id={id} placeholder={ph} className="input-field" style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 2, padding: "8px 12px", width: "100%", boxSizing: "border-box" }} />
                     </div>
                   ))}
                   <div style={{ marginBottom: 14 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Message</div>
-                    <textarea id="contact-message" className="input-field" rows={5} placeholder="Your message..." style={{ resize: "vertical" }} />
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontFamily: "var(--font-mono)" }}>Message</div>
+                    <textarea id="contact-message" className="input-field" rows={5} placeholder="Your message..." style={{ resize: "vertical", background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 2, padding: "8px 12px", width: "100%", boxSizing: "border-box" }} />
                   </div>
-                  <button id="contact-btn" className="btn-primary" style={{ width: "100%", padding: "12px", fontSize: 15 }} onClick={async () => {
-                    const btn = document.getElementById('contact-btn');
+                  <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={async (e) => {
+                    const btn = e.target;
                     const name = document.getElementById('contact-name').value;
                     const email = document.getElementById('contact-email').value;
                     const subject = document.getElementById('contact-subject').value;
                     const message = document.getElementById('contact-message').value;
-
-                    if (!name || !email || !subject || !message) {
-                      return alert("Please fill all fields.");
+                    if (!name || !email || !message) {
+                      alert("Please fill in all required fields.");
+                      return;
                     }
-
                     btn.innerText = "Sending...";
                     btn.disabled = true;
 
@@ -2715,7 +2762,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                       document.getElementById('contact-email').value = '';
                       document.getElementById('contact-subject').value = '';
                       document.getElementById('contact-message').value = '';
-                    } catch (e) {
+                    } catch {
                       alert("Failed to send message. Please try again.");
                     } finally {
                       btn.innerText = "Send Message →";
@@ -2725,9 +2772,9 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   {[["📍", "Address", "GLA University, Mathura, UP 281406"], ["📧", "Email", "tyagiidhruv5@gmail.com"], ["🎓", "Team", "Wanderer: AI Habit Forge"]].map(([ic, l, v]) => (
-                    <div key={l} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px 18px", display: "flex", gap: 14, alignItems: "center" }}>
+                    <div key={l} style={{ background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, padding: "16px 18px", display: "flex", gap: 14, alignItems: "center", boxShadow: "var(--shadow)" }}>
                       <span style={{ fontSize: 22 }}>{ic}</span>
-                      <div><div style={{ fontSize: 11, color: "var(--muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>{l}</div><div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{v}</div></div>
+                      <div><div style={{ fontSize: "0.72rem", color: "var(--slate-subtle)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "var(--font-mono)" }}>{l}</div><div style={{ fontSize: "0.92rem", fontWeight: 600, marginTop: 2, color: "var(--pine)" }}>{v}</div></div>
                     </div>
                   ))}
                 </div>
@@ -2745,7 +2792,7 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
           isModal={true}
           defaultTopic={modal?.topic || (roadmapSubject ? `${roadmapSubject.toUpperCase()} Deep Work` : "Deep Focus Session")}
           onClose={() => setModal(null)}
-          onSessionComplete={({ durationMinutes, topic, session, streak: newStreak }) => {
+          onSessionComplete={({ streak: newStreak }) => {
             fetchDashboardData();
             fetchFocusData();
             if (newStreak) setStreak(newStreak);
@@ -2988,7 +3035,11 @@ function DashboardPage({ user: propUser, courses, theme, setTheme }) {
               {["dark", "light"].map(t => (
                 <button key={t} onClick={async () => {
                   setTheme(t);
-                  try { await authService.updateProfile({ settings: { theme: t, notifications: settings } }); } catch (e) { }
+                  try {
+                    await authService.updateProfile({ settings: { theme: t, notifications: settings } });
+                  } catch {
+                    /* ignore */
+                  }
                 }}
                   style={{ padding: 14, background: theme === t ? "rgba(0,212,170,0.1)" : "var(--surface2)", border: `2px solid ${theme === t ? "var(--accent)" : "var(--border)"}`, borderRadius: 12, color: theme === t ? "var(--accent)" : "var(--text)", fontWeight: 700, fontSize: 15, cursor: "pointer", fontFamily: "var(--font)", transition: '0.2s' }}>
                   {t === "dark" ? "🌙 Dark" : "☀️ Light"}

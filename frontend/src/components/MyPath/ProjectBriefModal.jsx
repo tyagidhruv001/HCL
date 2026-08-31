@@ -1,10 +1,5 @@
-import React from 'react';
-
-export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, onClose }) {
+export default function ProjectBriefModal({ course, onLaunchFocus, onClose }) {
   if (!course) return null;
-
-  const isProject = /project|capstone|simulator|build|hands-on|lab|implementation/i.test(course.title || '') ||
-                    /project|capstone|simulator|build|hands-on|lab/i.test(course.provider || '');
 
   const skills = course.skills || ['Problem Solving', 'Architecture', 'Clean Code'];
   const resourceUrl = course.url && course.url !== '#' 
@@ -14,33 +9,43 @@ export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, o
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
-        backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', zIndex: 9999, padding: '16px'
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(14, 26, 20, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '16px'
       }}
       role="dialog"
       aria-modal="true"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        background: 'radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 60%), #0d1117',
-        border: '1.5px solid rgba(99, 102, 241, 0.35)',
-        borderRadius: '20px', padding: '28px', maxWidth: '640px', width: '100%',
-        maxHeight: '90vh', overflowY: 'auto',
-        boxShadow: '0 25px 70px rgba(0, 0, 0, 0.8)', color: '#f0f6fc',
-        fontFamily: 'inherit'
+        background: 'var(--paper-card)',
+        border: '1.5px solid var(--contour-active)',
+        borderRadius: '4px',
+        padding: '28px',
+        maxWidth: '640px',
+        width: '100%',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        boxShadow: 'var(--shadow)',
+        color: 'var(--ink)'
       }}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1.5px solid var(--contour-active)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ fontSize: '32px', padding: '10px', background: 'rgba(99,102,241,0.15)', borderRadius: '12px', border: '1px solid rgba(99,102,241,0.3)' }}>
+            <div style={{ fontSize: '28px', padding: '10px', background: 'var(--paper)', borderRadius: '3px', border: '1px solid var(--border)' }}>
               {course.icon || '🛠️'}
             </div>
             <div>
-              <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#a5b4fc', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--ochre)', textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
                 📋 Project Specification & Briefing
               </div>
-              <h2 style={{ fontSize: '19px', fontWeight: 800, margin: '3px 0 0 0', color: '#ffffff' }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 600, margin: '3px 0 0 0', color: 'var(--pine)', fontFamily: 'var(--font-serif)' }}>
                 {course.title}
               </h2>
             </div>
@@ -48,9 +53,12 @@ export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, o
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-              borderRadius: '8px', width: '30px', height: '30px', color: '#94a3b8',
-              cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--slate-subtle)',
+              cursor: 'pointer',
+              fontSize: '20px',
+              padding: '4px 8px'
             }}
           >
             ✕
@@ -58,65 +66,77 @@ export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, o
         </div>
 
         {/* Metadata Badges */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '11.5px', padding: '4px 10px', borderRadius: '9999px', background: 'rgba(99,102,241,0.2)', color: '#c7d2fe', border: '1px solid rgba(99,102,241,0.3)' }}>
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '18px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.74rem', padding: '3px 9px', borderRadius: '2px', background: 'var(--paper)', color: 'var(--slate)', border: '1px solid var(--border)', fontFamily: 'var(--font-mono)' }}>
             🏷️ {course.provider || 'Self-Guided Lab'}
           </span>
-          <span style={{ fontSize: '11.5px', padding: '4px 10px', borderRadius: '9999px', background: 'rgba(16,185,129,0.15)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.3)' }}>
+          <span style={{ fontSize: '0.74rem', padding: '3px 9px', borderRadius: '2px', background: 'rgba(24, 55, 40, 0.1)', color: 'var(--pine)', border: '1px solid var(--contour-active)', fontFamily: 'var(--font-mono)' }}>
             📊 {course.level || 'Intermediate'}
           </span>
-          <span style={{ fontSize: '11.5px', padding: '4px 10px', borderRadius: '9999px', background: 'rgba(56,189,248,0.15)', color: '#7dd3fc', border: '1px solid rgba(56,189,248,0.3)' }}>
+          <span style={{ fontSize: '0.74rem', padding: '3px 9px', borderRadius: '2px', background: 'rgba(199, 110, 26, 0.1)', color: 'var(--ochre)', border: '1px solid rgba(199, 110, 26, 0.25)', fontFamily: 'var(--font-mono)' }}>
             ⏱️ Est. {course.duration || '10h'}
           </span>
         </div>
 
         {/* 1. Project Goal & AI Rationale */}
         <div style={{
-          background: 'rgba(22, 27, 34, 0.8)', border: '1px solid #30363d',
-          borderRadius: '12px', padding: '16px', marginBottom: '16px'
+          background: 'var(--paper)',
+          border: '1px solid var(--border)',
+          borderRadius: '3px',
+          padding: '16px',
+          marginBottom: '16px'
         }}>
-          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#79c0ff', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--ochre)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
             <span>🎯</span> Project Objective & Purpose:
           </div>
-          <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: '#e6edf3' }}>
+          <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--slate)' }}>
             {course.why || `Build and deploy a complete, working implementation of "${course.title}". This project is designed to bridge theoretical concepts into real-world software architecture.`}
           </p>
         </div>
 
         {/* 2. Structured Implementation Milestones */}
         <div style={{
-          background: 'rgba(22, 27, 34, 0.8)', border: '1px solid #30363d',
-          borderRadius: '12px', padding: '16px', marginBottom: '16px'
+          background: 'var(--paper)',
+          border: '1px solid var(--border)',
+          borderRadius: '3px',
+          padding: '16px',
+          marginBottom: '16px'
         }}>
-          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#a5b4fc', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--pine)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
             <span>📋</span> Step-by-Step Implementation Plan:
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ display: 'flex', gap: '10px', fontSize: '13px', lineHeight: 1.5, color: '#cbd5e1' }}>
-              <strong style={{ color: '#818cf8', flexShrink: 0 }}>Step 1:</strong>
-              <div><strong>Architecture & Setup:</strong> Initialize repository, configure environment dependencies, and set up project scaffolding.</div>
+            <div style={{ display: 'flex', gap: '10px', fontSize: '0.86rem', lineHeight: 1.55, color: 'var(--slate)' }}>
+              <strong style={{ color: 'var(--ochre)', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>Step 1:</strong>
+              <div><strong style={{ color: 'var(--pine)' }}>Architecture & Setup:</strong> Initialize repository, configure environment dependencies, and set up project scaffolding.</div>
             </div>
-            <div style={{ display: 'flex', gap: '10px', fontSize: '13px', lineHeight: 1.5, color: '#cbd5e1' }}>
-              <strong style={{ color: '#818cf8', flexShrink: 0 }}>Step 2:</strong>
-              <div><strong>Core Engine & Logic:</strong> Implement foundational functions, data structures, and the main algorithmic processing loop.</div>
+            <div style={{ display: 'flex', gap: '10px', fontSize: '0.86rem', lineHeight: 1.55, color: 'var(--slate)' }}>
+              <strong style={{ color: 'var(--ochre)', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>Step 2:</strong>
+              <div><strong style={{ color: 'var(--pine)' }}>Core Engine & Logic:</strong> Implement foundational functions, data structures, and the main algorithmic processing loop.</div>
             </div>
-            <div style={{ display: 'flex', gap: '10px', fontSize: '13px', lineHeight: 1.5, color: '#cbd5e1' }}>
-              <strong style={{ color: '#818cf8', flexShrink: 0 }}>Step 3:</strong>
-              <div><strong>Testing & Verification:</strong> Write unit tests, test edge cases, and ensure performance benchmarks are met.</div>
+            <div style={{ display: 'flex', gap: '10px', fontSize: '0.86rem', lineHeight: 1.55, color: 'var(--slate)' }}>
+              <strong style={{ color: 'var(--ochre)', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>Step 3:</strong>
+              <div><strong style={{ color: 'var(--pine)' }}>Testing & Verification:</strong> Write unit tests, test edge cases, and ensure performance benchmarks are met.</div>
             </div>
           </div>
         </div>
 
         {/* 3. Tech Stack & Skills Tag */}
         <div style={{ marginBottom: '20px' }}>
-          <div style={{ fontSize: '12px', fontWeight: 700, color: '#8b949e', marginBottom: '8px', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--slate-subtle)', marginBottom: '8px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
             🛠️ Skills & Technologies to Master:
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
             {skills.map((skill, sIdx) => (
               <span key={sIdx} style={{
-                fontSize: '12px', padding: '4px 10px', borderRadius: '6px',
-                background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', color: '#c7d2fe'
+                fontSize: '0.74rem',
+                fontWeight: 600,
+                padding: '3px 9px',
+                borderRadius: '2px',
+                background: 'var(--paper)',
+                border: '1.5px solid var(--contour-active)',
+                color: 'var(--pine)',
+                fontFamily: 'var(--font-mono)'
               }}>
                 +{skill}
               </span>
@@ -130,12 +150,18 @@ export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, o
             href={resourceUrl}
             target="_blank"
             rel="noopener noreferrer"
+            className="btn-primary"
             style={{
-              flex: 1, minWidth: '180px', padding: '12px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              color: '#ffffff', textDecoration: 'none', fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: '8px', fontSize: '13.5px', boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)'
+              flex: 1,
+              minWidth: '180px',
+              padding: '10px',
+              textDecoration: 'none',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              fontSize: '0.86rem'
             }}
           >
             🌐 Open Project Resources & Docs ↗
@@ -144,11 +170,10 @@ export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, o
           {onLaunchFocus && (
             <button
               onClick={() => { onClose(); onLaunchFocus(course.title); }}
+              className="btn-outline"
               style={{
-                padding: '12px 18px', borderRadius: '10px',
-                background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)',
-                color: '#6ee7b7', fontWeight: 700, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px'
+                padding: '10px 16px',
+                fontSize: '0.84rem'
               }}
             >
               ⏱️ Start in Focus Studio
@@ -157,10 +182,10 @@ export default function ProjectBriefModal({ course, phaseTitle, onLaunchFocus, o
 
           <button
             onClick={onClose}
+            className="btn-outline"
             style={{
-              padding: '12px 20px', borderRadius: '10px',
-              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-              color: '#cbd5e1', fontWeight: 600, cursor: 'pointer', fontSize: '13px'
+              padding: '10px 18px',
+              fontSize: '0.84rem'
             }}
           >
             Close

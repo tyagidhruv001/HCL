@@ -89,7 +89,7 @@ export default function LearningPath({
           setPath(generated);
           localStorage.setItem('user_learning_path', JSON.stringify(generated));
         }
-      } catch (err) {
+      } catch {
         // Fallback: Generate local algorithmic path if empty
         if (isMounted && !path) {
           const generated = await generateLearningPathAlgorithm(userProfile);
@@ -125,10 +125,10 @@ export default function LearningPath({
     let newCompleted;
     if (isDone) {
       newCompleted = completedIds.filter(id => id !== courseId);
-      try { await roadmapService.updateProgress(courseId, 0, false); } catch (e) { }
+      try { await roadmapService.updateProgress(courseId, 0, false); } catch { /* ignore */ }
     } else {
       newCompleted = [...completedIds, courseId];
-      try { await roadmapService.updateProgress(courseId, 100, true); } catch (e) { }
+      try { await roadmapService.updateProgress(courseId, 100, true); } catch { /* ignore */ }
     }
     saveProgressLocal(newCompleted, bookmarkedIds);
   }, [completedIds, bookmarkedIds]);
@@ -142,7 +142,7 @@ export default function LearningPath({
       newBookmarked = [...bookmarkedIds, courseId];
     }
     saveProgressLocal(completedIds, newBookmarked);
-    try { await roadmapService.toggleBookmark(courseId); } catch (e) { }
+    try { await roadmapService.toggleBookmark(courseId); } catch { /* ignore */ }
   }, [completedIds, bookmarkedIds]);
 
   // Custom generator controls with detailed user requirements
@@ -152,7 +152,7 @@ export default function LearningPath({
   const [customBackground, setCustomBackground] = useState('');
   const [customTimeline, setCustomTimeline] = useState('3-4 Months');
   const [customLearningStyle, setCustomLearningStyle] = useState('Project-Based & Practical');
-  const [customWeeklyHours, setCustomWeeklyHours] = useState('10-15 hrs/week');
+  const [customWeeklyHours, _setCustomWeeklyHours] = useState('10-15 hrs/week');
   const [customPhaseCount, setCustomPhaseCount] = useState('auto');
   const [showGeneratorPanel, setShowGeneratorPanel] = useState(false);
 
@@ -266,7 +266,7 @@ export default function LearningPath({
   };
 
   // Metrics & Active Step Tracking
-  const { allCourses, activeCourseId, totalCourses, completedCount, pct } = useMemo(() => {
+  const { allCourses: _allCourses, activeCourseId, totalCourses, completedCount, pct } = useMemo(() => {
     if (!path || !path.phases) {
       return { allCourses: [], activeCourseId: null, totalCourses: 0, completedCount: 0, pct: 0 };
     }
@@ -796,7 +796,6 @@ export default function LearningPath({
 
                       if (filterMode === 'completed' && !isCmp) return null;
                       if (filterMode === 'active' && isCmp) return null;
-                      const url = getResourceUrl(course);
 
                       return (
                         <div

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import mammoth from "mammoth";
 import careerService from "../../services/careerService";
 
-export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
+export default function CareerStudio({ activeRoadmap }) {
   const [resumeText, setResumeText] = useState("");
   const [resumeFileName, setResumeFileName] = useState("");
   const [loadingMatch, setLoadingMatch] = useState(false);
@@ -206,18 +206,18 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
       {/* ── Top Grid: Resume / Telemetry Ingestion + Candidate Score Card ── */}
       <div className="g2" style={{ gap: 16, marginBottom: 24 }}>
         {/* Card 1: Resume & Profile Synergy */}
-        <div className="wg" style={{ padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "radial-gradient(circle at top left, rgba(0, 212, 170, 0.05), var(--surface))", border: "1px solid var(--border)", borderRadius: 16 }}>
+        <div className="wg" style={{ padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, boxShadow: "var(--shadow)" }}>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: "1.05rem", fontWeight: 600, color: "var(--pine)", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
                 <span>📄</span> Resume & Telemetry Input
               </div>
-              <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 9px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.15)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.3)" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.1)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontFamily: "var(--font-mono)" }}>
                 ✓ Live Linked
               </span>
             </div>
 
-            <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 14 }}>
+            <div style={{ fontSize: "0.86rem", color: "var(--slate)", marginBottom: 14 }}>
               Upload your latest resume (PDF, DOCX, TXT) or paste text to merge with your active Wanderer learning telemetry.
             </div>
 
@@ -233,20 +233,20 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
               <button
                 className="btn-primary"
-                style={{ padding: "8px 16px", fontSize: 12.5, display: "flex", alignItems: "center", gap: 6 }}
+                style={{ padding: "8px 16px", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: 6 }}
                 onClick={() => fileInputRef.current?.click()}
               >
                 <span>📎</span> {resumeFileName ? `Replace (${resumeFileName})` : "Upload Resume (PDF / DOCX / TXT)"}
               </button>
               {resumeFileName && (
-                <span style={{ fontSize: 11.5, color: "var(--green)", fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ fontSize: "0.76rem", color: "var(--pine)", fontWeight: 700, display: "flex", alignItems: "center", gap: 4, fontFamily: "var(--font-mono)" }}>
                   <span>✓</span> Extracted Clean Text
                 </span>
               )}
               {resumeText && (
                 <button
                   className="lp-btn lp-btn-secondary lp-btn-sm"
-                  style={{ padding: "6px 12px", fontSize: 11.5, marginLeft: "auto" }}
+                  style={{ padding: "6px 12px", fontSize: "0.76rem", marginLeft: "auto" }}
                   onClick={() => { setResumeText(""); setResumeFileName(""); }}
                 >
                   Clear
@@ -262,56 +262,57 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
               style={{
                 width: "100%",
                 padding: "10px 14px",
-                borderRadius: 10,
-                background: "var(--surface2)",
+                borderRadius: 2,
+                background: "var(--paper)",
                 border: "1px solid var(--border)",
-                color: "var(--text)",
-                fontSize: 12.5,
+                color: "var(--ink)",
+                fontSize: "0.86rem",
                 lineHeight: 1.5,
                 resize: "vertical",
-                fontFamily: "var(--font)",
-                outline: "none"
+                fontFamily: "var(--font-sans)",
+                outline: "none",
+                boxSizing: "border-box"
               }}
             />
           </div>
 
-          <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--muted)" }}>
-            <span>🔗 Active Pathway: <strong style={{ color: "var(--accent3)" }}>{activeRoadmap?.goal || "Advanced SWE"}</strong></span>
+          <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.78rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
+            <span>🔗 Active Pathway: <strong style={{ color: "var(--pine)" }}>{activeRoadmap?.goal || "Advanced SWE"}</strong></span>
             <span>{resumeText ? `${resumeText.length} characters parsed` : "Using Wanderer profile data"}</span>
           </div>
         </div>
 
         {/* Card 2: AI Candidate Readiness Diagnostic */}
-        <div className="wg" style={{ padding: "20px 22px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "rgba(99, 102, 241, 0.05)", borderColor: "rgba(99, 102, 241, 0.25)" }}>
+        <div className="wg" style={{ padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, boxShadow: "var(--shadow)" }}>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ fontSize: "1.05rem", fontWeight: 600, color: "var(--pine)", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-serif)" }}>
                 <span>🤖</span> Industry Readiness Index
               </div>
               {candidateSummary?.readinessTier && (
-                <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 10px", borderRadius: 9999, background: "rgba(34, 197, 94, 0.15)", color: "var(--green)", border: "1px solid rgba(34, 197, 94, 0.3)" }}>
+                <span style={{ fontSize: "0.7rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.1)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontFamily: "var(--font-mono)" }}>
                   ✓ {candidateSummary.readinessTier}
                 </span>
               )}
             </div>
 
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 12 }}>
-              <div style={{ fontFamily: "var(--display)", fontSize: 38, fontWeight: 900, color: "var(--accent)" }}>
+              <div style={{ fontFamily: "var(--font-serif)", fontSize: "2.4rem", fontWeight: 700, color: "var(--pine)" }}>
                 {candidateSummary?.overallReadinessScore || 85}%
               </div>
-              <div style={{ fontSize: 13, color: "var(--muted)" }}>
-                Overall Capability & Tech Match Score
+              <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
+                Overall Capability Match Score
               </div>
             </div>
 
             {/* Top Strengths */}
             <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontFamily: "var(--font-mono)" }}>
                 Key Strengths Identified
               </div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                 {(candidateSummary?.topStrengths || ["Data Structures & Algorithms", "Full-Stack Development", "Focus Consistency"]).map(str => (
-                  <span key={str} style={{ fontSize: 11.5, padding: "3px 9px", borderRadius: 6, background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", color: "#ffffff" }}>
+                  <span key={str} style={{ fontSize: "0.76rem", padding: "3px 9px", borderRadius: 2, background: "var(--paper)", border: "1px solid var(--border)", color: "var(--ink)", fontFamily: "var(--font-mono)" }}>
                     ⭐ {str}
                   </span>
                 ))}
@@ -319,8 +320,8 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             </div>
           </div>
 
-          <div style={{ fontSize: 12, color: "#a5b4fc", background: "rgba(99,102,241,0.08)", borderLeft: "3px solid #6366f1", padding: "8px 12px", borderRadius: "0 8px 8px 0", lineHeight: 1.4 }}>
-            💡 <strong>Strategic Advice:</strong> {candidateSummary?.growthAdvice || "Continue expanding end-to-end full-stack projects to maximize tier-1 company match rates."}
+          <div style={{ fontSize: "0.85rem", color: "var(--slate)", background: "var(--paper)", borderLeft: "3px solid var(--ochre)", padding: "10px 14px", borderRadius: "0 2px 2px 0", lineHeight: 1.5 }}>
+            <strong style={{ color: "var(--pine)" }}>Strategic Advice:</strong> {candidateSummary?.growthAdvice || "Continue expanding end-to-end full-stack projects to maximize tier-1 company match rates."}
           </div>
         </div>
       </div>
@@ -338,12 +339,13 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
               onClick={() => setActiveFilter(f.id)}
               style={{
                 padding: "6px 14px",
-                borderRadius: 8,
-                border: `1px solid ${activeFilter === f.id ? "var(--accent)" : "var(--border)"}`,
-                background: activeFilter === f.id ? "rgba(0, 212, 170, 0.12)" : "var(--surface2)",
-                color: activeFilter === f.id ? "var(--accent)" : "var(--muted)",
-                fontSize: 12.5,
+                borderRadius: 2,
+                border: `1px solid ${activeFilter === f.id ? "var(--pine)" : "var(--border)"}`,
+                background: activeFilter === f.id ? "var(--pine)" : "var(--paper)",
+                color: activeFilter === f.id ? "var(--paper)" : "var(--slate)",
+                fontSize: "0.78rem",
                 fontWeight: activeFilter === f.id ? 700 : 500,
+                fontFamily: "var(--font-mono)",
                 cursor: "pointer",
                 transition: "all 0.15s"
               }}
@@ -362,18 +364,18 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             onChange={(e) => setCustomCompanyName(e.target.value)}
             style={{
               padding: "7px 12px",
-              borderRadius: 8,
-              background: "var(--surface2)",
+              borderRadius: 2,
+              background: "var(--paper)",
               border: "1px solid var(--border)",
-              color: "var(--text)",
-              fontSize: 12,
+              color: "var(--ink)",
+              fontSize: "0.82rem",
               outline: "none",
               width: 180
             }}
           />
           <button
             className="btn-outline"
-            style={{ padding: "7px 14px", fontSize: 12 }}
+            style={{ padding: "7px 14px", fontSize: "0.82rem" }}
             onClick={handleAddCustomCompany}
             disabled={!customCompanyName.trim()}
           >
@@ -386,10 +388,10 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
       {loadingMatch ? (
         <div style={{ textAlign: "center", padding: "60px 0" }}>
           <div style={{ fontSize: 44, marginBottom: 12, animation: "spin 1s linear infinite", display: "inline-block" }}>⚡</div>
-          <div style={{ fontFamily: "var(--display)", fontSize: 18, fontWeight: 700, color: "var(--accent)" }}>
+          <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", fontWeight: 600, color: "var(--pine)" }}>
             Synthesizing Company Matches & Job Opportunities...
           </div>
-          <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 6 }}>
+          <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", marginTop: 6 }}>
             Evaluating engineering cultures, tech stacks, and your real-time Wanderer achievements...
           </div>
         </div>
@@ -404,8 +406,10 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                border: item.matchScore >= 85 ? "1.5px solid rgba(0,212,170,0.3)" : "1px solid var(--border)",
-                background: item.matchScore >= 85 ? "rgba(0, 212, 170, 0.02)" : "var(--surface)",
+                border: "1.5px solid var(--contour-active)",
+                background: "var(--paper-card)",
+                borderRadius: 4,
+                boxShadow: "var(--shadow)",
                 transition: "transform 0.2s, box-shadow 0.2s"
               }}
             >
@@ -413,14 +417,14 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                 {/* Header */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ fontSize: 24, padding: "8px", background: "var(--surface2)", borderRadius: 10, border: "1px solid var(--border)" }}>
+                    <div style={{ fontSize: 24, padding: "8px", background: "var(--paper)", borderRadius: 2, border: "1px solid var(--border)" }}>
                       {item.icon || "🏢"}
                     </div>
                     <div>
-                      <div style={{ fontSize: 17, fontWeight: 800, color: "#ffffff", lineHeight: 1.2 }}>
+                      <div style={{ fontSize: "1.15rem", fontWeight: 600, color: "var(--pine)", lineHeight: 1.2, fontFamily: "var(--font-serif)" }}>
                         {item.company}
                       </div>
-                      <div style={{ fontSize: 12.5, color: "var(--accent)", fontWeight: 600, marginTop: 2 }}>
+                      <div style={{ fontSize: "0.82rem", color: "var(--ochre)", fontWeight: 700, marginTop: 2, fontFamily: "var(--font-mono)" }}>
                         {item.targetRole}
                       </div>
                     </div>
@@ -432,42 +436,44 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 4,
-                      padding: "4px 10px",
-                      borderRadius: 9999,
-                      background: item.matchScore >= 80 ? "rgba(34,197,94,0.12)" : item.matchScore >= 65 ? "rgba(245,158,11,0.12)" : "rgba(239,68,68,0.12)",
-                      border: `1px solid ${item.matchScore >= 80 ? "rgba(34,197,94,0.35)" : item.matchScore >= 65 ? "rgba(245,158,11,0.35)" : "rgba(239,68,68,0.35)"}`,
-                      fontSize: 13,
-                      fontWeight: 800,
-                      color: item.matchScore >= 80 ? "var(--green)" : item.matchScore >= 65 ? "var(--yellow)" : "var(--red)"
+                      padding: "3px 9px",
+                      borderRadius: 2,
+                      background: item.matchScore >= 80 ? "rgba(24, 55, 40, 0.1)" : "rgba(199, 110, 26, 0.1)",
+                      border: `1px solid ${item.matchScore >= 80 ? "var(--pine)" : "var(--ochre)"}`,
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      color: item.matchScore >= 80 ? "var(--pine)" : "var(--ochre)",
+                      fontFamily: "var(--font-mono)"
                     }}>
                       <span>{item.matchScore}%</span>
-                      <span style={{ fontSize: 10, fontWeight: 600 }}>Match</span>
+                      <span style={{ fontSize: "0.68rem", fontWeight: 600 }}>Match</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Match Progress Bar */}
-                <div className="bar-track" style={{ marginBottom: 14 }}>
+                <div className="bar-track" style={{ height: 6, background: "var(--paper)", border: "1px solid var(--border)", marginBottom: 14, borderRadius: 2 }}>
                   <div
                     className="bar-fill"
                     style={{
                       width: `${item.matchScore}%`,
-                      background: item.matchScore >= 80 ? "var(--green)" : item.matchScore >= 65 ? "var(--yellow)" : "var(--red)"
+                      background: item.matchScore >= 80 ? "var(--pine)" : "var(--ochre)",
+                      borderRadius: 2
                     }}
                   />
                 </div>
 
                 {/* Company Overview */}
-                <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 12, lineHeight: 1.4 }}>
+                <div style={{ fontSize: "0.86rem", color: "var(--slate)", marginBottom: 12, lineHeight: 1.55 }}>
                   {item.companyOverview}
                 </div>
 
                 {/* Why You Match */}
-                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: 10, padding: "10px 12px", marginBottom: 12 }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>
+                <div style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3, padding: "10px 12px", marginBottom: 12 }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--ochre)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, fontFamily: "var(--font-mono)" }}>
                     🎯 Why You Qualify
                   </div>
-                  <div style={{ fontSize: 12, color: "#ffffff", lineHeight: 1.4 }}>
+                  <div style={{ fontSize: "0.85rem", color: "var(--ink)", lineHeight: 1.5 }}>
                     {item.whyYouMatch}
                   </div>
                 </div>
@@ -475,12 +481,12 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                 {/* Missing Skills / Growth */}
                 {item.missingSkills && item.missingSkills.length > 0 && (
                   <div style={{ marginBottom: 16 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", marginBottom: 6 }}>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", marginBottom: 6, textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>
                       Recommended Next Skills:
                     </div>
                     <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                       {item.missingSkills.map(sk => (
-                        <span key={sk} style={{ fontSize: 11, padding: "2px 7px", borderRadius: 4, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", color: "var(--yellow)" }}>
+                        <span key={sk} style={{ fontSize: "0.74rem", padding: "2px 7px", borderRadius: 2, background: "var(--paper)", border: "1px solid var(--border)", color: "var(--slate)", fontFamily: "var(--font-mono)" }}>
                           + {sk}
                         </span>
                       ))}
@@ -490,10 +496,10 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 8, borderTop: "1px solid var(--border)" }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 8, borderTop: "1px solid var(--contour-faint)" }}>
                 <button
                   className="btn-primary"
-                  style={{ flex: 1, padding: "8px 12px", fontSize: 12, whiteSpace: "nowrap" }}
+                  style={{ flex: 1, padding: "8px 12px", fontSize: "0.82rem", whiteSpace: "nowrap" }}
                   onClick={() => handleOpenApplicationModal(item)}
                 >
                   ⚡ Generate Application
@@ -504,7 +510,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-outline"
-                    style={{ padding: "8px 12px", fontSize: 12, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}
+                    style={{ padding: "8px 12px", fontSize: "0.82rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}
                   >
                     <span>Careers Portal ↗</span>
                   </a>
@@ -520,7 +526,7 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
         <div style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0,0,0,0.8)",
+          background: "rgba(14, 26, 20, 0.45)",
           backdropFilter: "blur(6px)",
           display: "flex",
           alignItems: "center",
@@ -529,48 +535,49 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
           padding: 20
         }}>
           <div style={{
-            background: "var(--surface)",
-            border: "1.5px solid var(--border)",
-            borderRadius: 16,
+            background: "var(--paper-card)",
+            border: "1.5px solid var(--contour-active)",
+            borderRadius: 4,
             maxWidth: 680,
             width: "100%",
             maxHeight: "90vh",
             display: "flex",
             flexDirection: "column",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            boxShadow: "var(--shadow)",
             animation: "scaleUp 0.2s ease"
           }}>
             {/* Modal Header */}
-            <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--contour-faint)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--pine)", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
                   <span>{selectedCompany?.icon || "💼"}</span> Application Toolkit for {selectedCompany?.company}
                 </div>
-                <div style={{ fontSize: 12, color: "var(--accent)", marginTop: 2 }}>
+                <div style={{ fontSize: "0.78rem", color: "var(--ochre)", marginTop: 2, fontFamily: "var(--font-mono)", fontWeight: 700 }}>
                   Role: {selectedCompany?.targetRole}
                 </div>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                style={{ background: "transparent", border: "none", color: "var(--muted)", fontSize: 20, cursor: "pointer" }}
+                style={{ background: "transparent", border: "none", color: "var(--slate-subtle)", fontSize: 20, cursor: "pointer" }}
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Tabs */}
-            <div style={{ display: "flex", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" }}>
+            <div style={{ display: "flex", borderBottom: "1px solid var(--contour-faint)", background: "var(--paper)" }}>
               <button
                 onClick={() => setActiveModalTab("email")}
                 style={{
                   flex: 1,
                   padding: "12px",
-                  background: activeModalTab === "email" ? "rgba(0,212,170,0.08)" : "transparent",
+                  background: activeModalTab === "email" ? "var(--paper-card)" : "transparent",
                   border: "none",
-                  borderBottom: `2px solid ${activeModalTab === "email" ? "var(--accent)" : "transparent"}`,
-                  color: activeModalTab === "email" ? "var(--accent)" : "var(--muted)",
-                  fontSize: 13,
+                  borderBottom: `2px solid ${activeModalTab === "email" ? "var(--pine)" : "transparent"}`,
+                  color: activeModalTab === "email" ? "var(--pine)" : "var(--slate)",
+                  fontSize: "0.85rem",
                   fontWeight: 700,
+                  fontFamily: "var(--font-mono)",
                   cursor: "pointer"
                 }}
               >
@@ -581,12 +588,13 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                 style={{
                   flex: 1,
                   padding: "12px",
-                  background: activeModalTab === "cover" ? "rgba(0,212,170,0.08)" : "transparent",
+                  background: activeModalTab === "cover" ? "var(--paper-card)" : "transparent",
                   border: "none",
-                  borderBottom: `2px solid ${activeModalTab === "cover" ? "var(--accent)" : "transparent"}`,
-                  color: activeModalTab === "cover" ? "var(--accent)" : "var(--muted)",
-                  fontSize: 13,
+                  borderBottom: `2px solid ${activeModalTab === "cover" ? "var(--pine)" : "transparent"}`,
+                  color: activeModalTab === "cover" ? "var(--pine)" : "var(--slate)",
+                  fontSize: "0.85rem",
                   fontWeight: 700,
+                  fontFamily: "var(--font-mono)",
                   cursor: "pointer"
                 }}
               >
@@ -599,14 +607,14 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
               {generatingApp ? (
                 <div style={{ textAlign: "center", padding: "40px 0" }}>
                   <div style={{ fontSize: 36, marginBottom: 10, animation: "spin 1s linear infinite", display: "inline-block" }}>⚡</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--accent)" }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
                     Drafting personalized application citing your real projects...
                   </div>
                 </div>
               ) : activeModalTab === "email" ? (
                 <div>
                   <div style={{ marginBottom: 12 }}>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase" }}>Subject Line</label>
+                    <label style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>Subject Line</label>
                     <input
                       type="text"
                       value={appData.email.subject}
@@ -614,20 +622,21 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                       style={{
                         width: "100%",
                         padding: "8px 12px",
-                        borderRadius: 8,
-                        background: "var(--surface2)",
+                        borderRadius: 2,
+                        background: "var(--paper)",
                         border: "1px solid var(--border)",
-                        color: "#ffffff",
-                        fontSize: 13,
+                        color: "var(--ink)",
+                        fontSize: "0.88rem",
                         fontWeight: 600,
                         marginTop: 4,
-                        outline: "none"
+                        outline: "none",
+                        boxSizing: "border-box"
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase" }}>Email Body</label>
+                    <label style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>Email Body</label>
                     <textarea
                       rows={9}
                       value={appData.email.body}
@@ -635,23 +644,24 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                       style={{
                         width: "100%",
                         padding: "12px",
-                        borderRadius: 8,
-                        background: "var(--surface2)",
+                        borderRadius: 2,
+                        background: "var(--paper)",
                         border: "1px solid var(--border)",
-                        color: "var(--text)",
-                        fontSize: 13,
-                        lineHeight: 1.5,
-                        fontFamily: "var(--font)",
+                        color: "var(--ink)",
+                        fontSize: "0.88rem",
+                        lineHeight: 1.55,
+                        fontFamily: "var(--font-sans)",
                         marginTop: 4,
                         resize: "vertical",
-                        outline: "none"
+                        outline: "none",
+                        boxSizing: "border-box"
                       }}
                     />
                   </div>
                 </div>
               ) : (
                 <div>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase" }}>Cover Letter Narrative</label>
+                  <label style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>Cover Letter Narrative</label>
                   <textarea
                     rows={12}
                     value={appData.coverLetter}
@@ -659,16 +669,17 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                     style={{
                       width: "100%",
                       padding: "12px",
-                      borderRadius: 8,
-                      background: "var(--surface2)",
+                      borderRadius: 2,
+                      background: "var(--paper)",
                       border: "1px solid var(--border)",
-                      color: "var(--text)",
-                      fontSize: 13,
+                      color: "var(--ink)",
+                      fontSize: "0.88rem",
                       lineHeight: 1.6,
-                      fontFamily: "var(--font)",
+                      fontFamily: "var(--font-sans)",
                       marginTop: 4,
                       resize: "vertical",
-                      outline: "none"
+                      outline: "none",
+                      boxSizing: "border-box"
                     }}
                   />
                 </div>
@@ -676,8 +687,8 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
             </div>
 
             {/* Modal Footer Actions */}
-            <div style={{ padding: "14px 24px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: 12, color: "var(--muted)" }}>
+            <div style={{ padding: "14px 24px", borderTop: "1px solid var(--contour-faint)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: "0.78rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                 💡 Fully editable text customized to your background.
               </div>
               <div style={{ display: "flex", gap: 8 }}>
@@ -685,14 +696,14 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                   <>
                     <button
                       className="btn-outline"
-                      style={{ padding: "8px 16px", fontSize: 12.5 }}
+                      style={{ padding: "8px 16px", fontSize: "0.82rem" }}
                       onClick={() => downloadAsFile(`Subject: ${appData.email.subject}\n\n${appData.email.body}`, `${selectedCompany?.company}_Email.txt`)}
                     >
                       ⬇️ Download .txt
                     </button>
                     <button
                       className="btn-primary"
-                      style={{ padding: "8px 18px", fontSize: 12.5 }}
+                      style={{ padding: "8px 18px", fontSize: "0.82rem" }}
                       onClick={() => copyToClipboard(`Subject: ${appData.email.subject}\n\n${appData.email.body}`, "email")}
                     >
                       {copiedEmail ? "✓ Copied to Clipboard!" : "📋 Copy Email"}
@@ -702,14 +713,14 @@ export default function CareerStudio({ user, activeRoadmap, checkpointScore }) {
                   <>
                     <button
                       className="btn-outline"
-                      style={{ padding: "8px 16px", fontSize: 12.5 }}
+                      style={{ padding: "8px 16px", fontSize: "0.82rem" }}
                       onClick={() => downloadAsFile(appData.coverLetter, `${selectedCompany?.company}_Cover_Letter.txt`)}
                     >
                       ⬇️ Download .txt
                     </button>
                     <button
                       className="btn-primary"
-                      style={{ padding: "8px 18px", fontSize: 12.5 }}
+                      style={{ padding: "8px 18px", fontSize: "0.82rem" }}
                       onClick={() => copyToClipboard(appData.coverLetter, "cover")}
                     >
                       {copiedCover ? "✓ Copied to Clipboard!" : "📋 Copy Cover Letter"}

@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
-import CoursePage from "./pages/CoursePage";
 import ForgotPassword from "./pages/ForgotPassword";
 import OAuthCallback from "./pages/OAuthCallback";
 
@@ -21,12 +20,10 @@ function App() {
     console.log("Registered:", data);
   };
 
-  const handleCourseSelect = (selectedCourses) => {
-    setCourses(selectedCourses);
-  };
-
-  const [courses, setCourses] = useState([]);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved === 'dark' ? 'light' : (saved || 'light');
+  });
 
   // Trigger HTML theme updates automatically
   useEffect(() => {
@@ -41,7 +38,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/register" element={<RegisterPage onRegister={handleRegister} />} />
       <Route path="/dashboard" element={<DashboardPage user={user} theme={theme} setTheme={setTheme} />} />
-      <Route path="/courses" element={<CoursePage user={user} onCourseSelect={handleCourseSelect} />} />
+      <Route path="/courses" element={<Navigate to="/dashboard" replace />} />
       <Route path="/oauth/callback" element={<OAuthCallback onLogin={handleLogin} />} />
     </Routes>
   );
