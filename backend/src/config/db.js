@@ -7,19 +7,21 @@ const connectDB = async () => {
     return cachedConnection;
   }
 
+  if (!process.env.MONGODB_URI) {
+    console.warn('⚠️ MONGODB_URI is not set in environment variables.');
+    return null;
+  }
+
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     });
     cachedConnection = conn;
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
-    if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-      process.exit(1);
-    }
-    throw error;
+    return null;
   }
 };
 

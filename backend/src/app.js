@@ -25,8 +25,15 @@ dotenv.config();
 
 const app = express();
 
-// Connect to Database
-connectDB();
+// Database auto-connection middleware for serverless & local execution
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (e) {
+    console.error('MongoDB connection middleware error:', e);
+  }
+  next();
+});
 
 // Middlewares
 const allowedOrigins = [
@@ -54,7 +61,7 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'wanderer_session_secret',
+  secret: process.env.SESSION_SECRET || 'wanderer_session_secret_fallback_key',
   resave: false,
   saveUninitialized: false,
 }));
@@ -63,7 +70,11 @@ app.use(passport.session());
 
 // Health check
 app.get('/', (req, res) => {
-  res.send('Wanderer API is running 🚀');
+  res.json({ status: 'ok', message: 'Wanderer API is running 🚀', time: new Date() });
+});
+
+app.get('/api', (req, res) => {
+  res.json({ status: 'ok', message: 'Wanderer API Root is active 🚀' });
 });
 
 // API Routes
