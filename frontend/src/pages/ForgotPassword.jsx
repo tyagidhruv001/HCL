@@ -297,7 +297,7 @@ function ScreenOTP({ phone, email, method, serverOtp, onVerified, onResend }) {
       <Label>One-time password</Label>
 
       {/* OTP BOXES */}
-      <div key={shakeKey} style={{ display: "flex", gap: 10, marginBottom: 16, justifyContent: "center" }}
+      <div key={shakeKey} style={{ display: "flex", gap: "clamp(4px, 2vw, 10px)", marginBottom: 16, justifyContent: "center" }}
         className={status === "invalid" || status === "expired" ? "shake" : ""}>
         {otp.map((val, i) => (
           <input
@@ -311,8 +311,8 @@ function ScreenOTP({ phone, email, method, serverOtp, onVerified, onResend }) {
             onKeyDown={e => handleKey(e, i)}
             onPaste={handlePaste}
             style={{
-              width: 48, height: 56, textAlign: "center", fontSize: 22, fontWeight: 800,
-              fontFamily: "var(--display)", border: borderFor(i), borderRadius: 12,
+              width: "clamp(36px, 12vw, 48px)", height: "clamp(44px, 14vw, 56px)", textAlign: "center", fontSize: "clamp(18px, 5vw, 22px)", fontWeight: 800,
+              fontFamily: "var(--display)", border: borderFor(i), borderRadius: 10,
               background: status === "success" ? "rgba(16,185,129,0.1)" : status === "invalid" || status === "expired" ? "rgba(239,68,68,0.06)" : "var(--surface3)",
               color: "var(--text)", outline: "none", transition: "all 0.2s",
               caretColor: "var(--accent)",
@@ -589,7 +589,7 @@ export default function ForgotPassword() {
       <div style={{ width: "100%", maxWidth: 460 }}>
 
         {/* CARD */}
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 22, padding: "36px 36px 32px", boxShadow: "0 16px 48px rgba(0,0,0,0.4)" }}>
+        <div className="forgot-card">
 
           {/* TOP BAR */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>

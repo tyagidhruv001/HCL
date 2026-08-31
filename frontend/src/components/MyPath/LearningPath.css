@@ -389,7 +389,7 @@
 }
 
 .lp-phase-header:hover {
-  background: #FFFFFF;
+  background: var(--surface2);
   border-color: var(--pine);
 }
 
@@ -544,10 +544,10 @@
 }
 
 .lp-step-card:hover {
-  background: #FFFFFF;
-  border-color: var(--pine);
+  background: var(--surface2);
+  border-color: var(--ochre);
   transform: translateX(3px);
-  box-shadow: 0 6px 20px rgba(24, 55, 40, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .lp-step-row.completed .lp-step-card {
@@ -709,7 +709,7 @@
 
 .lp-milestone-gate:hover {
   border-color: var(--ochre);
-  background: #FFFFFF;
+  background: var(--surface2);
 }
 
 .lp-milestone-gate.unlocked {
@@ -1132,212 +1132,6 @@
 .lp-architect-studio-wrap p {
   text-align: center;
   margin-bottom: 24px;
-}
-
-
-/* ============================================================
-   ☀️ LIGHT MODE DUAL-THEME OVERRIDES ([data-theme="light"])
-   Guarantees 100% crisp contrast, prominent dark headings,
-   and clean soft glass backgrounds in light mode.
-   ============================================================ */
-
-[data-theme="light"] .lp-root-container {
-  color: #0f1f35;
-}
-
-[data-theme="light"] .lp-title,
-[data-theme="light"] .lp-empty-state h2,
-[data-theme="light"] .lp-architect-studio-wrap h2,
-[data-theme="light"] .lp-phase-title,
-[data-theme="light"] .lp-course-name,
-[data-theme="light"] .lp-drawer-title,
-[data-theme="light"] .lp-stat-val {
-  color: #0f1f35 !important;
-}
-
-[data-theme="light"] .lp-subtitle,
-[data-theme="light"] .lp-empty-state p,
-[data-theme="light"] .lp-stat-label,
-[data-theme="light"] .lp-course-provider,
-[data-theme="light"] .lp-phase-subtitle,
-[data-theme="light"] .lp-drawer-sub {
-  color: #475569 !important;
-}
-
-[data-theme="light"] .lp-hero-card,
-[data-theme="light"] .lp-empty-state,
-[data-theme="light"] .lp-loading-wrap,
-[data-theme="light"] .lp-phase-header,
-[data-theme="light"] .lp-step-card,
-[data-theme="light"] .lp-grid-phase-card {
-  background: #ffffff !important;
-  border-color: rgba(99, 102, 241, 0.2) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
-}
-
-[data-theme="light"] .lp-hero-card .lp-stat-divider {
-  background: #e2e8f0 !important;
-}
-
-[data-theme="light"] .lp-progress-bar-wrap {
-  background: #e2e8f0 !important;
-}
-
-[data-theme="light"] .lp-progress-labels {
-  color: #64748b !important;
-}
-
-[data-theme="light"] .lp-phase-header:hover,
-[data-theme="light"] .lp-step-card:hover {
-  background: #f8fafc !important;
-  border-color: #6366f1 !important;
-}
-
-[data-theme="light"] .lp-step-row.completed .lp-step-card {
-  background: #f0fdf4 !important;
-  border-color: rgba(16, 185, 129, 0.35) !important;
-}
-
-[data-theme="light"] .lp-step-row.active-focus .lp-step-card {
-  background: #eef2ff !important;
-  border-color: rgba(99, 102, 241, 0.6) !important;
-}
-
-[data-theme="light"] .lp-why-box {
-  background: #f8fafc !important;
-  border-left-color: #6366f1 !important;
-  color: #1e293b !important;
-  border-top: 1px solid #e2e8f0;
-  border-right: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-[data-theme="light"] .lp-spine-beacon {
-  background: #ffffff !important;
-  border-color: #94a3b8 !important;
-  color: #475569 !important;
-}
-
-[data-theme="light"] .lp-btn-secondary {
-  background: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-  color: #0f1f35 !important;
-}
-
-[data-theme="light"] .lp-btn-secondary:hover {
-  background: #e2e8f0 !important;
-  color: #4338ca !important;
-}
-
-[data-theme="light"] .lp-btn-ghost {
-  border-color: #cbd5e1 !important;
-  color: #475569 !important;
-}
-
-[data-theme="light"] .lp-btn-ghost:hover {
-  background: #f1f5f9 !important;
-  color: #0f1f35 !important;
-}
-
-[data-theme="light"] .lp-view-switcher {
-  background: #e2e8f0 !important;
-  border-color: #cbd5e1 !important;
-}
-
-[data-theme="light"] .lp-view-btn {
-  color: #64748b !important;
-}
-
-[data-theme="light"] .lp-view-btn.active {
-  background: #ffffff !important;
-  color: #4338ca !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-}
-
-[data-theme="light"] .lp-filter-pill {
-  border-color: #cbd5e1 !important;
-  background: #ffffff !important;
-  color: #64748b !important;
-}
-
-[data-theme="light"] .lp-filter-pill.active {
-  background: #eef2ff !important;
-  border-color: #6366f1 !important;
-  color: #4338ca !important;
-}
-
-[data-theme="light"] .lp-milestone-gate {
-  background: #fffbeb !important;
-  border-color: rgba(245, 158, 11, 0.5) !important;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.08) !important;
-}
-
-[data-theme="light"] .lp-milestone-gate.unlocked {
-  background: #f0fdf4 !important;
-  border-color: rgba(16, 185, 129, 0.4) !important;
-}
-
-[data-theme="light"] .lp-milestone-desc {
-  color: #334155 !important;
-}
-
-[data-theme="light"] .lp-generator-drawer {
-  background: #ffffff !important;
-  border-color: #c7d2fe !important;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08) !important;
-}
-
-[data-theme="light"] .lp-form-field label {
-  color: #1e293b !important;
-}
-
-[data-theme="light"] .lp-req-input,
-[data-theme="light"] .lp-req-select,
-[data-theme="light"] .lp-req-textarea {
-  background: #f8fafc !important;
-  border-color: #cbd5e1 !important;
-  color: #0f1f35 !important;
-}
-
-[data-theme="light"] .lp-req-input:focus,
-[data-theme="light"] .lp-req-select:focus,
-[data-theme="light"] .lp-req-textarea:focus {
-  border-color: #6366f1 !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-}
-
-[data-theme="light"] .lp-presets-row {
-  border-bottom-color: #e2e8f0 !important;
-}
-
-[data-theme="light"] .lp-preset-chip {
-  background: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-  color: #334155 !important;
-}
-
-[data-theme="light"] .lp-preset-chip:hover {
-  background: #e0e7ff !important;
-  color: #4338ca !important;
-}
-
-[data-theme="light"] .lp-preset-chip.active {
-  background: #e0e7ff !important;
-  border-color: #6366f1 !important;
-  color: #4338ca !important;
-}
-
-[data-theme="light"] .lp-req-tag-pill {
-  background: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-  color: #4f46e5 !important;
-}
-
-[data-theme="light"] .lp-grid-course-item {
-  background: #f8fafc !important;
-  border-color: #e2e8f0 !important;
-  color: #0f1f35 !important;
 }
 
 
