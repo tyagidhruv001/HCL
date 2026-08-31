@@ -884,24 +884,22 @@
 }
 
 /* ── AI Pathway Architect & Requirements Studio Drawer ────────────── */
+/* ── AI Pathway Architect & Requirements Studio Drawer ────────────── */
 .lp-generator-drawer {
-  background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 50%),
-    rgba(15, 23, 42, 0.95);
-  border: 1.5px solid rgba(99, 102, 241, 0.4);
-  border-radius: 20px;
-  padding: 24px 28px;
+  background: var(--paper-card);
+  border: 1.5px solid var(--contour-active);
+  border-radius: 4px;
+  padding: 28px 30px;
   margin-bottom: 26px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow);
   animation: lpFadeUp 0.3s ease;
-  backdrop-filter: blur(16px);
 }
 
 @keyframes lpFadeUp {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -912,46 +910,48 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 18px;
-  gap: 12px;
+  margin-bottom: 20px;
+  gap: 16px;
 }
 
 .lp-drawer-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: #ffffff;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--pine);
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: -0.01em;
 }
 
 .lp-drawer-sub {
-  font-size: 13px;
-  color: #94a3b8;
-  margin: 4px 0 0;
-  line-height: 1.5;
+  font-size: 0.92rem;
+  color: var(--slate);
+  margin: 6px 0 0;
+  line-height: 1.55;
 }
 
 .lp-drawer-close-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  width: 28px;
-  height: 28px;
-  color: #94a3b8;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  width: 32px;
+  height: 32px;
+  color: var(--slate);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   flex-shrink: 0;
 }
 
 .lp-drawer-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(178, 45, 29, 0.08);
+  color: var(--red);
+  border-color: var(--red);
 }
 
 /* Presets Bar */
@@ -960,74 +960,80 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--contour-faint);
 }
 
 .lp-presets-label {
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
   font-weight: 700;
-  color: #a5b4fc;
+  color: var(--ochre);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
 }
 
 .lp-preset-chip {
   padding: 5px 12px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
-  font-size: 12px;
+  border-radius: 2px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  color: var(--slate);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .lp-preset-chip:hover {
-  background: rgba(99, 102, 241, 0.2);
-  border-color: rgba(129, 140, 248, 0.4);
-  color: #ffffff;
+  background: var(--paper-card);
+  border-color: var(--pine);
+  color: var(--pine);
   transform: translateY(-1px);
 }
 
 .lp-preset-chip.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(168, 85, 247, 0.35));
-  border-color: #818cf8;
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+  background: rgba(199, 110, 26, 0.14);
+  border-color: var(--ochre);
+  color: var(--ochre);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(199, 110, 26, 0.15);
 }
 
 /* Form Grid */
 .lp-req-form-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .lp-form-row-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
 .lp-form-row-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
 .lp-form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .lp-form-field label {
-  font-size: 12.5px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
   font-weight: 700;
-  color: #cbd5e1;
+  color: var(--slate-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .lp-req-input,
@@ -1035,35 +1041,35 @@
 .lp-req-textarea {
   width: 100%;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(10, 15, 28, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  font-size: 13.5px;
-  font-family: inherit;
+  border-radius: 2px;
+  background: var(--paper);
+  border: 1.5px solid var(--contour-active);
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-family: var(--font-sans);
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   box-sizing: border-box;
 }
 
 .lp-req-textarea {
   resize: vertical;
-  min-height: 70px;
-  line-height: 1.5;
+  min-height: 80px;
+  line-height: 1.55;
 }
 
 .lp-req-input:focus,
 .lp-req-select:focus,
 .lp-req-textarea:focus {
-  border-color: #818cf8;
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
-  background: rgba(15, 23, 42, 0.95);
+  border-color: var(--pine);
+  background: var(--paper-card);
+  box-shadow: 0 0 0 3px rgba(24, 55, 40, 0.08);
 }
 
 .lp-req-input::placeholder,
 .lp-req-textarea::placeholder {
-  color: #64748b;
-  font-size: 13px;
+  color: var(--slate-subtle);
+  font-size: 0.88rem;
 }
 
 /* Requirement Inspiration Tags */
@@ -1071,67 +1077,84 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .lp-req-tag-pill {
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 11.5px;
-  color: #a5b4fc;
+  background: var(--paper);
+  border: 1px solid var(--contour-active);
+  border-radius: 2px;
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--pine);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .lp-req-tag-pill:hover {
-  background: rgba(99, 102, 241, 0.25);
-  border-color: #818cf8;
-  color: #ffffff;
+  background: rgba(199, 110, 26, 0.12);
+  border-color: var(--ochre);
+  color: var(--ochre);
+  transform: translateY(-1px);
 }
 
 /* Actions */
 .lp-drawer-actions {
   display: flex;
   gap: 12px;
-  margin-top: 18px;
+  margin-top: 20px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .lp-generate-action-btn {
-  padding: 12px 26px;
-  font-size: 14.5px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  padding: 12px 28px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  background: var(--ochre);
+  color: #FFFFFF !important;
   border: none;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  border-radius: 2px;
+  box-shadow: 0 4px 14px rgba(199, 110, 26, 0.28);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
 }
 
 .lp-generate-action-btn:hover:not(:disabled) {
-  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
-  transform: translateY(-1px);
+  background: var(--ochre-hover);
+  box-shadow: 0 6px 20px rgba(199, 110, 26, 0.38);
+  transform: translateY(-2px);
 }
 
 .lp-architect-studio-wrap {
-  max-width: 720px;
+  max-width: 760px;
   margin: 30px auto;
   text-align: left;
-  padding: 32px;
+  padding: 36px 32px;
+  background: var(--paper-card);
+  border: 1.5px solid var(--contour-active);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
 }
 
 .lp-architect-studio-wrap h2 {
   text-align: center;
-  font-size: 24px;
-  font-weight: 800;
-  color: #ffffff;
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--pine);
   margin-bottom: 6px;
+  letter-spacing: -0.015em;
 }
 
 .lp-architect-studio-wrap p {
   text-align: center;
+  color: var(--slate);
+  font-size: 0.96rem;
   margin-bottom: 24px;
+  line-height: 1.6;
 }
 
 
