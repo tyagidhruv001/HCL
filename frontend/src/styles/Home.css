@@ -898,13 +898,15 @@ a {
   background: var(--paper-card);
   border: 1.5px solid var(--contour-active);
   border-radius: 4px;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: var(--shadow-card);
   margin-top: 30px;
 }
 
 .comparison-table {
   width: 100%;
+  min-width: 580px;
   border-collapse: collapse;
   text-align: left;
 }
@@ -1211,6 +1213,19 @@ footer {
 }
 
 @media (max-width: 580px) {
-  .strip-inner { grid-template-columns: 1fr 1fr; }
+  .strip-inner { grid-template-columns: 1fr 1fr; gap: 16px; }
   .steps { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 16px; }
+  .hero { padding: 36px 0 54px; }
+  .hero h1 { font-size: 2.1rem; }
+  .section { padding: 56px 0; }
+  .section-head { margin-bottom: 28px; }
+  .section-head h2 { font-size: 1.7rem; }
+  .contact-card-box { padding: 22px 16px; }
+  .demo-card { padding: 22px 16px; }
+  .pillar-card { padding: 24px 18px; }
+  .st-card-container { padding: 28px 18px; }
 }
