@@ -1,7 +1,3 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const pdf = require('pdf-parse');
-
 import User from '../models/user.js';
 import Roadmap from '../models/roadmap.js';
 import Checkpoint from '../models/checkpoint.js';
@@ -11,6 +7,29 @@ import {
   generateCoverLetter,
   DEFAULT_COMPANIES
 } from '../services/aiCareerService.js';
+
+// Safe lazy loader for PDF parsing
+async function parsePdfBuffer(buffer) {
+  try {
+    if (typeof globalThis.DOMMatrix === 'undefined') {
+      globalThis.DOMMatrix = class DOMMatrix {};
+    }
+    if (typeof globalThis.ImageData === 'undefined') {
+      globalThis.ImageData = class ImageData {};
+    }
+    if (typeof globalThis.Path2D === 'undefined') {
+      globalThis.Path2D = class Path2D {};
+    }
+    const { createRequire } = await import('module');
+    const req = createRequire(import.meta.url);
+    const pdf = req('pdf-parse');
+    const data = await pdf(buffer);
+    return data.text || '';
+  } catch (err) {
+    console.warn('Lazy PDF parser warning:', err.message);
+    return buffer.toString('utf-8').replace(/[^\x20-\x7E\n\r\t]/g, ' ');
+  }
+}
 
 // ──────────────────────────────────────────────────────────────
 // @desc   Parse and extract clean text from PDF/DOCX/TXT resume
@@ -29,25 +48,7 @@ export const parseResume = async (req, res) => {
     const lower = (fileName || '').toLowerCase();
 
     if (lower.endsWith('.pdf')) {
-      try {
-        const data = await pdf(buffer);
-        extractedText = data.text || '';
-      } catch (pdfErr) {
-        console.warn('Backend pdf-parse fallback to ML engine:', pdfErr.message);
-        try {
-          const mlResp = await fetch('http://localhost:8001/api/v1/parse_resume', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ base64_data: base64Data, file_name: fileName }),
-          });
-          if (mlResp.ok) {
-            const mlData = await mlResp.json();
-            extractedText = mlData.text || '';
-          }
-        } catch (mlErr) {
-          console.warn('ML engine resume parser error:', mlErr.message);
-        }
-      }
+      extractedText = await parsePdfBuffer(buffer);
     } else {
       extractedText = buffer.toString('utf-8');
     }
