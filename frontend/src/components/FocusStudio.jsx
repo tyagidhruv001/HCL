@@ -39,10 +39,11 @@ export default function FocusStudio({
   // Web Audio Synth Hook
   const { startAudio, stopAudio, playChime, volume, setVolume } = useWebAudioSynth(0.3);
 
-  // Sync topic when defaultTopic prop updates
-  useEffect(() => {
-    if (defaultTopic) setTopic(defaultTopic);
-  }, [defaultTopic]);
+  const [prevDefaultTopic, setPrevDefaultTopic] = useState(defaultTopic);
+  if (defaultTopic !== prevDefaultTopic) {
+    setPrevDefaultTopic(defaultTopic);
+    setTopic(defaultTopic);
+  }
 
   // Log session to backend with exact precision (no artificial rounding)
   const recordSession = async (minsToLog, secsToLog) => {

@@ -1,14 +1,14 @@
 /* ============================================================
-   Focus Studio — Modular CSS Styles
-   Self-contained, glassmorphism dark theme with micro-animations
+   Focus Studio — Unified Cartographic Design System
+   Parchment & Alpine Pine Aesthetic with SVG Countdown Dial
    ============================================================ */
 
 .focus-studio-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(14, 26, 20, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,45 +18,33 @@
 }
 
 @keyframes fsFadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .focus-studio-card {
-  background: rgba(10, 15, 30, 0.95);
-  border: 1px solid rgba(99, 102, 241, 0.35);
-  border-radius: 24px;
-  padding: 28px;
-  max-width: 480px;
+  background: var(--paper-card);
+  border: 1.5px solid var(--contour-active);
+  border-radius: 4px;
+  padding: 28px 32px;
+  max-width: 500px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(99, 102, 241, 0.2);
-  color: #f1f5f9;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-family: var(--font-sans);
   animation: fsSlideUp 0.3s cubic-bezier(0, 0, 0.2, 1);
   box-sizing: border-box;
 }
 
 .focus-studio-card.embedded {
   max-width: 100%;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow);
 }
 
 @keyframes fsSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Header */
@@ -74,25 +62,26 @@
 }
 
 .focus-studio-icon {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .focus-studio-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: #f8fafc;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--pine);
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.01em;
 }
 
 .focus-studio-close-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #94a3b8;
-  font-size: 14px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  color: var(--slate);
+  font-size: 13px;
+  width: 30px;
+  height: 30px;
+  border-radius: 2px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -101,341 +90,342 @@
 }
 
 .focus-studio-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #f87171;
+  border-color: var(--pine);
+  color: var(--pine);
 }
 
-/* Task Subtitle */
+/* Task Title */
 .focus-studio-task {
-  font-size: 13px;
-  color: #94a3b8;
-  margin: 0 0 20px 0;
+  font-size: 0.92rem;
+  color: var(--slate);
+  margin: 0 0 16px 0;
+  font-weight: 500;
 }
 
 .focus-studio-task-highlight {
-  color: #c7d2fe;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--pine);
+  text-decoration: underline;
+  text-decoration-color: var(--ochre);
+  text-underline-offset: 3px;
 }
 
 .focus-studio-task-input-wrap {
-  margin-bottom: 18px;
   display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
 }
 
 .focus-studio-task-input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 13px;
-  color: #f1f5f9;
-  width: 100%;
-  max-width: 340px;
-  text-align: center;
-  transition: border-color 0.2s ease;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--ink);
+  outline: none;
+  width: 240px;
 }
 
 .focus-studio-task-input:focus {
-  outline: none;
-  border-color: #6366f1;
-  background: rgba(99, 102, 241, 0.08);
+  border-color: var(--pine);
 }
 
 /* Preset Buttons */
 .focus-studio-presets {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 24px;
+  justify-content: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
 }
 
 .focus-studio-preset-btn {
-  padding: 6px 14px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
-  color: #94a3b8;
+  padding: 7px 14px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  color: var(--slate);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .focus-studio-preset-btn:hover:not(:disabled) {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.4);
-  color: #c7d2fe;
+  border-color: var(--pine);
+  color: var(--pine);
 }
 
 .focus-studio-preset-btn.active {
-  font-weight: 700;
-  border-color: #6366f1;
-  background: rgba(99, 102, 241, 0.25);
-  color: #e0e7ff;
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+  background: var(--pine);
+  color: var(--paper);
+  border-color: var(--pine);
+  box-shadow: 0 2px 6px rgba(24, 55, 40, 0.2);
 }
 
 .focus-studio-preset-btn:disabled {
-  cursor: not-allowed;
   opacity: 0.5;
+  cursor: not-allowed;
 }
 
-/* Circular SVG Dial */
+/* Circular Animated SVG Countdown */
 .focus-studio-dial-container {
   position: relative;
-  width: 200px;
-  height: 200px;
-  margin: 0 auto 24px;
+  width: 210px;
+  height: 210px;
+  margin: 10px auto 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .focus-studio-svg {
   transform: rotate(-90deg);
+  width: 210px;
+  height: 210px;
 }
 
 .focus-studio-circle-bg {
-  stroke: rgba(255, 255, 255, 0.06);
-  stroke-width: 10;
-  fill: transparent;
+  fill: none;
+  stroke: var(--surface3);
+  stroke-width: 8;
 }
 
 .focus-studio-circle-progress {
-  stroke: url(#focusTimerGrad);
-  stroke-width: 10;
-  fill: transparent;
-  transition: stroke-dashoffset 0.5s ease;
+  fill: none;
+  stroke: var(--ochre);
+  stroke-width: 8;
+  transition: stroke-dashoffset 0.3s ease;
 }
 
 .focus-studio-dial-center {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  pointer-events: none;
 }
 
 .focus-studio-time-text {
-  font-size: 38px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  color: #ffffff;
-  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--pine);
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 .focus-studio-status-text {
-  font-size: 11px;
-  color: #64748b;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--slate-subtle);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .focus-studio-status-text.running {
-  color: #34d399;
+  color: var(--ochre);
 }
 
-/* Control Buttons */
+/* Action Controls */
 .focus-studio-controls {
   display: flex;
+  gap: 10px;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .focus-studio-btn {
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 10px 24px;
+  border-radius: 2px;
   font-weight: 600;
-  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
 }
 
 .focus-studio-btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  background: var(--ochre);
   color: #ffffff;
-  min-width: 140px;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+  border: none;
+  box-shadow: 0 4px 14px rgba(199, 110, 26, 0.25);
 }
 
 .focus-studio-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  background: var(--ochre-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(199, 110, 26, 0.35);
 }
 
 .focus-studio-btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f1f5f9;
-  min-width: 140px;
+  background: var(--pine);
+  color: var(--paper);
+  border: none;
+  box-shadow: 0 4px 14px rgba(24, 55, 40, 0.25);
 }
 
 .focus-studio-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--pine-deep);
+  transform: translateY(-1px);
 }
 
 .focus-studio-btn-ghost {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  color: var(--slate);
 }
 
 .focus-studio-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #f1f5f9;
+  border-color: var(--pine);
+  color: var(--pine);
 }
 
-/* Audio Synthesizer Panel */
+/* Ambient Focus Audio Panel */
 .focus-studio-audio-panel {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 3px;
   padding: 14px 16px;
 }
 
 .focus-studio-audio-header {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--slate-subtle);
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  font-size: 12px;
-  color: #94a3b8;
 }
 
 .focus-studio-audio-badge {
-  color: #38bdf8;
-  font-weight: 700;
-  font-size: 11px;
+  font-size: 0.7rem;
+  color: var(--pine);
+  background: rgba(24, 55, 40, 0.1);
+  padding: 2px 6px;
+  border-radius: 2px;
 }
 
 .focus-studio-audio-buttons {
   display: flex;
-  justify-content: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .focus-studio-sound-btn {
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: transparent;
-  color: #94a3b8;
+  padding: 6px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--slate);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .focus-studio-sound-btn:hover {
-  background: rgba(6, 182, 212, 0.1);
-  border-color: rgba(6, 182, 212, 0.3);
-  color: #38bdf8;
+  border-color: var(--pine);
+  color: var(--pine);
 }
 
 .focus-studio-sound-btn.active {
-  font-weight: 700;
-  border-color: #06b6d4;
-  background: rgba(6, 182, 212, 0.2);
-  color: #38bdf8;
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+  background: var(--pine);
+  color: var(--paper);
+  border-color: var(--pine);
 }
 
-/* Workstation Layout for Full Page Tab */
+/* ============================================================
+   WORKSTATION GRID & ANALYTICS WIDGETS (Dashboard View)
+   ============================================================ */
+
 .focus-workstation-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1.15fr 1fr;
   gap: 24px;
   align-items: start;
 }
 
-@media (max-width: 900px) {
-  .focus-workstation-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .focus-stats-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  background: var(--paper-card);
+  border: 1.5px solid var(--contour-active);
+  border-radius: 4px;
   padding: 24px;
+  box-shadow: var(--shadow);
   margin-bottom: 20px;
 }
 
 .focus-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 .focus-stat-item {
-  background: var(--surface2, rgba(255, 255, 255, 0.03));
+  background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 3px;
+  padding: 16px 14px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .focus-stat-value {
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--accent);
-  font-family: var(--display, inherit);
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--pine);
+  line-height: 1.1;
 }
 
 .focus-stat-label {
-  font-size: 11px;
-  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--slate-subtle);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
 }
 
 .focus-history-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 380px;
+  max-height: 240px;
   overflow-y: auto;
 }
 
 .focus-history-item {
-  background: var(--surface2, rgba(255, 255, 255, 0.03));
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 16px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  transition: border-color 0.2s ease;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 0.88rem;
 }
 
-.focus-history-item:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-}
-
-.focus-history-badge {
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  color: #c7d2fe;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 9999px;
+@media (max-width: 900px) {
+  .focus-workstation-grid {
+    grid-template-columns: 1fr;
+  }
 }

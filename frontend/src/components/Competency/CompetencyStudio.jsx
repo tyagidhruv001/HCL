@@ -214,10 +214,10 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
 
   // Group nodes by tier
   const tiers = [
-    { tier: "Foundational", stage: 1, color: "#38bdf8", bg: "rgba(56, 189, 248, 0.08)", border: "rgba(56, 189, 248, 0.3)" },
-    { tier: "Core", stage: 2, color: "#818cf8", bg: "rgba(99, 102, 241, 0.08)", border: "rgba(99, 102, 241, 0.3)" },
-    { tier: "Advanced", stage: 3, color: "#c084fc", bg: "rgba(168, 85, 247, 0.08)", border: "rgba(168, 85, 247, 0.3)" },
-    { tier: "Mastery", stage: 4, color: "#34d399", bg: "rgba(52, 211, 153, 0.08)", border: "rgba(52, 211, 153, 0.3)" },
+    { tier: "Foundational", stage: 1, color: "var(--pine)", bg: "var(--paper)", border: "var(--border)" },
+    { tier: "Core", stage: 2, color: "var(--pine)", bg: "var(--paper)", border: "var(--border)" },
+    { tier: "Advanced", stage: 3, color: "var(--ochre)", bg: "var(--paper)", border: "var(--border)" },
+    { tier: "Mastery", stage: 4, color: "var(--pine)", bg: "var(--paper)", border: "var(--border)" },
   ];
 
   const totalNodesCount = dagData?.nodes?.length || 0;
@@ -229,17 +229,17 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
       {/* ── Top Header ── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <div className="page-h" style={{ fontSize: 24, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="page-h" style={{ fontSize: "1.45rem", fontWeight: 600, color: "var(--pine)", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
             <span>🌳</span> Prerequisite Competency Tree (Knowledge Graph DAG)
           </div>
-          <div className="page-sub" style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 4 }}>
+          <div className="page-sub" style={{ fontSize: "0.88rem", color: "var(--slate)", marginTop: 4 }}>
             Fully dynamic skill discovery & dependency map backed by MongoDB. Trace prerequisites ⬅️ and unlocks ➡️ with live mastery sync.
           </div>
         </div>
         {activeRoadmap && (
           <button
             className="btn-outline"
-            style={{ padding: "8px 16px", fontSize: 12.5, borderColor: "var(--accent)", color: "var(--accent)" }}
+            style={{ padding: "8px 16px", fontSize: "0.8rem", borderColor: "var(--ochre)", color: "var(--ochre)", fontFamily: "var(--font-mono)", fontWeight: 700 }}
             onClick={() => onNavigateRoadmap?.()}
           >
             🗺️ View Linear Pathway →
@@ -248,7 +248,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
       </div>
 
       {/* ── Search & Curriculum Selection Bar ── */}
-      <div className="wg" style={{ padding: "18px 22px", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16 }}>
+      <div className="wg" style={{ padding: "18px 22px", background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, boxShadow: "var(--shadow)" }}>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
           <input
             type="text"
@@ -264,28 +264,27 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
               flex: 1,
               minWidth: 260,
               padding: "10px 16px",
-              borderRadius: 10,
-              background: "var(--surface2)",
+              borderRadius: 2,
+              background: "var(--paper)",
               border: "1px solid var(--border)",
-              color: "var(--text)",
-              fontSize: 13.5,
+              color: "var(--ink)",
+              fontSize: "0.88rem",
               outline: "none"
             }}
           />
           <button
             className="btn-primary"
-            style={{ padding: "10px 22px", fontSize: 13.5, whiteSpace: "nowrap" }}
+            style={{ padding: "10px 22px", fontSize: "0.88rem", whiteSpace: "nowrap" }}
             onClick={() => handleGenerateCustomDAG(topicQuery.trim())}
             disabled={loading || !topicQuery.trim()}
           >
-            {loading && activeTab !== "roadmap" ? "⚡ Synthesizing & Saving DAG..." : "✨ Generate AI Skill Tree →"}
+            {loading ? "Constructing Graph..." : "⚡ Generate Skill Tree"}
           </button>
         </div>
 
-        {/* Quick Topic Pills */}
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-          <span style={{ fontSize: 11.5, color: "var(--muted)", fontWeight: 700, marginRight: 4 }}>Curriculum Trees:</span>
-          {QUICK_TOPICS.map(item => {
+        {/* Quick Curriculum Switcher Chips */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {QUICK_TOPICS.map((item) => {
             const isSelected = activeTab === item.id || (item.query && activeTab === item.query);
             return (
               <button
@@ -294,18 +293,18 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                   if (item.id === "roadmap") {
                     loadRoadmapDAG();
                   } else {
-                    setTopicQuery(item.query);
                     handleGenerateCustomDAG(item.query);
                   }
                 }}
                 style={{
                   padding: "5px 12px",
-                  borderRadius: 8,
-                  border: `1px solid ${isSelected ? "var(--accent)" : "rgba(255,255,255,0.08)"}`,
-                  background: isSelected ? "rgba(0, 212, 170, 0.15)" : "rgba(255,255,255,0.02)",
-                  color: isSelected ? "var(--accent)" : "var(--muted)",
-                  fontSize: 12,
+                  borderRadius: 2,
+                  border: `1px solid ${isSelected ? "var(--pine)" : "var(--border)"}`,
+                  background: isSelected ? "var(--pine)" : "var(--paper)",
+                  color: isSelected ? "var(--paper)" : "var(--slate)",
+                  fontSize: "0.78rem",
                   fontWeight: isSelected ? 700 : 500,
+                  fontFamily: "var(--font-mono)",
                   cursor: "pointer",
                   transition: "all 0.15s"
                 }}
@@ -318,8 +317,8 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
 
         {/* Saved MongoDB Graphs Chips */}
         {savedGraphs.length > 0 && (
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-            <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>💾 Saved in Database:</span>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--contour-faint)" }}>
+            <span style={{ fontSize: "0.74rem", color: "var(--slate-subtle)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>💾 Saved in Database:</span>
             {savedGraphs.map(g => (
               <button
                 key={g._id}
@@ -330,11 +329,12 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                 }}
                 style={{
                   padding: "3px 9px",
-                  borderRadius: 6,
-                  background: activeTab === g.topic ? "rgba(99, 102, 241, 0.2)" : "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: activeTab === g.topic ? "#a5b4fc" : "var(--muted)",
-                  fontSize: 11,
+                  borderRadius: 2,
+                  background: activeTab === g.topic ? "rgba(24, 55, 40, 0.1)" : "var(--paper)",
+                  border: `1px solid ${activeTab === g.topic ? "var(--pine)" : "var(--border)"}`,
+                  color: activeTab === g.topic ? "var(--pine)" : "var(--slate)",
+                  fontSize: "0.74rem",
+                  fontFamily: "var(--font-mono)",
                   cursor: "pointer"
                 }}
               >
@@ -348,12 +348,12 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
       {/* ── Toast Notification ── */}
       {toastMsg && (
         <div style={{
-          background: "rgba(34, 197, 94, 0.15)",
-          border: "1px solid rgba(34, 197, 94, 0.4)",
-          color: "var(--green)",
-          borderRadius: 10,
+          background: "rgba(24, 55, 40, 0.1)",
+          border: "1.5px solid var(--pine)",
+          color: "var(--pine)",
+          borderRadius: 4,
           padding: "10px 16px",
-          fontSize: 13,
+          fontSize: "0.85rem",
           fontWeight: 700,
           display: "flex",
           alignItems: "center",
@@ -367,24 +367,24 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
       {loading ? (
         <div style={{ textAlign: "center", padding: "80px 0" }}>
           <div style={{ fontSize: 48, marginBottom: 14, animation: "spin 1s linear infinite", display: "inline-block" }}>🌳</div>
-          <div style={{ fontFamily: "var(--display)", fontSize: 20, fontWeight: 700, color: "var(--accent)" }}>
+          <div style={{ fontFamily: "var(--font-serif)", fontSize: "1.3rem", fontWeight: 600, color: "var(--pine)" }}>
             Constructing Prerequisite Dependency Graph (DAG)...
           </div>
-          <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 6 }}>
+          <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", marginTop: 6 }}>
             Mapping mathematical foundations, core mechanics, advanced architectures, and outgoing unlocks in MongoDB...
           </div>
         </div>
       ) : (
         <>
           {/* ── 1. Visual 4-Stage Knowledge Graph Matrix ── */}
-          <div className="wg" style={{ padding: "22px 24px", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18 }}>
+          <div className="wg" style={{ padding: "22px 24px", background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, boxShadow: "var(--shadow)" }}>
             {/* Graph Header with Database Mastery Progress */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, borderBottom: "1px solid var(--border)", paddingBottom: 14, flexWrap: "wrap", gap: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, borderBottom: "1px solid var(--contour-faint)", paddingBottom: 14, flexWrap: "wrap", gap: 12 }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#ffffff" }}>
+                <div style={{ fontSize: "1.15rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
                   {dagData?.topic || "Competency Graph"}
                 </div>
-                <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 3 }}>
+                <div style={{ fontSize: "0.85rem", color: "var(--slate)", marginTop: 3 }}>
                   {dagData?.overview}
                 </div>
               </div>
@@ -392,15 +392,15 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
               {/* Live MongoDB Mastery Index Badge */}
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: "var(--muted)", textTransform: "uppercase" }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>
                     Competency Mastery
                   </div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "var(--accent)" }}>
+                  <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--pine)", fontFamily: "var(--font-mono)" }}>
                     {masteredCount} of {totalNodesCount} Mastered ({readinessPct}%)
                   </div>
                 </div>
-                <div style={{ width: 80, height: 8, background: "var(--surface2)", borderRadius: 9999, overflow: "hidden" }}>
-                  <div style={{ width: `${readinessPct}%`, height: "100%", background: "linear-gradient(90deg, var(--accent), var(--green))", transition: "width 0.4s ease" }} />
+                <div style={{ width: 80, height: 6, background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ width: `${readinessPct}%`, height: "100%", background: "var(--pine)", transition: "width 0.4s ease" }} />
                 </div>
               </div>
             </div>
@@ -417,21 +417,22 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                     {/* Stage Header */}
                     <div style={{
                       padding: "10px 14px",
-                      borderRadius: 10,
-                      background: tInfo.bg,
-                      border: `1px solid ${tInfo.border}`,
+                      borderRadius: 3,
+                      background: "var(--paper)",
+                      border: "1px solid var(--border)",
                       textAlign: "center"
                     }}>
                       <div style={{
-                        fontSize: 10.5,
-                        fontWeight: 800,
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
                         textTransform: "uppercase",
-                        letterSpacing: 1.5,
-                        color: tInfo.color
+                        letterSpacing: "0.04em",
+                        color: "var(--ochre)",
+                        fontFamily: "var(--font-mono)"
                       }}>
                         Stage {tInfo.stage}
                       </div>
-                      <div style={{ fontSize: 13.5, fontWeight: 800, color: "#ffffff", marginTop: 2 }}>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--pine)", marginTop: 2, fontFamily: "var(--font-serif)" }}>
                         {tInfo.tier}
                       </div>
                     </div>
@@ -447,28 +448,28 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                         const isLocked = node.status === "locked";
 
                         let cardBorder = "1px solid var(--border)";
-                        let cardBg = "rgba(255,255,255,0.02)";
+                        let cardBg = "var(--surface)";
                         let shadow = "none";
 
                         if (isSelected) {
-                          cardBorder = "2px solid var(--accent)";
-                          cardBg = "rgba(0, 212, 170, 0.12)";
-                          shadow = "0 0 20px rgba(0, 212, 170, 0.35)";
+                          cardBorder = "2px solid var(--pine)";
+                          cardBg = "rgba(24, 55, 40, 0.08)";
+                          shadow = "0 2px 10px rgba(24, 55, 40, 0.15)";
                         } else if (isPrereqOfSelected) {
-                          cardBorder = "1.5px solid rgba(239, 68, 68, 0.5)";
-                          cardBg = "rgba(239, 68, 68, 0.05)";
+                          cardBorder = "1.5px solid var(--red)";
+                          cardBg = "rgba(199, 40, 40, 0.05)";
                         } else if (isUnlockedBySelected) {
-                          cardBorder = "1.5px solid rgba(34, 197, 94, 0.5)";
-                          cardBg = "rgba(34, 197, 94, 0.05)";
+                          cardBorder = "1.5px solid var(--pine)";
+                          cardBg = "rgba(24, 55, 40, 0.05)";
                         } else if (isMastered) {
-                          cardBorder = "1.5px solid rgba(34, 197, 94, 0.35)";
-                          cardBg = "rgba(34, 197, 94, 0.03)";
+                          cardBorder = "1.5px solid var(--contour-active)";
+                          cardBg = "var(--surface)";
                         } else if (isInProgress) {
-                          cardBorder = "1.5px solid rgba(99, 102, 241, 0.4)";
-                          cardBg = "rgba(99, 102, 241, 0.06)";
+                          cardBorder = "1.5px solid var(--ochre)";
+                          cardBg = "rgba(199, 110, 26, 0.06)";
                         } else if (isLocked) {
-                          cardBorder = "1px dashed rgba(255, 255, 255, 0.1)";
-                          cardBg = "rgba(0, 0, 0, 0.15)";
+                          cardBorder = "1px dashed var(--contour-faint)";
+                          cardBg = "var(--paper)";
                         }
 
                         return (
@@ -478,7 +479,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                             style={{
                               background: cardBg,
                               border: cardBorder,
-                              borderRadius: 14,
+                              borderRadius: 3,
                               padding: "14px 16px",
                               cursor: "pointer",
                               transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -490,34 +491,35 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                               <span style={{ fontSize: 18 }}>{node.icon || "📘"}</span>
                               <span style={{
-                                fontSize: 10,
-                                fontWeight: 800,
+                                fontSize: "0.7rem",
+                                fontWeight: 700,
                                 padding: "2px 7px",
-                                borderRadius: 9999,
+                                borderRadius: 2,
                                 background: isMastered
-                                  ? "rgba(34,197,94,0.15)"
+                                  ? "rgba(24, 55, 40, 0.1)"
                                   : isInProgress
-                                    ? "rgba(99,102,241,0.15)"
+                                    ? "rgba(199, 110, 26, 0.12)"
                                     : isLocked
-                                      ? "rgba(239,68,68,0.12)"
-                                      : "rgba(0,212,170,0.12)",
+                                      ? "rgba(199, 40, 40, 0.1)"
+                                      : "rgba(24, 55, 40, 0.06)",
                                 color: isMastered
-                                  ? "var(--green)"
+                                  ? "var(--pine)"
                                   : isInProgress
-                                    ? "#a5b4fc"
+                                    ? "var(--ochre)"
                                     : isLocked
-                                      ? "#f87171"
-                                      : "var(--accent)"
+                                      ? "var(--red)"
+                                      : "var(--pine)",
+                                fontFamily: "var(--font-mono)"
                               }}>
                                 {isMastered ? "✓ Mastered" : isInProgress ? "📍 Active" : isLocked ? "🔒 Locked" : "🔓 Ready"}
                               </span>
                             </div>
 
-                            <div style={{ fontSize: 13.5, fontWeight: 700, color: "#ffffff", lineHeight: 1.35, marginBottom: 8 }}>
+                            <div style={{ fontSize: "0.92rem", fontWeight: 600, color: "var(--ink)", lineHeight: 1.35, marginBottom: 8, fontFamily: "var(--font-sans)" }}>
                               {node.label}
                             </div>
 
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11, color: "var(--muted)" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.76rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                               <span>⏱️ {node.estimatedHours || 20}h</span>
                               <span>🔗 {node.prerequisites?.length || 0} reqs</span>
                             </div>
@@ -535,10 +537,10 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
           {selectedNode && (
             <div className="wg" style={{
               padding: "24px 28px",
-              background: "radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), var(--surface))",
-              border: "1.5px solid rgba(0, 212, 170, 0.4)",
-              borderRadius: 18,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
+              background: "var(--paper-card)",
+              border: "1.5px solid var(--contour-active)",
+              borderRadius: 4,
+              boxShadow: "var(--shadow)",
               animation: "fadeIn 0.25s ease"
             }}>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, alignItems: "start" }}>
@@ -546,32 +548,32 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                 {/* Column 1: Node Identity & Details */}
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                    <div style={{ fontSize: 32, padding: "10px", background: "var(--surface2)", borderRadius: 12, border: "1px solid var(--border)" }}>
+                    <div style={{ fontSize: 28, padding: "8px 10px", background: "var(--paper)", borderRadius: 3, border: "1px solid var(--border)" }}>
                       {selectedNode.icon || "📘"}
                     </div>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "var(--accent)" }}>
+                      <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--ochre)", fontFamily: "var(--font-mono)" }}>
                         {selectedNode.tier} Stage Competency
                       </div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: "#ffffff", lineHeight: 1.25 }}>
+                      <div style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--pine)", lineHeight: 1.25, fontFamily: "var(--font-serif)" }}>
                         {selectedNode.label}
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55, marginBottom: 14 }}>
+                  <div style={{ fontSize: "0.88rem", color: "var(--slate)", lineHeight: 1.6, marginBottom: 14 }}>
                     {selectedNode.desc}
                   </div>
 
                   {/* Subtopics */}
                   {selectedNode.keySubtopics && selectedNode.keySubtopics.length > 0 && (
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
+                      <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontFamily: "var(--font-mono)" }}>
                         Key Concepts & Skills:
                       </div>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                         {selectedNode.keySubtopics.map((sub, sIdx) => (
-                          <span key={sIdx} style={{ fontSize: 11.5, padding: "3px 8px", borderRadius: 6, background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", color: "#ffffff" }}>
+                          <span key={sIdx} style={{ fontSize: "0.76rem", padding: "3px 8px", borderRadius: 2, background: "var(--paper)", border: "1px solid var(--border)", color: "var(--ink)", fontFamily: "var(--font-mono)" }}>
                             • {sub}
                           </span>
                         ))}
@@ -581,8 +583,8 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                 </div>
 
                 {/* Column 2: ⬅️ Required Prerequisites (Incoming Dependencies) */}
-                <div style={{ background: "rgba(239, 68, 68, 0.04)", border: "1px solid rgba(239, 68, 68, 0.25)", borderRadius: 14, padding: "16px 18px" }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 800, color: "#f87171", display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+                <div style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3, padding: "16px 18px" }}>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--red)", display: "flex", alignItems: "center", gap: 6, marginBottom: 10, fontFamily: "var(--font-mono)" }}>
                     <span>⬅️</span> Required Prerequisites (Study First)
                   </div>
                   {selectedNode.prerequisites && selectedNode.prerequisites.length > 0 ? (
@@ -598,11 +600,11 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                             style={{
                               textAlign: "left",
                               padding: "8px 12px",
-                              borderRadius: 8,
-                              background: "rgba(255,255,255,0.03)",
-                              border: `1px solid ${isPActive ? "rgba(34,197,94,0.3)" : "rgba(255,255,255,0.08)"}`,
-                              color: "#ffffff",
-                              fontSize: 12,
+                              borderRadius: 2,
+                              background: "var(--surface)",
+                              border: `1px solid ${isPActive ? "var(--pine)" : "var(--border)"}`,
+                              color: "var(--ink)",
+                              fontSize: "0.82rem",
                               cursor: "pointer",
                               display: "flex",
                               justifyContent: "space-between",
@@ -611,7 +613,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                             }}
                           >
                             <span>• {label}</span>
-                            <span style={{ fontSize: 11, color: isPActive ? "var(--green)" : "var(--accent)", fontWeight: 700 }}>
+                            <span style={{ fontSize: "0.76rem", color: isPActive ? "var(--pine)" : "var(--ochre)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
                               {isPActive ? "✓ Mastered" : "Inspect ➔"}
                             </span>
                           </button>
@@ -619,7 +621,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                       })}
                     </div>
                   ) : (
-                    <div style={{ fontSize: 12.5, color: "var(--green)", lineHeight: 1.5 }}>
+                    <div style={{ fontSize: "0.85rem", color: "var(--pine)", lineHeight: 1.5 }}>
                       ✓ <strong>Root Foundational Concept:</strong> You can start this topic immediately with zero prior blockers!
                     </div>
                   )}
@@ -628,8 +630,8 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                 {/* Column 3: ➡️ Unlocks Next & Integrated Actions */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   {/* Unlocks Box */}
-                  <div style={{ background: "rgba(34, 197, 94, 0.04)", border: "1px solid rgba(34, 197, 94, 0.25)", borderRadius: 14, padding: "14px 16px" }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 800, color: "var(--green)", display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                  <div style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3, padding: "14px 16px" }}>
+                    <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--pine)", display: "flex", alignItems: "center", gap: 6, marginBottom: 8, fontFamily: "var(--font-mono)" }}>
                       <span>➡️</span> Unlocks Next (Capabilities Enabled)
                     </div>
                     {selectedNode.unlocks && selectedNode.unlocks.length > 0 ? (
@@ -644,11 +646,11 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                               style={{
                                 textAlign: "left",
                                 padding: "6px 10px",
-                                borderRadius: 6,
-                                background: "rgba(255,255,255,0.03)",
-                                border: "1px solid rgba(255,255,255,0.08)",
-                                color: "#ffffff",
-                                fontSize: 11.5,
+                                borderRadius: 2,
+                                background: "var(--surface)",
+                                border: "1px solid var(--border)",
+                                color: "var(--ink)",
+                                fontSize: "0.8rem",
                                 cursor: "pointer",
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -656,13 +658,13 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                               }}
                             >
                               <span>• {label}</span>
-                              <span style={{ fontSize: 10.5, color: "var(--green)", fontWeight: 700 }}>Explore ➔</span>
+                              <span style={{ fontSize: "0.74rem", color: "var(--pine)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>Explore ➔</span>
                             </button>
                           );
                         })}
                       </div>
                     ) : (
-                      <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                      <div style={{ fontSize: "0.82rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                         🏆 Terminal Capstone Milestone
                       </div>
                     )}
@@ -673,7 +675,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                     {/* IN-PLACE AI QUIZ MODAL TRIGGER */}
                     <button
                       className="btn-primary"
-                      style={{ width: "100%", padding: "10px", fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                      style={{ width: "100%", padding: "10px", fontSize: "0.88rem", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                       onClick={() => handleOpenQuizModal(selectedNode)}
                     >
                       <span>🧪</span> Test Knowledge (AI Diagnostic Quiz) →
@@ -682,7 +684,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                     {selectedNode.status !== "mastered" && (
                       <button
                         className="btn-outline"
-                        style={{ width: "100%", padding: "8px", fontSize: 12, borderColor: "var(--green)", color: "var(--green)", background: "rgba(34,197,94,0.05)" }}
+                        style={{ width: "100%", padding: "8px", fontSize: "0.8rem", borderColor: "var(--pine)", color: "var(--pine)", background: "rgba(24, 55, 40, 0.04)" }}
                         onClick={() => handleMarkMastered(selectedNode)}
                         disabled={actionLoading}
                       >
@@ -693,14 +695,14 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       <button
                         className="btn-outline"
-                        style={{ padding: "8px", fontSize: 12 }}
+                        style={{ padding: "8px", fontSize: "0.8rem" }}
                         onClick={() => handleAppendNode(selectedNode)}
                       >
                         ➕ Pin to Pathway
                       </button>
                       <button
                         className="btn-outline"
-                        style={{ padding: "8px", fontSize: 12 }}
+                        style={{ padding: "8px", fontSize: "0.8rem" }}
                         onClick={() => onOpenFocusStudio?.(selectedNode.label)}
                       >
                         ⏱️ Focus Sprint
@@ -711,7 +713,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-outline"
-                      style={{ padding: "8px", fontSize: 11.5, textAlign: "center", textDecoration: "none", color: "var(--muted)" }}
+                      style={{ padding: "8px", fontSize: "0.78rem", textAlign: "center", textDecoration: "none", color: "var(--slate)" }}
                     >
                       📺 Watch Video Lectures ↗
                     </a>
@@ -729,7 +731,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
         <div style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0, 0, 0, 0.85)",
+          background: "rgba(14, 26, 20, 0.45)",
           backdropFilter: "blur(8px)",
           zIndex: 9999,
           display: "flex",
@@ -738,15 +740,15 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
           padding: 20
         }}>
           <div style={{
-            background: "var(--surface)",
-            border: "1.5px solid var(--accent)",
-            borderRadius: 20,
+            background: "var(--paper-card)",
+            border: "1.5px solid var(--contour-active)",
+            borderRadius: 4,
             maxWidth: 640,
             width: "100%",
             maxHeight: "90vh",
             overflowY: "auto",
             padding: "26px 30px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            boxShadow: "var(--shadow)",
             position: "relative",
             animation: "fadeIn 0.2s ease"
           }}>
@@ -755,17 +757,17 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 24 }}>{quizModalNode.icon || "🎯"}</span>
                 <div>
-                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "#ffffff" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
                     {quizModalNode.label}
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--accent)" }}>
+                  <div style={{ fontSize: "0.78rem", color: "var(--ochre)", fontFamily: "var(--font-mono)", fontWeight: 700 }}>
                     AI Checkpoint Diagnostic Assessment
                   </div>
                 </div>
               </div>
               <button
                 onClick={() => setQuizModalNode(null)}
-                style={{ background: "transparent", border: "none", color: "var(--muted)", fontSize: 20, cursor: "pointer" }}
+                style={{ background: "transparent", border: "none", color: "var(--slate-subtle)", fontSize: 20, cursor: "pointer" }}
               >
                 ✕
               </button>
@@ -775,10 +777,10 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
             {quizLoading ? (
               <div style={{ textAlign: "center", padding: "60px 0" }}>
                 <div style={{ fontSize: 40, marginBottom: 14, animation: "spin 1s linear infinite", display: "inline-block" }}>⚡</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "var(--accent)" }}>
+                <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
                   Synthesizing AI Diagnostic Questions...
                 </div>
-                <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6 }}>
+                <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", marginTop: 6 }}>
                   Generating conceptual, algorithmic, and scenario test questions tailored to {quizModalNode.label}.
                 </div>
               </div>
@@ -789,16 +791,16 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                   <div style={{ fontSize: 50, marginBottom: 8 }}>
                     {quizResult.score >= 80 ? "🏆" : quizResult.score >= 70 ? "🎉" : "📚"}
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 900, color: quizResult.score >= 70 ? "var(--green)" : "var(--yellow)" }}>
+                  <div style={{ fontSize: "1.8rem", fontWeight: 700, color: quizResult.score >= 70 ? "var(--pine)" : "var(--ochre)", fontFamily: "var(--font-serif)" }}>
                     {quizResult.score}% Score
                   </div>
-                  <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 4 }}>
+                  <div style={{ fontSize: "0.88rem", color: "var(--slate)", marginTop: 4 }}>
                     {quizResult.score >= 70 ? "✅ Verified Competency Passed! Skill Unlocked." : "Needs Review. Brush up on foundational concepts."}
                   </div>
                 </div>
 
-                <div style={{ background: "var(--surface2)", borderRadius: 12, padding: "14px 16px", marginBottom: 20, fontSize: 13, color: "var(--text)", lineHeight: 1.5 }}>
-                  <strong>🤖 AI Advisor Feedback:</strong> {quizResult.feedback || "Good effort. Review the core mechanisms and try again to improve mastery."}
+                <div style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3, padding: "14px 16px", marginBottom: 20, fontSize: "0.88rem", color: "var(--slate)", lineHeight: 1.6 }}>
+                  <strong style={{ color: "var(--pine)" }}>🤖 AI Advisor Feedback:</strong> {quizResult.feedback || "Good effort. Review the core mechanisms and try again to improve mastery."}
                 </div>
 
                 <div style={{ display: "flex", gap: 10 }}>
@@ -822,16 +824,16 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
               /* Active Question Screen */
               <div>
                 {/* Progress bar */}
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted)", marginBottom: 8 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", color: "var(--slate-subtle)", marginBottom: 8, fontFamily: "var(--font-mono)" }}>
                   <span>Question {quizCurrentQ + 1} of {quizQuestions.length}</span>
-                  <span style={{ color: "var(--accent)", fontWeight: 700 }}>{quizQuestions[quizCurrentQ]?.type || "Conceptual"}</span>
+                  <span style={{ color: "var(--ochre)", fontWeight: 700 }}>{quizQuestions[quizCurrentQ]?.type || "Conceptual"}</span>
                 </div>
-                <div style={{ width: "100%", height: 6, background: "var(--surface2)", borderRadius: 9999, overflow: "hidden", marginBottom: 20 }}>
-                  <div style={{ width: `${((quizCurrentQ + 1) / quizQuestions.length) * 100}%`, height: "100%", background: "var(--accent)", transition: "width 0.3s ease" }} />
+                <div style={{ width: "100%", height: 6, background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 2, overflow: "hidden", marginBottom: 20 }}>
+                  <div style={{ width: `${((quizCurrentQ + 1) / quizQuestions.length) * 100}%`, height: "100%", background: "var(--pine)", transition: "width 0.3s ease" }} />
                 </div>
 
                 {/* Question Text */}
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", lineHeight: 1.45, marginBottom: 18 }}>
+                <div style={{ fontSize: "1.05rem", fontWeight: 600, color: "var(--pine)", lineHeight: 1.45, marginBottom: 18, fontFamily: "var(--font-serif)" }}>
                   {quizQuestions[quizCurrentQ]?.q}
                 </div>
 
@@ -846,11 +848,11 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                         style={{
                           textAlign: "left",
                           padding: "12px 16px",
-                          borderRadius: 12,
-                          background: isSelected ? "rgba(0, 212, 170, 0.15)" : "var(--surface2)",
-                          border: `1.5px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
-                          color: "#ffffff",
-                          fontSize: 13,
+                          borderRadius: 2,
+                          background: isSelected ? "rgba(24, 55, 40, 0.08)" : "var(--paper)",
+                          border: `1.5px solid ${isSelected ? "var(--pine)" : "var(--border)"}`,
+                          color: "var(--ink)",
+                          fontSize: "0.88rem",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
@@ -862,13 +864,14 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                           width: 24,
                           height: 24,
                           borderRadius: "50%",
-                          background: isSelected ? "var(--accent)" : "rgba(255,255,255,0.06)",
-                          color: isSelected ? "#000000" : "var(--muted)",
+                          background: isSelected ? "var(--pine)" : "var(--surface)",
+                          color: isSelected ? "var(--paper)" : "var(--slate)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 11,
-                          fontWeight: 800
+                          fontSize: "0.75rem",
+                          fontWeight: 700,
+                          fontFamily: "var(--font-mono)"
                         }}>
                           {String.fromCharCode(65 + oIdx)}
                         </span>
@@ -881,7 +884,7 @@ export default function CompetencyStudio({ activeRoadmap, onOpenFocusStudio, onN
                 {/* Submit / Next Button */}
                 <button
                   className="btn-primary"
-                  style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700 }}
+                  style={{ width: "100%", padding: "12px", fontSize: "0.92rem", fontWeight: 700 }}
                   onClick={handleNextQuizQuestion}
                   disabled={quizSelectedOption === null || quizSubmitting}
                 >

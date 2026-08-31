@@ -1,157 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
- 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #040810;
-  --surface: #0b1220;
-  --surface2: #111c2e;
-  --surface3: #172235;
-  --accent: #00d4aa;
-  --accent2: #6366f1;
-  --text: #e2eaf5;
-  --muted: #4a6080;
-  --border: rgba(0,212,170,0.13);
-  --red: #ef4444;
-  --yellow: #f59e0b;
-  --green: #00d4aa;
-  --font: 'Plus Jakarta Sans', sans-serif;
-  --display: 'Outfit', sans-serif;
-}
-[data-theme="light"] {
-  --bg: #f0f4f8;
-  --surface: #ffffff;
-  --surface2: #eef2f7;
-  --surface3: #e2eaf3;
-  --text: #0f1f35;
-  --muted: #6b8099;
-  --border: rgba(0,130,100,0.15);
-}
-.forgot-container { 
-    background: var(--bg); 
-    color: var(--text); 
-    font-family: var(--font); 
-    min-height: 100vh; 
-    display:flex;
-    align-items: center;
-    justify-content: center;
+/* ==========================================================================
+   WANDERER — FORGOT PASSWORD DESIGN SYSTEM
+   Topographical Cartographic Aesthetic, High Contrast & Newsreader Typography
+   ========================================================================== */
 
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
+:root {
+  --bg: #F6F1E5;
+  --surface: #FFFFFF;
+  --surface2: #F6F1E5;
+  --surface3: #EBE5D8;
+  --accent: #C76E1A;
+  --accent2: #183728;
+  --text: #0E1A14;
+  --muted: #4D6054;
+  --border: rgba(24, 55, 40, 0.22);
+  --red: #B22D1D;
+  --yellow: #C76E1A;
+  --green: #183728;
+  --font: 'IBM Plex Sans', sans-serif;
+  --display: 'Newsreader', serif;
+}
+
+[data-theme="light"] {
+  --bg: #F6F1E5;
+  --surface: #FFFFFF;
+  --surface2: #F6F1E5;
+  --surface3: #EBE5D8;
+  --accent: #C76E1A;
+  --text: #0E1A14;
+  --muted: #4D6054;
+  --border: rgba(24, 55, 40, 0.22);
+}
+
+.forgot-container { 
+  background-color: var(--bg); 
+  color: var(--text); 
+  font-family: var(--font); 
+  min-height: 100vh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+  padding: 40px 20px;
+  background-image: 
+    radial-gradient(circle at 18% 22%, rgba(24, 55, 40, 0.16) 0px, transparent 2px),
+    repeating-radial-gradient(circle at 18% 22%, transparent 0, transparent 42px, rgba(24, 55, 40, 0.16) 43px, transparent 45px);
+  background-size: 100% 100%;
 }
 
 @keyframes fadeUp { 
-    from { 
-        opacity:0; 
-        transform:translateY(22px); 
-    } 
-    to { 
-        opacity:1; 
-        transform:translateY(0); 
-    } 
+  from { opacity: 0; transform: translateY(22px); } 
+  to { opacity: 1; transform: translateY(0); } 
 }
+
 @keyframes fadeIn { 
-    from { 
-        opacity:0; 
-    } 
-    to { 
-        opacity:1; 
-    } 
+  from { opacity: 0; } 
+  to { opacity: 1; } 
 }
+
 @keyframes spin { 
-    to { 
-        transform: rotate(360deg); 
-    } 
+  to { transform: rotate(360deg); } 
 }
+
 @keyframes shake { 
-    0%,100%{
-        transform:translateX(0)
-    } 
-    20%,60%{
-        transform:translateX(-6px)
-    } 
-    40%,80%{
-        transform:translateX(6px)
-    } 
+  0%, 100% { transform: translateX(0); } 
+  20%, 60% { transform: translateX(-6px); } 
+  40%, 80% { transform: translateX(6px); } 
 }
+
 @keyframes pulse { 
-    0%,100%{
-        opacity:1
-    } 
-    50%{
-        opacity:0.4
-    } 
+  0%, 100% { opacity: 1; } 
+  50% { opacity: 0.4; } 
 }
+
 @keyframes slideIn { 
-    from{
-        opacity:0;
-        transform:translateY(12px)
-    } 
-    to{
-        opacity:1;
-        transform:translateY(0)
-    } 
-}
- 
-.fade-up { 
-    animation: fadeUp 0.45s ease forwards; 
-}
-.shake   { 
-    animation: shake 0.4s ease; 
-}
-/* container */
-.bg-bubbles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
+  from { opacity: 0; transform: translateY(12px); } 
+  to { opacity: 1; transform: translateY(0); } 
 }
 
-/* bubbles */
-.bg-bubbles span {
-  position: absolute;
-  bottom: -100px;
-  width: 20px;
-  height: 20px;
-  background: rgba(0, 212, 170, 0.15);
-  border-radius: 50%;
-  animation: bubbleUp 10s linear infinite;
-}
+.fade-up { animation: fadeUp 0.45s ease forwards; }
+.shake   { animation: shake 0.4s ease; }
 
-/* animation */
-@keyframes bubbleUp {
-  0% {
-    transform: translateY(0) scale(0.5);
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateY(-120vh) scale(1.2);
-    opacity: 0;
-  }
+.forgot-container img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
 }
-.bg-bubbles span:nth-child(1) { left: 10%; animation-duration: 12s; }
-.bg-bubbles span:nth-child(2) { left: 20%; animation-duration: 8s; }
-.bg-bubbles span:nth-child(3) { left: 35%; animation-duration: 14s; }
-.bg-bubbles span:nth-child(4) { left: 50%; animation-duration: 10s; }
-.bg-bubbles span:nth-child(5) { left: 65%; animation-duration: 9s; }
-.bg-bubbles span:nth-child(6) { left: 75%; animation-duration: 11s; }
-.bg-bubbles span:nth-child(7) { left: 85%; animation-duration: 13s; }
-.bg-bubbles span:nth-child(8) { left: 95%; animation-duration: 7s; }
-.bg-bubbles span:nth-child(9) { left: 40%; animation-duration: 15s; }
-.bg-bubbles span:nth-child(10) { left: 60%; animation-duration: 10s; }
-.bg-bubbles span {
-  box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
-}
-.forgot-container img{
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    border-radius: 50%;
-  }

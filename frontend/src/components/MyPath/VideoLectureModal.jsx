@@ -5,14 +5,12 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
     async function fetchVideos() {
       if (!course) return;
       setLoading(true);
-      setError(null);
       try {
         const query = `${course.title} ${course.skills?.slice(0, 2).join(' ') || ''}`.trim();
         const res = await roadmapService.getTopicVideos(query);
@@ -28,11 +26,17 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
             url: `https://www.youtube.com/results?search_query=${defaultQuery}`,
             videoId: null
           }]);
+          setSelectedVideo(null);
         }
-      } catch (err) {
-        console.warn('Failed to load topic videos:', err);
+      } catch {
         if (isMounted) {
-          setError('Could not load online playlist. You can still launch YouTube directly.');
+          const defaultQuery = encodeURIComponent(course.title + ' tutorial');
+          setVideos([{
+            title: `${course.title} - Tutorial Masterclass`,
+            channel: course.provider || 'YouTube',
+            url: `https://www.youtube.com/results?search_query=${defaultQuery}`,
+            videoId: null
+          }]);
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -58,33 +62,43 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
-        backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', zIndex: 9999, padding: '16px'
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(14, 26, 20, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '16px'
       }}
       role="dialog"
       aria-modal="true"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        background: 'radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 50%), #0d1117',
-        border: '1.5px solid rgba(99, 102, 241, 0.35)',
-        borderRadius: '20px', padding: '24px', maxWidth: '900px', width: '100%',
-        maxHeight: '92vh', overflowY: 'auto',
-        boxShadow: '0 25px 70px rgba(0, 0, 0, 0.85)', color: '#f0f6fc',
-        fontFamily: 'inherit'
+        background: 'var(--paper-card)',
+        border: '1.5px solid var(--contour-active)',
+        borderRadius: '4px',
+        padding: '26px 28px',
+        maxWidth: '900px',
+        width: '100%',
+        maxHeight: '92vh',
+        overflowY: 'auto',
+        boxShadow: 'var(--shadow)',
+        color: 'var(--ink)'
       }}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1.5px solid var(--contour-active)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ fontSize: '28px', padding: '8px 12px', background: 'rgba(239, 68, 68, 0.15)', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171' }}>
+            <div style={{ fontSize: '26px', padding: '8px 12px', background: 'rgba(199, 110, 26, 0.1)', borderRadius: '3px', border: '1px solid rgba(199, 110, 26, 0.25)', color: 'var(--ochre)' }}>
               📺
             </div>
             <div>
-              <div style={{ fontSize: '11px', fontWeight: 800, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--ochre)', textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
                 Wanderer Video Lecture Studio
               </div>
-              <h2 style={{ fontSize: '18px', fontWeight: 800, margin: '2px 0 0 0', color: '#ffffff' }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 600, margin: '2px 0 0 0', color: 'var(--pine)', fontFamily: 'var(--font-serif)' }}>
                 {course.title}
               </h2>
             </div>
@@ -92,9 +106,12 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-              borderRadius: '8px', width: '30px', height: '30px', color: '#94a3b8',
-              cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--slate-subtle)',
+              cursor: 'pointer',
+              fontSize: '20px',
+              padding: '4px 8px'
             }}
           >
             ✕
@@ -103,11 +120,13 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
 
         {/* Video Player & Playlist Grid */}
         <div style={{
-          display: 'grid', gridTemplateColumns: videos.length > 1 ? '1.8fr 1.2fr' : '1fr',
-          gap: '16px', marginBottom: '20px'
+          display: 'grid',
+          gridTemplateColumns: videos.length > 1 ? '1.8fr 1.2fr' : '1fr',
+          gap: '16px',
+          marginBottom: '20px'
         }}>
           {/* Main Embedded Player Area */}
-          <div style={{ background: '#000000', borderRadius: '14px', overflow: 'hidden', border: '1px solid #30363d' }}>
+          <div style={{ background: '#000000', borderRadius: '4px', overflow: 'hidden', border: '1.5px solid var(--contour-active)' }}>
             {currentVideoId ? (
               <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
                 <iframe
@@ -116,30 +135,46 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                   style={{
-                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    border: 0
                   }}
                 />
               </div>
             ) : (
               <div style={{
-                padding: '40px 20px', textAlign: 'center', background: 'rgba(22, 27, 34, 0.8)',
-                minHeight: '260px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+                padding: '40px 20px',
+                textAlign: 'center',
+                background: 'var(--paper)',
+                minHeight: '260px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}>
                 <div style={{ fontSize: '36px', marginBottom: '10px' }}>🎬</div>
-                <div style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff', marginBottom: '6px' }}>
+                <div style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--pine)', marginBottom: '6px', fontFamily: 'var(--font-serif)' }}>
                   {loading ? 'Finding Best Video Tutorials...' : 'Ready to Stream Masterclass'}
                 </div>
-                <p style={{ fontSize: '13px', color: '#94a3b8', maxWidth: '400px', margin: '0 auto 16px' }}>
+                <p style={{ fontSize: '0.86rem', color: 'var(--slate)', maxWidth: '400px', margin: '0 auto 16px', lineHeight: 1.5 }}>
                   {loading ? 'Querying grounded YouTube tutorials and verified courses...' : 'Click below to watch verified tutorials directly on YouTube or choose a lecture from the playlist.'}
                 </p>
                 <a
                   href={youtubeSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="btn-primary"
                   style={{
-                    padding: '10px 20px', borderRadius: '10px', background: '#dc2626',
-                    color: '#ffffff', textDecoration: 'none', fontWeight: 700, fontSize: '13px',
-                    display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 15px rgba(220, 38, 38, 0.4)'
+                    padding: '9px 18px',
+                    textDecoration: 'none',
+                    fontWeight: 700,
+                    fontSize: '0.84rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}
                 >
                   ▶ Watch on YouTube ↗
@@ -149,11 +184,11 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
 
             {/* Current Playing Details */}
             {selectedVideo && (
-              <div style={{ padding: '14px 16px', background: 'rgba(15, 23, 42, 0.9)' }}>
-                <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', lineHeight: 1.4 }}>
+              <div style={{ padding: '12px 16px', background: 'var(--paper)', borderTop: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--pine)', lineHeight: 1.4, fontFamily: 'var(--font-serif)' }}>
                   {selectedVideo.title}
                 </div>
-                <div style={{ fontSize: '12px', color: '#a5b4fc', marginTop: '4px', display: 'flex', gap: '10px' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--slate-subtle)', marginTop: '4px', display: 'flex', gap: '10px', fontFamily: 'var(--font-mono)' }}>
                   <span>👤 {selectedVideo.channel || course.provider || 'YouTube'}</span>
                   {course.level && <span>📊 {course.level}</span>}
                 </div>
@@ -164,11 +199,16 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
           {/* Playlist Sidebar */}
           {videos.length > 0 && (
             <div style={{
-              background: 'rgba(22, 27, 34, 0.8)', border: '1px solid #30363d',
-              borderRadius: '14px', padding: '14px', display: 'flex', flexDirection: 'column',
-              maxHeight: '380px', overflowY: 'auto'
+              background: 'var(--paper)',
+              border: '1.5px solid var(--contour-active)',
+              borderRadius: '4px',
+              padding: '14px',
+              display: 'flex',
+              flexDirection: 'column',
+              maxHeight: '380px',
+              overflowY: 'auto'
             }}>
-              <div style={{ fontSize: '12px', fontWeight: 800, color: '#8b949e', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--slate-subtle)', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
                 📑 Curated Video Lectures ({videos.length})
               </div>
 
@@ -186,24 +226,33 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
                         }
                       }}
                       style={{
-                        padding: '10px 12px', borderRadius: '10px',
-                        background: isCur ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                        border: isCur ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.08)',
-                        cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center',
+                        padding: '10px 12px',
+                        borderRadius: '3px',
+                        background: isCur ? 'rgba(24, 55, 40, 0.08)' : 'var(--paper-card)',
+                        border: isCur ? '1.5px solid var(--pine)' : '1px solid var(--border)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        gap: '10px',
+                        alignItems: 'center',
                         transition: 'all 0.15s ease'
                       }}
                     >
-                      <div style={{ fontSize: '18px', color: isCur ? '#818cf8' : '#94a3b8' }}>
+                      <div style={{ fontSize: '16px', color: isCur ? 'var(--pine)' : 'var(--slate-subtle)' }}>
                         {isCur ? '▶' : '🎬'}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
-                          fontSize: '12.5px', fontWeight: 600, color: isCur ? '#ffffff' : '#cbd5e1',
-                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                          fontSize: '0.84rem',
+                          fontWeight: 600,
+                          color: isCur ? 'var(--pine)' : 'var(--ink)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          fontFamily: 'var(--font-serif)'
                         }}>
                           {vid.title}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#8b949e', marginTop: '2px' }}>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--slate-subtle)', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
                           {vid.channel || 'YouTube'}
                         </div>
                       </div>
@@ -218,10 +267,17 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
         {/* AI Guidance & Skills Taught */}
         {course.why && (
           <div style={{
-            background: 'rgba(99, 102, 241, 0.08)', border: '1px solid rgba(99, 102, 241, 0.25)',
-            borderRadius: '12px', padding: '14px', marginBottom: '18px', fontSize: '13px', lineHeight: 1.5, color: '#e2e8f0'
+            background: 'var(--paper)',
+            border: '1px solid var(--border)',
+            borderLeft: '3px solid var(--ochre)',
+            borderRadius: '0 3px 3px 0',
+            padding: '12px 14px',
+            marginBottom: '18px',
+            fontSize: '0.85rem',
+            lineHeight: 1.55,
+            color: 'var(--slate)'
           }}>
-            💡 <strong>AI Syllabus Guidance:</strong> {course.why}
+            <strong style={{ color: 'var(--pine)' }}>💡 AI Syllabus Guidance:</strong> {course.why}
           </div>
         )}
 
@@ -231,10 +287,13 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
             href={selectedVideo?.url || youtubeSearchUrl}
             target="_blank"
             rel="noopener noreferrer"
+            className="btn-outline"
             style={{
-              padding: '10px 18px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.12)', color: '#cbd5e1',
-              textDecoration: 'none', fontWeight: 600, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px'
+              padding: '9px 16px',
+              fontSize: '0.84rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
             🌐 Open in YouTube Tab ↗
@@ -243,12 +302,13 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
           {onLaunchFocus && (
             <button
               onClick={() => { onClose(); onLaunchFocus(course.title); }}
+              className="btn-primary"
               style={{
-                padding: '10px 18px', borderRadius: '10px',
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none',
-                color: '#ffffff', fontWeight: 700, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px',
-                boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)'
+                padding: '9px 18px',
+                fontSize: '0.84rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
               }}
             >
               ⏱️ Watch & Focus (Study Session)
@@ -257,10 +317,10 @@ export default function VideoLectureModal({ course, onLaunchFocus, onClose }) {
 
           <button
             onClick={onClose}
+            className="btn-outline"
             style={{
-              padding: '10px 20px', borderRadius: '10px',
-              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-              color: '#cbd5e1', fontWeight: 600, cursor: 'pointer', fontSize: '13px'
+              padding: '9px 18px',
+              fontSize: '0.84rem'
             }}
           >
             Close

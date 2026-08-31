@@ -2,11 +2,9 @@ import { useState } from "react";
 import VideoLectureModal from "../MyPath/VideoLectureModal";
 import checkpointService from "../../services/checkpointService";
 import competencyService from "../../services/competencyService";
-import authService from "../../services/authService";
 
 export default function CourseStudio({
   activeRoadmap,
-  user,
   onNavigateRoadmap,
   onNavigateCompetency,
   onSetPathwaySuccess
@@ -218,7 +216,9 @@ export default function CourseStudio({
         if (res.score >= 70) {
           try {
             await competencyService.markMastered(subject, "core", res.score);
-          } catch (e) { }
+          } catch {
+            // Non-critical auto-master fallback
+          }
         }
       } catch (err) {
         console.error("Quiz submission error:", err);
@@ -287,17 +287,17 @@ export default function CourseStudio({
       {/* ── Page Header ── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <div className="page-h" style={{ fontSize: 24, fontWeight: 800, color: "#ffffff", display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="page-h" style={{ fontSize: "1.45rem", fontWeight: 600, color: "var(--pine)", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-serif)" }}>
             <span>📚</span> Course Studio & Curriculum Catalog
           </div>
-          <div className="page-sub" style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 4 }}>
+          <div className="page-sub" style={{ fontSize: "0.88rem", color: "var(--slate)", marginTop: 4 }}>
             Interactive video modules, in-course AI diagnostic tests, and engineering specializations connected to your Wanderer profile.
           </div>
         </div>
         {activeRoadmap && (
           <button
             className="btn-outline"
-            style={{ padding: "9px 18px", fontSize: 13, borderColor: "var(--accent)", color: "var(--accent)" }}
+            style={{ padding: "8px 16px", fontSize: "0.8rem", borderColor: "var(--ochre)", color: "var(--ochre)", fontFamily: "var(--font-mono)", fontWeight: 700 }}
             onClick={() => onNavigateRoadmap?.()}
           >
             🗺️ View Linear Pathway →
@@ -308,12 +308,12 @@ export default function CourseStudio({
       {/* ── Toast Message ── */}
       {toastMsg && (
         <div style={{
-          background: "rgba(34, 197, 94, 0.15)",
-          border: "1px solid rgba(34, 197, 94, 0.4)",
-          color: "var(--green)",
-          borderRadius: 12,
-          padding: "12px 18px",
-          fontSize: 13.5,
+          background: "rgba(24, 55, 40, 0.1)",
+          border: "1.5px solid var(--pine)",
+          color: "var(--pine)",
+          borderRadius: 4,
+          padding: "10px 16px",
+          fontSize: "0.85rem",
           fontWeight: 700,
           display: "flex",
           alignItems: "center",
@@ -328,26 +328,26 @@ export default function CourseStudio({
       {activeRoadmap && (
         <div className="wg" style={{
           padding: "26px 30px",
-          background: "radial-gradient(circle at top right, rgba(0, 212, 170, 0.1), var(--surface))",
-          border: "1.5px solid rgba(0, 212, 170, 0.4)",
-          borderRadius: 20,
-          boxShadow: "0 12px 32px rgba(0,0,0,0.3)"
+          background: "var(--paper-card)",
+          border: "1.5px solid var(--contour-active)",
+          borderRadius: 4,
+          boxShadow: "var(--shadow)"
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ fontSize: 36, padding: "12px", background: "rgba(0, 212, 170, 0.12)", border: "1px solid rgba(0, 212, 170, 0.3)", borderRadius: 16 }}>
+              <div style={{ fontSize: 32, padding: "10px", background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3 }}>
                 🚀
               </div>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.18)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.35)" }}>
+                  <span style={{ fontSize: "0.7rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.1)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontFamily: "var(--font-mono)" }}>
                     ● Active Primary Track
                   </span>
-                  <span style={{ fontSize: 12, color: "var(--muted)" }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>
                     {activeRoadmap.phases?.length || 4} Sequential Phases
                   </span>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: "#ffffff", marginTop: 4 }}>
+                <div style={{ fontSize: "1.3rem", fontWeight: 600, color: "var(--pine)", marginTop: 4, fontFamily: "var(--font-serif)" }}>
                   {activeTitle}
                 </div>
               </div>
@@ -357,21 +357,21 @@ export default function CourseStudio({
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
                 className="btn-primary"
-                style={{ padding: "10px 20px", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}
+                style={{ padding: "10px 20px", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: 6 }}
                 onClick={() => onNavigateRoadmap?.()}
               >
                 <span>▶</span> Open Course Modules
               </button>
               <button
                 className="btn-outline"
-                style={{ padding: "10px 18px", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}
+                style={{ padding: "10px 18px", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: 6 }}
                 onClick={() => onNavigateCompetency?.()}
               >
                 <span>🌳</span> Skill Tree (DAG)
               </button>
               <button
                 className="btn-outline"
-                style={{ padding: "10px 18px", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}
+                style={{ padding: "10px 18px", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: 6 }}
                 onClick={() => handleOpenQuizModal({ title: activeTitle, goal: activeTitle, icon: "🎯" })}
               >
                 <span>🎯</span> Take AI Quiz
@@ -386,8 +386,8 @@ export default function CourseStudio({
                 key={pIdx}
                 style={{
                   padding: "10px 14px",
-                  borderRadius: 12,
-                  background: "var(--surface2)",
+                  borderRadius: 3,
+                  background: "var(--paper)",
                   border: "1px solid var(--border)",
                   display: "flex",
                   justifyContent: "space-between",
@@ -395,10 +395,10 @@ export default function CourseStudio({
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 10.5, fontWeight: 800, color: "var(--accent)", textTransform: "uppercase" }}>
+                  <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--ochre)", textTransform: "uppercase", fontFamily: "var(--font-mono)" }}>
                     Phase {pIdx + 1}
                   </div>
-                  <div style={{ fontSize: 12.5, fontWeight: 700, color: "#ffffff", marginTop: 2 }}>
+                  <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--pine)", marginTop: 2, fontFamily: "var(--font-serif)" }}>
                     {phase.title}
                   </div>
                 </div>
@@ -410,14 +410,14 @@ export default function CourseStudio({
       )}
 
       {/* ── 2. On-Demand AI Course Synthesizer ── */}
-      <div className="wg" style={{ padding: "20px 24px", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18 }}>
+      <div className="wg" style={{ padding: "20px 24px", background: "var(--paper-card)", border: "1.5px solid var(--contour-active)", borderRadius: 4, boxShadow: "var(--shadow)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
           <span style={{ fontSize: 20 }}>✨</span>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff" }}>
+            <div style={{ fontSize: "1.05rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
               Synthesize an AI Course on Any Discipline
             </div>
-            <div style={{ fontSize: 12, color: "var(--muted)" }}>
+            <div style={{ fontSize: "0.82rem", color: "var(--slate)" }}>
               Type any topic (e.g. Distributed Operating Systems, Rust for Systems, Unreal Engine C++) to generate video modules and quizzes in MongoDB.
             </div>
           </div>
@@ -434,21 +434,21 @@ export default function CourseStudio({
               flex: 1,
               minWidth: 280,
               padding: "11px 16px",
-              borderRadius: 10,
-              background: "var(--surface2)",
+              borderRadius: 2,
+              background: "var(--paper)",
               border: "1px solid var(--border)",
-              color: "var(--text)",
-              fontSize: 13.5,
+              color: "var(--ink)",
+              fontSize: "0.88rem",
               outline: "none"
             }}
           />
           <button
             className="btn-primary"
-            style={{ padding: "11px 24px", fontSize: 13.5, whiteSpace: "nowrap" }}
+            style={{ padding: "11px 24px", fontSize: "0.88rem", whiteSpace: "nowrap" }}
             onClick={handleSynthesizeCustomCourse}
             disabled={isGenerating || !generatingTopic.trim()}
           >
-            {isGenerating ? "⚡ Generating Course in MongoDB..." : "✨ Synthesize Course Track →"}
+            {isGenerating ? "Synthesizing Course..." : "⚡ Synthesize Full Course"}
           </button>
         </div>
       </div>
@@ -456,23 +456,24 @@ export default function CourseStudio({
       {/* ── 3. Engineering Courses Catalog ── */}
       <div>
         {/* Filters and Search */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {[
-              { id: "all", label: "🌟 All Curriculums" },
-              { id: "enrolled", label: "✓ Active Primary Pathway" },
+              { id: "all", label: "All Curriculums" },
+              { id: "enrolled", label: "Active Enrolled" },
             ].map(f => (
               <button
                 key={f.id}
                 onClick={() => setActiveFilter(f.id)}
                 style={{
                   padding: "6px 14px",
-                  borderRadius: 8,
-                  border: `1px solid ${activeFilter === f.id ? "var(--accent)" : "rgba(255,255,255,0.08)"}`,
-                  background: activeFilter === f.id ? "rgba(0, 212, 170, 0.15)" : "rgba(255,255,255,0.02)",
-                  color: activeFilter === f.id ? "var(--accent)" : "var(--muted)",
-                  fontSize: 12.5,
+                  borderRadius: 2,
+                  border: `1px solid ${activeFilter === f.id ? "var(--pine)" : "var(--border)"}`,
+                  background: activeFilter === f.id ? "var(--pine)" : "var(--paper)",
+                  color: activeFilter === f.id ? "var(--paper)" : "var(--slate)",
+                  fontSize: "0.78rem",
                   fontWeight: activeFilter === f.id ? 700 : 500,
+                  fontFamily: "var(--font-mono)",
                   cursor: "pointer",
                   transition: "all 0.15s"
                 }}
@@ -490,19 +491,19 @@ export default function CourseStudio({
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               padding: "7px 14px",
-              borderRadius: 8,
-              background: "var(--surface2)",
+              borderRadius: 2,
+              background: "var(--paper)",
               border: "1px solid var(--border)",
-              color: "var(--text)",
-              fontSize: 12.5,
-              width: 200,
+              color: "var(--ink)",
+              fontSize: "0.82rem",
+              width: 180,
               outline: "none"
             }}
           />
         </div>
 
         {/* Course Cards Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 18 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 20 }}>
           {filteredCourses.map(c => {
             const isCurrentTrack = c.goal.toLowerCase() === activeTitle.toLowerCase();
 
@@ -511,15 +512,14 @@ export default function CourseStudio({
                 key={c.id}
                 className="wg"
                 style={{
-                  padding: "22px 24px",
+                  padding: "24px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  background: isCurrentTrack
-                    ? "radial-gradient(circle at top right, rgba(0, 212, 170, 0.06), var(--surface))"
-                    : "var(--surface)",
-                  border: `1.5px solid ${isCurrentTrack ? "rgba(0, 212, 170, 0.45)" : "var(--border)"}`,
-                  borderRadius: 18,
+                  background: "var(--paper-card)",
+                  border: `1.5px solid ${isCurrentTrack ? "var(--pine)" : "var(--contour-active)"}`,
+                  borderRadius: 4,
+                  boxShadow: "var(--shadow)",
                   transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                   position: "relative",
                   overflow: "hidden"
@@ -530,11 +530,11 @@ export default function CourseStudio({
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <span style={{ fontSize: 32 }}>{c.icon}</span>
                     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 6, background: "rgba(255,255,255,0.04)", color: "var(--muted)", border: "1px solid var(--border)" }}>
+                      <span style={{ fontSize: "0.74rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "var(--paper)", color: "var(--slate)", border: "1px solid var(--border)", fontFamily: "var(--font-mono)" }}>
                         ⭐ {c.rating}
                       </span>
                       {isCurrentTrack && (
-                        <span style={{ fontSize: 11, fontWeight: 800, padding: "2px 8px", borderRadius: 9999, background: "rgba(0, 212, 170, 0.15)", color: "var(--accent)", border: "1px solid rgba(0, 212, 170, 0.3)" }}>
+                        <span style={{ fontSize: "0.7rem", fontWeight: 700, padding: "2px 8px", borderRadius: 2, background: "rgba(24, 55, 40, 0.1)", color: "var(--pine)", border: "1px solid var(--contour-active)", fontFamily: "var(--font-mono)" }}>
                           ✓ Active Track
                         </span>
                       )}
@@ -542,27 +542,27 @@ export default function CourseStudio({
                   </div>
 
                   {/* Title & Provider */}
-                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "#ffffff", lineHeight: 1.3, marginBottom: 4 }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--pine)", lineHeight: 1.3, marginBottom: 4, fontFamily: "var(--font-serif)" }}>
                     {c.title}
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}>
+                  <div style={{ fontSize: "0.78rem", color: "var(--slate-subtle)", marginBottom: 10, fontFamily: "var(--font-mono)" }}>
                     {c.provider} · {c.duration}
                   </div>
 
-                  <div style={{ fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5, marginBottom: 14 }}>
+                  <div style={{ fontSize: "0.86rem", color: "var(--slate)", lineHeight: 1.55, marginBottom: 14 }}>
                     {c.desc}
                   </div>
 
                   {/* Module Bullets */}
                   <div style={{ marginBottom: 16 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--slate-subtle)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontFamily: "var(--font-mono)" }}>
                       Syllabus Modules:
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                       {c.modules.map((mod, mIdx) => (
-                        <div key={mIdx} style={{ fontSize: 11.5, color: "#ffffff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span><strong style={{ color: "var(--accent)" }}>•</strong> {mod.title}</span>
-                          <span style={{ fontSize: 10.5, color: "var(--muted)" }}>{mod.duration}</span>
+                        <div key={mIdx} style={{ fontSize: "0.8rem", color: "var(--ink)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span><strong style={{ color: "var(--ochre)" }}>•</strong> {mod.title}</span>
+                          <span style={{ fontSize: "0.74rem", color: "var(--slate-subtle)", fontFamily: "var(--font-mono)" }}>{mod.duration}</span>
                         </div>
                       ))}
                     </div>
@@ -571,7 +571,7 @@ export default function CourseStudio({
                   {/* Tag Chips */}
                   <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 16 }}>
                     {c.tags.map(tag => (
-                      <span key={tag} style={{ fontSize: 10.5, padding: "2px 7px", borderRadius: 5, background: "rgba(255,255,255,0.03)", border: "1px solid var(--border)", color: "var(--muted)" }}>
+                      <span key={tag} style={{ fontSize: "0.72rem", padding: "2px 7px", borderRadius: 2, background: "var(--paper)", border: "1px solid var(--border)", color: "var(--slate)", fontFamily: "var(--font-mono)" }}>
                         #{tag}
                       </span>
                     ))}
@@ -579,18 +579,18 @@ export default function CourseStudio({
                 </div>
 
                 {/* Card Bottom Actions (Clean In-Place Interactions) */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--border)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--contour-faint)" }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     <button
                       className="btn-primary"
-                      style={{ padding: "9px", fontSize: 12.5, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                      style={{ padding: "9px", fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                       onClick={() => setSelectedCourseForVideo({ title: c.title, provider: c.provider, skills: c.tags })}
                     >
                       <span>▶</span> Watch Modules
                     </button>
                     <button
                       className="btn-outline"
-                      style={{ padding: "9px", fontSize: 12.5, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, borderColor: "var(--accent)", color: "var(--accent)" }}
+                      style={{ padding: "9px", fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, borderColor: "var(--ochre)", color: "var(--ochre)" }}
                       onClick={() => handleOpenQuizModal(c)}
                     >
                       <span>🎯</span> Take AI Quiz
@@ -600,7 +600,7 @@ export default function CourseStudio({
                   {!isCurrentTrack && (
                     <button
                       className="btn-outline"
-                      style={{ width: "100%", padding: "7px", fontSize: 11.5, color: "var(--muted)" }}
+                      style={{ width: "100%", padding: "7px", fontSize: "0.76rem", color: "var(--slate)" }}
                       onClick={() => handleSetActivePathway(c)}
                     >
                       ⭐ Set as Active Learning Pathway in MongoDB
@@ -626,7 +626,7 @@ export default function CourseStudio({
         <div style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0, 0, 0, 0.85)",
+          background: "rgba(14, 26, 20, 0.45)",
           backdropFilter: "blur(8px)",
           zIndex: 9999,
           display: "flex",
@@ -635,15 +635,15 @@ export default function CourseStudio({
           padding: 20
         }}>
           <div style={{
-            background: "var(--surface)",
-            border: "1.5px solid var(--accent)",
-            borderRadius: 20,
+            background: "var(--paper-card)",
+            border: "1.5px solid var(--contour-active)",
+            borderRadius: 4,
             maxWidth: 640,
             width: "100%",
             maxHeight: "90vh",
             overflowY: "auto",
             padding: "26px 30px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            boxShadow: "var(--shadow)",
             position: "relative",
             animation: "fadeIn 0.2s ease"
           }}>
@@ -652,17 +652,17 @@ export default function CourseStudio({
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 24 }}>{quizModalCourse.icon || "🎯"}</span>
                 <div>
-                  <div style={{ fontSize: 16.5, fontWeight: 800, color: "#ffffff" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
                     {quizModalCourse.title}
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--accent)" }}>
+                  <div style={{ fontSize: "0.78rem", color: "var(--ochre)", fontFamily: "var(--font-mono)", fontWeight: 700 }}>
                     AI Checkpoint Diagnostic Assessment
                   </div>
                 </div>
               </div>
               <button
                 onClick={() => setQuizModalCourse(null)}
-                style={{ background: "transparent", border: "none", color: "var(--muted)", fontSize: 20, cursor: "pointer" }}
+                style={{ background: "transparent", border: "none", color: "var(--slate-subtle)", fontSize: 20, cursor: "pointer" }}
               >
                 ✕
               </button>
@@ -672,10 +672,10 @@ export default function CourseStudio({
             {quizLoading ? (
               <div style={{ textAlign: "center", padding: "60px 0" }}>
                 <div style={{ fontSize: 40, marginBottom: 14, animation: "spin 1s linear infinite", display: "inline-block" }}>⚡</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "var(--accent)" }}>
+                <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--pine)", fontFamily: "var(--font-serif)" }}>
                   Synthesizing AI Diagnostic Questions...
                 </div>
-                <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6 }}>
+                <div style={{ fontSize: "0.85rem", color: "var(--slate-subtle)", marginTop: 6 }}>
                   Generating conceptual, algorithmic, and scenario test questions tailored to {quizModalCourse.title}.
                 </div>
               </div>
@@ -686,16 +686,16 @@ export default function CourseStudio({
                   <div style={{ fontSize: 50, marginBottom: 8 }}>
                     {quizResult.score >= 80 ? "🏆" : quizResult.score >= 70 ? "🎉" : "📚"}
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 900, color: quizResult.score >= 70 ? "var(--green)" : "var(--yellow)" }}>
+                  <div style={{ fontSize: "1.8rem", fontWeight: 700, color: quizResult.score >= 70 ? "var(--pine)" : "var(--ochre)", fontFamily: "var(--font-serif)" }}>
                     {quizResult.score}% Score
                   </div>
-                  <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 4 }}>
+                  <div style={{ fontSize: "0.88rem", color: "var(--slate)", marginTop: 4 }}>
                     {quizResult.score >= 70 ? "✅ Verified Competency Passed!" : "Needs Review. Brush up on foundational concepts."}
                   </div>
                 </div>
 
-                <div style={{ background: "var(--surface2)", borderRadius: 12, padding: "14px 16px", marginBottom: 20, fontSize: 13, color: "var(--text)", lineHeight: 1.5 }}>
-                  <strong>🤖 AI Advisor Feedback:</strong> {quizResult.feedback || "Good effort. Review the core mechanisms and try again to improve mastery."}
+                <div style={{ background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 3, padding: "14px 16px", marginBottom: 20, fontSize: "0.88rem", color: "var(--slate)", lineHeight: 1.6 }}>
+                  <strong style={{ color: "var(--pine)" }}>🤖 AI Advisor Feedback:</strong> {quizResult.feedback || "Good effort. Review the core mechanisms and try again to improve mastery."}
                 </div>
 
                 <div style={{ display: "flex", gap: 10 }}>
@@ -719,16 +719,16 @@ export default function CourseStudio({
               /* Active Question Screen */
               <div>
                 {/* Progress bar */}
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted)", marginBottom: 8 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", color: "var(--slate-subtle)", marginBottom: 8, fontFamily: "var(--font-mono)" }}>
                   <span>Question {quizCurrentQ + 1} of {quizQuestions.length}</span>
-                  <span style={{ color: "var(--accent)", fontWeight: 700 }}>{quizQuestions[quizCurrentQ]?.type || "Conceptual"}</span>
+                  <span style={{ color: "var(--ochre)", fontWeight: 700 }}>{quizQuestions[quizCurrentQ]?.type || "Conceptual"}</span>
                 </div>
-                <div style={{ width: "100%", height: 6, background: "var(--surface2)", borderRadius: 9999, overflow: "hidden", marginBottom: 20 }}>
-                  <div style={{ width: `${((quizCurrentQ + 1) / quizQuestions.length) * 100}%`, height: "100%", background: "var(--accent)", transition: "width 0.3s ease" }} />
+                <div style={{ width: "100%", height: 6, background: "var(--paper)", border: "1px solid var(--border)", borderRadius: 2, overflow: "hidden", marginBottom: 20 }}>
+                  <div style={{ width: `${((quizCurrentQ + 1) / quizQuestions.length) * 100}%`, height: "100%", background: "var(--pine)", transition: "width 0.3s ease" }} />
                 </div>
 
                 {/* Question Text */}
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", lineHeight: 1.45, marginBottom: 18 }}>
+                <div style={{ fontSize: "1.05rem", fontWeight: 600, color: "var(--pine)", lineHeight: 1.45, marginBottom: 18, fontFamily: "var(--font-serif)" }}>
                   {quizQuestions[quizCurrentQ]?.q}
                 </div>
 
@@ -743,11 +743,11 @@ export default function CourseStudio({
                         style={{
                           textAlign: "left",
                           padding: "12px 16px",
-                          borderRadius: 12,
-                          background: isSelected ? "rgba(0, 212, 170, 0.15)" : "var(--surface2)",
-                          border: `1.5px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
-                          color: "#ffffff",
-                          fontSize: 13,
+                          borderRadius: 2,
+                          background: isSelected ? "rgba(24, 55, 40, 0.08)" : "var(--paper)",
+                          border: `1.5px solid ${isSelected ? "var(--pine)" : "var(--border)"}`,
+                          color: "var(--ink)",
+                          fontSize: "0.88rem",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
@@ -759,13 +759,14 @@ export default function CourseStudio({
                           width: 24,
                           height: 24,
                           borderRadius: "50%",
-                          background: isSelected ? "var(--accent)" : "rgba(255,255,255,0.06)",
-                          color: isSelected ? "#000000" : "var(--muted)",
+                          background: isSelected ? "var(--pine)" : "var(--surface)",
+                          color: isSelected ? "var(--paper)" : "var(--slate)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 11,
-                          fontWeight: 800
+                          fontSize: "0.75rem",
+                          fontWeight: 700,
+                          fontFamily: "var(--font-mono)"
                         }}>
                           {String.fromCharCode(65 + oIdx)}
                         </span>
@@ -778,7 +779,7 @@ export default function CourseStudio({
                 {/* Submit / Next Button */}
                 <button
                   className="btn-primary"
-                  style={{ width: "100%", padding: "12px", fontSize: 14, fontWeight: 700 }}
+                  style={{ width: "100%", padding: "12px", fontSize: "0.92rem", fontWeight: 700 }}
                   onClick={handleNextQuizQuestion}
                   disabled={quizSelectedOption === null || quizSubmitting}
                 >

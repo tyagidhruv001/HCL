@@ -22,7 +22,7 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
         } else {
           throw new Error('Empty quiz payload');
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
           // Client-side fallback questions if backend unavailable
           setQuizData({
@@ -108,42 +108,53 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', zIndex: 9999, padding: '16px'
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(14, 26, 20, 0.45)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '16px'
       }}
       role="dialog"
       aria-modal="true"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        background: 'rgba(10, 15, 30, 0.96)', border: '1px solid rgba(99, 102, 241, 0.35)',
-        borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%',
-        boxShadow: '0 24px 60px rgba(0, 0, 0, 0.7)', color: '#f1f5f9'
+        background: 'var(--paper-card)',
+        border: '1.5px solid var(--contour-active)',
+        borderRadius: '4px',
+        padding: '28px',
+        maxWidth: '580px',
+        width: '100%',
+        boxShadow: 'var(--shadow)',
+        color: 'var(--ink)'
       }}>
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1.5px solid var(--contour-active)' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#c7d2fe', background: 'rgba(99,102,241,0.2)', padding: '3px 10px', borderRadius: '9999px' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--ochre)', background: 'rgba(199, 110, 26, 0.1)', border: '1px solid rgba(199, 110, 26, 0.25)', padding: '2px 9px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>
               🧪 Active Recall Challenge
             </span>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, marginTop: '6px', color: '#ffffff' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 600, marginTop: '6px', color: 'var(--pine)', fontFamily: 'var(--font-serif)', margin: '6px 0 0 0' }}>
               {topic || 'Skill Assessment'}
             </h3>
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '18px', cursor: 'pointer' }}
+            style={{ background: 'transparent', border: 'none', color: 'var(--slate-subtle)', fontSize: '20px', cursor: 'pointer', padding: '4px 8px' }}
           >
             ✕
           </button>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: '#94a3b8' }}>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--slate-subtle)' }}>
             <div style={{ fontSize: '28px', animation: 'spin 1s linear infinite', display: 'inline-block' }}>⟳</div>
-            <p style={{ marginTop: '10px' }}>Generating active recall questions for {topic}...</p>
+            <p style={{ marginTop: '10px', fontSize: '0.88rem' }}>Generating active recall questions for {topic}...</p>
           </div>
         ) : isFinished ? (
           
@@ -152,18 +163,21 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
             <div style={{ fontSize: '54px', marginBottom: '12px' }}>
               {score === questions.length ? '🏆' : score > 0 ? '🎉' : '📚'}
             </div>
-            <h4 style={{ fontSize: '22px', fontWeight: 800, color: '#ffffff', marginBottom: '8px' }}>
+            <h4 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--pine)', marginBottom: '8px', fontFamily: 'var(--font-serif)' }}>
               Assessment Complete!
             </h4>
-            <p style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '20px' }}>
-              You scored <strong style={{ color: '#34d399' }}>{score}</strong> out of <strong style={{ color: '#ffffff' }}>{questions.length}</strong>
+            <p style={{ fontSize: '0.92rem', color: 'var(--slate)', marginBottom: '20px' }}>
+              You scored <strong style={{ color: 'var(--pine)' }}>{score}</strong> out of <strong style={{ color: 'var(--pine)' }}>{questions.length}</strong>
             </p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
+                className="btn-primary"
                 onClick={onClose}
                 style={{
-                  padding: '10px 24px', borderRadius: '10px', background: '#6366f1',
-                  color: '#ffffff', border: 'none', fontWeight: 700, cursor: 'pointer'
+                  padding: '10px 24px',
+                  borderRadius: '3px',
+                  fontWeight: 700,
+                  cursor: 'pointer'
                 }}
               >
                 ✓ Continue Learning
@@ -176,16 +190,23 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
           /* Question & Options */
           <div>
             {/* Progress indicator */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--slate-subtle)', marginBottom: '12px', fontFamily: 'var(--font-mono)' }}>
               <span>Question {currentIdx + 1} of {questions.length}</span>
-              <span style={{ color: '#a5b4fc', textTransform: 'capitalize' }}>{difficulty} Level</span>
+              <span style={{ color: 'var(--ochre)', textTransform: 'capitalize', fontWeight: 700 }}>{difficulty} Level</span>
             </div>
 
             {/* Question Text */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px', padding: '16px', fontSize: '15px', fontWeight: 600,
-              lineHeight: 1.5, marginBottom: '16px', color: '#ffffff'
+              background: 'var(--paper)',
+              border: '1px solid var(--contour-faint)',
+              borderRadius: '3px',
+              padding: '16px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              lineHeight: 1.5,
+              marginBottom: '16px',
+              color: 'var(--pine)',
+              fontFamily: 'var(--font-serif)'
             }}>
               {currentQ.question}
             </div>
@@ -193,24 +214,24 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
             {/* Options */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
               {currentQ.options?.map((opt, idx) => {
-                let bg = 'rgba(255, 255, 255, 0.03)';
-                let border = 'rgba(255, 255, 255, 0.08)';
-                let color = '#cbd5e1';
+                let bg = 'var(--paper)';
+                let border = 'var(--border)';
+                let color = 'var(--ink)';
 
                 if (isAnswerSubmitted) {
                   if (idx === currentQ.correct_index) {
-                    bg = 'rgba(16, 185, 129, 0.2)';
-                    border = '#10b981';
-                    color = '#34d399';
+                    bg = 'rgba(24, 55, 40, 0.12)';
+                    border = 'var(--pine)';
+                    color = 'var(--pine)';
                   } else if (idx === selectedOption) {
-                    bg = 'rgba(239, 68, 68, 0.2)';
+                    bg = 'rgba(239, 68, 68, 0.1)';
                     border = '#ef4444';
-                    color = '#f87171';
+                    color = '#b91c1c';
                   }
                 } else if (selectedOption === idx) {
-                  bg = 'rgba(99, 102, 241, 0.25)';
-                  border = '#6366f1';
-                  color = '#ffffff';
+                  bg = 'rgba(24, 55, 40, 0.08)';
+                  border = 'var(--pine)';
+                  color = 'var(--pine)';
                 }
 
                 return (
@@ -218,16 +239,35 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
                     key={idx}
                     onClick={() => handleSelectOption(idx)}
                     style={{
-                      padding: '12px 16px', borderRadius: '10px', background: bg,
-                      border: `1px solid ${border}`, color, textAlign: 'left',
-                      fontSize: '13px', lineHeight: 1.4, cursor: isAnswerSubmitted ? 'default' : 'pointer',
-                      transition: 'all 0.15s ease', display: 'flex', alignItems: 'center', gap: '10px'
+                      padding: '12px 16px',
+                      borderRadius: '3px',
+                      background: bg,
+                      border: `1.5px solid ${border}`,
+                      color,
+                      textAlign: 'left',
+                      fontSize: '0.88rem',
+                      lineHeight: 1.4,
+                      cursor: isAnswerSubmitted ? 'default' : 'pointer',
+                      transition: 'all 0.15s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px'
                     }}
                   >
                     <span style={{
-                      width: '22px', height: '22px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px',
-                      fontWeight: 700, flexShrink: 0
+                      width: '22px',
+                      height: '22px',
+                      borderRadius: '50%',
+                      background: selectedOption === idx ? 'var(--pine)' : 'var(--paper-card)',
+                      color: selectedOption === idx ? 'var(--paper)' : 'var(--slate)',
+                      border: '1px solid var(--border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      fontFamily: 'var(--font-mono)',
+                      flexShrink: 0
                     }}>
                       {String.fromCharCode(65 + idx)}
                     </span>
@@ -240,11 +280,17 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
             {/* Explanation box after answer submission */}
             {isAnswerSubmitted && currentQ.explanation && (
               <div style={{
-                background: 'rgba(99, 102, 241, 0.1)', borderLeft: '3px solid #6366f1',
-                padding: '10px 14px', borderRadius: '0 8px 8px 0', fontSize: '12px',
-                color: '#cbd5e1', marginBottom: '16px', lineHeight: 1.5
+                background: 'var(--paper)',
+                border: '1px solid var(--border)',
+                borderLeft: '3px solid var(--ochre)',
+                padding: '10px 14px',
+                borderRadius: '0 3px 3px 0',
+                fontSize: '0.85rem',
+                color: 'var(--slate)',
+                marginBottom: '16px',
+                lineHeight: 1.55
               }}>
-                💡 <strong>Explanation:</strong> {currentQ.explanation}
+                <strong style={{ color: 'var(--pine)' }}>💡 Explanation:</strong> {currentQ.explanation}
               </div>
             )}
 
@@ -252,23 +298,28 @@ export default function QuizModal({ topic, difficulty = 'beginner', courseId, on
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               {!isAnswerSubmitted ? (
                 <button
+                  className="btn-primary"
                   onClick={handleSubmitAnswer}
                   disabled={selectedOption === null}
                   style={{
-                    padding: '10px 20px', borderRadius: '10px',
-                    background: selectedOption !== null ? '#6366f1' : 'rgba(255,255,255,0.08)',
-                    color: '#ffffff', border: 'none', fontWeight: 700,
-                    cursor: selectedOption !== null ? 'pointer' : 'not-allowed'
+                    padding: '10px 22px',
+                    borderRadius: '3px',
+                    fontWeight: 700,
+                    cursor: selectedOption !== null ? 'pointer' : 'not-allowed',
+                    opacity: selectedOption !== null ? 1 : 0.5
                   }}
                 >
                   Submit Answer
                 </button>
               ) : (
                 <button
+                  className="btn-primary"
                   onClick={handleNextQuestion}
                   style={{
-                    padding: '10px 20px', borderRadius: '10px', background: '#10b981',
-                    color: '#ffffff', border: 'none', fontWeight: 700, cursor: 'pointer'
+                    padding: '10px 22px',
+                    borderRadius: '3px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
                   }}
                 >
                   {currentIdx + 1 < questions.length ? 'Next Question ➔' : 'View Results ➔'}
